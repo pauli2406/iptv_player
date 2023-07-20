@@ -1,0 +1,65 @@
+PODS:
+  - Flutter (1.0.0)
+  - isar_flutter_libs (1.0.0):
+    - Flutter
+  - media_kit_libs_ios_video (1.0.4):
+    - Flutter
+  - media_kit_native_event_loop (1.0.0):
+    - Flutter
+  - media_kit_video (0.0.1):
+    - Flutter
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - screen_brightness_ios (0.1.0):
+    - Flutter
+  - volume_controller (0.0.1):
+    - Flutter
+  - wakelock (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - isar_flutter_libs (from `.symlinks/plugins/isar_flutter_libs/ios`)
+  - media_kit_libs_ios_video (from `.symlinks/plugins/media_kit_libs_ios_video/ios`)
+  - media_kit_native_event_loop (from `.symlinks/plugins/media_kit_native_event_loop/ios`)
+  - media_kit_video (from `.symlinks/plugins/media_kit_video/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - screen_brightness_ios (from `.symlinks/plugins/screen_brightness_ios/ios`)
+  - volume_controller (from `.symlinks/plugins/volume_controller/ios`)
+  - wakelock (from `.symlinks/plugins/wakelock/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  isar_flutter_libs:
+    :path: ".symlinks/plugins/isar_flutter_libs/ios"
+  media_kit_libs_ios_video:
+    :path: ".symlinks/plugins/media_kit_libs_ios_video/ios"
+  media_kit_native_event_loop:
+    :path: ".symlinks/plugins/media_kit_native_event_loop/ios"
+  media_kit_video:
+    :path: ".symlinks/plugins/media_kit_video/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  screen_brightness_ios:
+    :path: ".symlinks/plugins/screen_brightness_ios/ios"
+  volume_controller:
+    :path: ".symlinks/plugins/volume_controller/ios"
+  wakelock:
+    :path: ".symlinks/plugins/wakelock/ios"
+
+SPEC CHECKSUMS:
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  isar_flutter_libs: b69f437aeab9c521821c3f376198c4371fa21073
+  media_kit_libs_ios_video: 96259eccffaa309b63a7ee610c2c7786a3b335e5
+  media_kit_native_event_loop: 1eac6db2378101404392c80606103b42f7c2c491
+  media_kit_video: c6ae801433b484912087b519b45f1beac97b960b
+  path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
+  screen_brightness_ios: 715ca807df953bf676d339f11464e438143ee625
+  volume_controller: 531ddf792994285c9b17f9d8a7e4dcdd29b3eae9
+  wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
+
+PODFILE CHECKSUM: 70d9d25280d0dd177a5f637cdb0f0b0b12c6a189
+
+COCOAPODS: 1.11.3

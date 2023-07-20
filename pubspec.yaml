@@ -14,7 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.3.6
-  go_router: ^9.0.0
+  go_router: ^9.1.0
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
   macos_ui:
@@ -25,6 +25,7 @@ dependencies:
   media_kit_video: ^1.0.2                        # For video rendering.
   media_kit_native_event_loop: ^1.0.6            # Support for higher number of concurrent instances & better performance.
   media_kit_libs_macos_video: ^1.0.5             # macOS package for video native libraries.
+  media_kit_libs_ios_video: ^1.0.4               # iOS package for video native libraries.
   m3u_parser_nullsafe: ^1.0.3
   riverpod_annotation: ^2.1.1
   path_provider: ^2.0.15

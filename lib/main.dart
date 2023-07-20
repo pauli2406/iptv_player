@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
-import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
@@ -22,51 +21,53 @@ import 'package:window_manager/window_manager.dart';
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
-  await windowManager.ensureInitialized();
-
-  WindowOptions windowOptions = const WindowOptions(
-    size: Size(1440, 900),
-    center: true,
-    backgroundColor: Colors.transparent,
-    skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.hidden,
+  Platform.init(
+      supportedPlatforms: {Platforms.macOS, Platforms.windows, Platforms.iOS});
+  final dir = await getApplicationDocumentsDirectory();
+  await FastCachedImageConfig.init(
+    subDir: dir.path,
+    clearCacheAfter: const Duration(days: 15),
   );
+  final isar = await Isar.open(allSchemas, directory: dir.path);
 
-  Platform.init(supportedPlatforms: {Platforms.macOS, Platforms.windows});
+  if (Platform.instance.isMacOS) {
+    await windowManager.ensureInitialized();
+    WindowOptions windowOptions = const WindowOptions(
+      size: Size(1440, 900),
+      center: true,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.hidden,
+    );
 
-  if (args.firstOrNull == 'multi_window') {
-    final windowId = int.parse(args[1]);
-    final arguments = args[2].isEmpty
-        ? const {}
-        : jsonDecode(args[2]) as Map<String, dynamic>;
-    if (arguments.containsValue('player')) {
-      final link = arguments['link'];
-      final isLive = arguments['isLive'];
+    if (args.firstOrNull == 'multi_window') {
+      final arguments = args[2].isEmpty
+          ? const {}
+          : jsonDecode(args[2]) as Map<String, dynamic>;
+      if (arguments.containsValue('player')) {
+        final link = arguments['link'];
+        runApp(
+          ProviderScope(
+            child: VideoPlayer(
+              videoUrl: link,
+            ),
+          ),
+        );
+      }
+    } else {
+      windowManager.waitUntilReadyToShow(windowOptions, () async {
+        await windowManager.show();
+        await windowManager.focus();
+      });
       runApp(
         ProviderScope(
-          child: VideoPlayer(
-            videoUrl: link,
-            isLive: isLive,
-            windowController: WindowController.fromWindowId(windowId),
-            args: arguments,
+          child: App(
+            isar: isar,
           ),
         ),
       );
     }
   } else {
-    final dir = await getApplicationDocumentsDirectory();
-    final isar = await Isar.open(allSchemas, directory: dir.path);
-
-    await FastCachedImageConfig.init(
-      subDir: dir.path,
-      clearCacheAfter: const Duration(days: 15),
-    );
-
-    windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
-    });
-
     runApp(
       ProviderScope(
         child: App(
@@ -115,6 +116,16 @@ class _AppState extends ConsumerState<App> {
         darkTheme: material.ThemeData.dark(),
         themeMode: theme,
         debugShowCheckedModeBanner: false,
+      ),
+      iOSBuilder: (context) => SafeArea(
+        child: MacosApp.router(
+          routerConfig: router,
+          title: 'iptv_player',
+          theme: MacosThemeData.light(),
+          darkTheme: MacosThemeData.dark(),
+          themeMode: theme,
+          debugShowCheckedModeBanner: false,
+        ),
       ),
     );
   }

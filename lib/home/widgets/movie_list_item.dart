@@ -4,8 +4,10 @@ import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iptv_player/service/collections/m3u/m3u_item.dart';
 import 'package:macos_ui/macos_ui.dart';
+import 'package:platform_builder/platform_builder.dart';
 
 class M3uListItem extends StatefulWidget {
   const M3uListItem(this.m3uItem, {required this.height, super.key});
@@ -32,25 +34,29 @@ class _M3uListItemState extends State<M3uListItem> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () async {
-          final windowIds = await DesktopMultiWindow.getAllSubWindowIds();
-          if (windowIds.isNotEmpty) {
-            for (var element in windowIds) {
-              await WindowController.fromWindowId(element).close();
+          if (Platform.instance.isMacOS) {
+            final windowIds = await DesktopMultiWindow.getAllSubWindowIds();
+            if (windowIds.isNotEmpty) {
+              for (var element in windowIds) {
+                await WindowController.fromWindowId(element).close();
+              }
             }
+            final window = await DesktopMultiWindow.createWindow(jsonEncode(
+              {
+                'args0': 'player',
+                'link': widget.m3uItem.link,
+                'isLive': widget.m3uItem.name == M3UType.channel,
+              },
+            ));
+            debugPrint('$window');
+            window
+              ..setFrame(const Offset(0, 0) & const Size(960, 540))
+              ..center()
+              ..setTitle(widget.m3uItem.title ?? "Stream")
+              ..show();
+          } else {
+            context.go("/main/player", extra: widget.m3uItem.link);
           }
-          final window = await DesktopMultiWindow.createWindow(jsonEncode(
-            {
-              'args0': 'player',
-              'link': widget.m3uItem.link,
-              'isLive': widget.m3uItem.name == M3UType.channel,
-            },
-          ));
-          debugPrint('$window');
-          window
-            ..setFrame(const Offset(0, 0) & const Size(960, 540))
-            ..center()
-            ..setTitle(widget.m3uItem.title ?? "Stream")
-            ..show();
         },
         child: Container(
           decoration: BoxDecoration(

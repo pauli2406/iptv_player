@@ -7,16 +7,10 @@ import 'package:window_manager/window_manager.dart';
 class VideoPlayer extends StatefulWidget {
   const VideoPlayer({
     required this.videoUrl,
-    required this.isLive,
-    required this.windowController,
-    required this.args,
     super.key,
   });
 
   final String videoUrl;
-  final bool isLive;
-  final WindowController windowController;
-  final Map? args;
 
   @override
   State<VideoPlayer> createState() => _VideoPlayerState();

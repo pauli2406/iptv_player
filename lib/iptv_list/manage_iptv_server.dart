@@ -118,6 +118,13 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
         urlController: _urlController,
         onSubmit: _onSubmit,
       ),
+      iOSBuilder: (context) => MacOSMangeIptvServerWidget(
+        formKey: _formKey,
+        state: _state,
+        nameController: _nameController,
+        urlController: _urlController,
+        onSubmit: _onSubmit,
+      ),
     );
   }
 

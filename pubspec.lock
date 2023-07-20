@@ -372,10 +372,10 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: "1531542666c2d052c44bbf6e2b48011bf3771da0404b94c60eabec1228a62906"
+      sha256: "5927202c23bec18ba93f662b5e1f81f2caa2e0cfa472d857d6229f63d59f1730"
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.0"
+    version: "9.1.0"
   graphs:
     dependency: transitive
     description:
@@ -553,6 +553,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  media_kit_libs_ios_video:
+    dependency: "direct main"
+    description:
+      name: media_kit_libs_ios_video
+      sha256: "28c6ddd5ed43263641293832c8d1fb3f24af81b4eba0b61d6da9bedadbf2e1b1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   media_kit_libs_macos_video:
     dependency: "direct main"
     description:

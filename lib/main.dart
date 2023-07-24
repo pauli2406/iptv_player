@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
-import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iptv_player/provider/isar/isar_provider.dart';
@@ -24,13 +23,9 @@ Future<void> main(List<String> args) async {
   Platform.init(
       supportedPlatforms: {Platforms.macOS, Platforms.windows, Platforms.iOS});
   final dir = await getApplicationDocumentsDirectory();
-  await FastCachedImageConfig.init(
-    subDir: dir.path,
-    clearCacheAfter: const Duration(days: 15),
-  );
   final isar = await Isar.open(allSchemas, directory: dir.path);
 
-  if (Platform.instance.isMacOS) {
+  if (Platform.instance.isMacOS || Platform.instance.isWindows) {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
       size: Size(1440, 900),
@@ -55,6 +50,10 @@ Future<void> main(List<String> args) async {
         );
       }
     } else {
+      await FastCachedImageConfig.init(
+        subDir: dir.path,
+        clearCacheAfter: const Duration(days: 15),
+      );
       windowManager.waitUntilReadyToShow(windowOptions, () async {
         await windowManager.show();
         await windowManager.focus();
@@ -68,6 +67,10 @@ Future<void> main(List<String> args) async {
       );
     }
   } else {
+    await FastCachedImageConfig.init(
+      subDir: dir.path,
+      clearCacheAfter: const Duration(days: 15),
+    );
     runApp(
       ProviderScope(
         child: App(
@@ -109,11 +112,11 @@ class _AppState extends ConsumerState<App> {
         themeMode: theme,
         debugShowCheckedModeBanner: false,
       ),
-      windowsBuilder: (context) => material.MaterialApp.router(
+      windowsBuilder: (context) => MacosApp.router(
         routerConfig: router,
         title: 'iptv_player',
-        theme: material.ThemeData.light(),
-        darkTheme: material.ThemeData.dark(),
+        theme: MacosThemeData.light(),
+        darkTheme: MacosThemeData.dark(),
         themeMode: theme,
         debugShowCheckedModeBanner: false,
       ),

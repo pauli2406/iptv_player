@@ -34,12 +34,16 @@ class _M3uListItemState extends State<M3uListItem> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () async {
-          if (Platform.instance.isMacOS) {
-            final windowIds = await DesktopMultiWindow.getAllSubWindowIds();
+          if (Platform.instance.isMacOS || Platform.instance.isWindows) {
+            try {
+                final windowIds = await DesktopMultiWindow.getAllSubWindowIds();
             if (windowIds.isNotEmpty) {
               for (var element in windowIds) {
                 await WindowController.fromWindowId(element).close();
               }
+            }
+            } catch (e) {
+              debugPrint(e.toString());
             }
             final window = await DesktopMultiWindow.createWindow(jsonEncode(
               {

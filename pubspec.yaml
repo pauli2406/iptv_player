@@ -110,7 +110,7 @@ flutter_launcher_icons:
 msix_config:
   display_name: IPTV Player
   publisher_display_name: Marcel Pochert
-  identity_name: de.pochert.iptv_player
-  msix_version: 1.0.0.0
-  logo_path: /Users/marcelpochert/Programming/Flutter/iptv_player/iptv_player/assets/logo/iptv_logo_2.png
+  identity_name: iptvplayer
+  msix_version: 1.0.0.2
+  logo_path: C:\Users\Lukas\Development\iptv_player\assets\logo\iptv_logo_2.png
   capabilities: internetClient

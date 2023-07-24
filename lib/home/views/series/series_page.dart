@@ -171,10 +171,10 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
                               padding: const EdgeInsets.all(10),
                             );
                           } else {
-                            return Center(
+                            return const Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children: [
                                   Text("No series found"),
                                 ],
                               ),
@@ -191,10 +191,10 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
                 ),
               );
             } else {
-              return Center(
+              return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text("Downloading and reading playlist..."),
                     ProgressCircle(),
                   ],

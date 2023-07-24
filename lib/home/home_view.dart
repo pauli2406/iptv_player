@@ -146,10 +146,10 @@ class _HomeViewState extends ConsumerState<HomeView> {
               ContentArea(
                 builder:
                     (BuildContext context, ScrollController scrollController) {
-                  return Center(
+                  return const Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         Text("Downloading and reading playlist..."),
                         ProgressCircle(),
                       ],

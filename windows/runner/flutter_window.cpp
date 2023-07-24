@@ -40,8 +40,12 @@ bool FlutterWindow::OnCreate() {
           registry->GetRegistrarForPlugin("DesktopMultiWindowPlugin"));
       IsarFlutterLibsPluginRegisterWithRegistrar(
           registry->GetRegistrarForPlugin("IsarFlutterLibsPlugin"));
+      MediaKitLibsWindowsVideoPluginCApiRegisterWithRegistrar(
+          registry->GetRegistrarForPlugin("MediaKitLibsWindowsVideoPluginCApi"));
       MediaKitVideoPluginCApiRegisterWithRegistrar(
           registry->GetRegistrarForPlugin("MediaKitVideoPluginCApi"));
+      ScreenBrightnessWindowsPluginRegisterWithRegistrar(
+          registry->GetRegistrarForPlugin("ScreenBrightnessWindowsPlugin"));
       ScreenRetrieverPluginRegisterWithRegistrar(
           registry->GetRegistrarForPlugin("ScreenRetrieverPlugin"));
       WindowManagerPluginRegisterWithRegistrar(

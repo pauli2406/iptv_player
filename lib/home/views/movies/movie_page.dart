@@ -172,10 +172,10 @@ class _MoviesPageState extends ConsumerState<MoviesPage> {
                               padding: const EdgeInsets.all(10),
                             );
                           } else {
-                            return Center(
+                            return const Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children: [
                                   Text("No movies found"),
                                 ],
                               ),
@@ -192,10 +192,10 @@ class _MoviesPageState extends ConsumerState<MoviesPage> {
                 ),
               );
             } else {
-              return Center(
+              return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text("Downloading and reading playlist..."),
                     ProgressCircle(),
                   ],

@@ -167,10 +167,10 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
                               padding: const EdgeInsets.all(10),
                             );
                           } else {
-                            return Center(
+                            return const Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children: [
                                   Text("No channels found"),
                                 ],
                               ),
@@ -187,10 +187,10 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
                 ),
               );
             } else {
-              return Center(
+              return const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text("Downloading and reading playlist..."),
                     ProgressCircle(),
                   ],

@@ -27,6 +27,7 @@ class MacOSIptvServerList extends ConsumerWidget {
     final serverItems$ = ref.watch(iptvServerItemsProvider);
     final currentTheme = ref.watch(appThemeProvider);
     return MacosScaffold(
+      backgroundColor: MacosColors.windowBackgroundColor,
       toolBar: ToolBar(
         title: const Text('Playlists'),
         actions: [

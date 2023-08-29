@@ -53,11 +53,20 @@ class _VideoPlayerState extends State<VideoPlayer> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Video(controller: videoController),
+    return WillPopScope(
+      onWillPop: () async {
+        if (Navigator.of(context).userGestureInProgress) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: MaterialApp(
+        home: Scaffold(
+          body: Video(controller: videoController),
+        ),
+        debugShowCheckedModeBanner: false,
       ),
-      debugShowCheckedModeBanner: false,
     );
   }
 }

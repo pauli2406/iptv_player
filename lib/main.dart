@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,8 +21,6 @@ Future<void> main(List<String> args) async {
   MediaKit.ensureInitialized();
   Platform.init(
       supportedPlatforms: {Platforms.macOS, Platforms.windows, Platforms.iOS});
-  final dir = await getApplicationDocumentsDirectory();
-  final isar = await Isar.open(allSchemas, directory: dir.path);
 
   if (Platform.instance.isMacOS || Platform.instance.isWindows) {
     await windowManager.ensureInitialized();
@@ -49,15 +46,17 @@ Future<void> main(List<String> args) async {
           ),
         );
       }
-    } else {
-      await FastCachedImageConfig.init(
-        subDir: dir.path,
-        clearCacheAfter: const Duration(days: 15),
-      );
       windowManager.waitUntilReadyToShow(windowOptions, () async {
         await windowManager.show();
         await windowManager.focus();
       });
+    } else {
+      final dir = await getApplicationDocumentsDirectory();
+      final isar = await Isar.open(allSchemas, directory: dir.path);
+      await FastCachedImageConfig.init(
+        subDir: dir.path,
+        clearCacheAfter: const Duration(days: 15),
+      );
       runApp(
         ProviderScope(
           child: App(
@@ -67,6 +66,8 @@ Future<void> main(List<String> args) async {
       );
     }
   } else {
+    final dir = await getApplicationDocumentsDirectory();
+    final isar = await Isar.open(allSchemas, directory: dir.path);
     await FastCachedImageConfig.init(
       subDir: dir.path,
       clearCacheAfter: const Duration(days: 15),

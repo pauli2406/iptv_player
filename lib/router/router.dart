@@ -32,11 +32,15 @@ final router = GoRouter(
               builder: (context, state) {
                 return SafeArea(
                   child: Scaffold(
+                    backgroundColor: Colors.black,
                     appBar: AppBar(
                       backgroundColor: Colors.black,
                     ),
-                    body: VideoPlayer(
-                      videoUrl: (state.extra as String),
+                    body: Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: VideoPlayer(
+                        videoUrl: (state.extra as String),
+                      ),
                     ),
                   ),
                 );

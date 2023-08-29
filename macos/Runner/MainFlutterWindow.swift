@@ -8,8 +8,9 @@ import macos_ui
 import media_kit_libs_macos_video
 import media_kit_video
 import path_provider_foundation
+import screen_brightness_macos
 import screen_retriever
-import wakelock_macos
+import wakelock_plus
 import window_manager
 
 
@@ -84,8 +85,9 @@ class MainFlutterWindow: NSWindow, NSWindowDelegate {
       MediaKitLibsMacosVideoPlugin.register(with: controller.registrar(forPlugin: "MediaKitLibsMacosVideoPlugin"))
       MediaKitVideoPlugin.register(with: controller.registrar(forPlugin: "MediaKitVideoPlugin"))
       PathProviderPlugin.register(with: controller.registrar(forPlugin: "PathProviderPlugin"))
+      ScreenBrightnessMacosPlugin.register(with: controller.registrar(forPlugin: "ScreenBrightnessMacosPlugin"))
       ScreenRetrieverPlugin.register(with: controller.registrar(forPlugin: "ScreenRetrieverPlugin"))
-      WakelockMacosPlugin.register(with: controller.registrar(forPlugin: "WakelockMacosPlugin"))
+      WakelockPlusMacosPlugin.register(with: controller.registrar(forPlugin: "WakelockPlusMacosPlugin"))
       WindowManagerPlugin.register(with: controller.registrar(forPlugin: "WindowManagerPlugin"))
     }
 

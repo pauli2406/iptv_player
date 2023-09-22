@@ -53,6 +53,7 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
     final currentTheme = ref.watch(appThemeProvider);
     return MacosScaffold(
       toolBar: ToolBar(
+        decoration: BoxDecoration(color: MacosTheme.of(context).canvasColor),
         leading: MacosIconButton(
           icon: const MacosIcon(
             CupertinoIcons.sidebar_left,
@@ -84,6 +85,8 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
             if (!isUpdating) {
               return MacosWindow(
                 sidebar: Sidebar(
+                  decoration:
+                      BoxDecoration(color: MacosTheme.of(context).canvasColor),
                   dragClosed: false,
                   minWidth: 200,
                   maxWidth: 200,

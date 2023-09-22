@@ -5,7 +5,6 @@
 import FlutterMacOS
 import Foundation
 
-import appkit_ui_element_colors
 import desktop_multi_window
 import isar_flutter_libs
 import macos_ui
@@ -20,7 +19,6 @@ import wakelock_plus
 import window_manager
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  AppkitUiElementColorsPlugin.register(with: registry.registrar(forPlugin: "AppkitUiElementColorsPlugin"))
   FlutterMultiWindowPlugin.register(with: registry.registrar(forPlugin: "FlutterMultiWindowPlugin"))
   IsarFlutterLibsPlugin.register(with: registry.registrar(forPlugin: "IsarFlutterLibsPlugin"))
   MacOSUiPlugin.register(with: registry.registrar(forPlugin: "MacOSUiPlugin"))

@@ -57,11 +57,11 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   isar_flutter_libs: b69f437aeab9c521821c3f376198c4371fa21073
-  media_kit_libs_ios_video: bcbf9a53dd3b60c0fcf92b0903e4706391ad0b65
-  media_kit_native_event_loop: 1eac6db2378101404392c80606103b42f7c2c491
-  media_kit_video: 6c61501e3ab980488d80df6d705905d14b150b63
+  media_kit_libs_ios_video: a5fe24bc7875ccd6378a0978c13185e1344651c1
+  media_kit_native_event_loop: e6b2ab20cf0746eb1c33be961fcf79667304fa2a
+  media_kit_video: 5da63f157170e5bf303bf85453b7ef6971218a2e
   package_info_plus: fd030dabf36271f146f1f3beacd48f564b0f17f7
-  path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
+  path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   screen_brightness_ios: 715ca807df953bf676d339f11464e438143ee625
   volume_controller: 531ddf792994285c9b17f9d8a7e4dcdd29b3eae9
   wakelock_plus: 8b09852c8876491e4b6d179e17dfe2a0b5f60d47

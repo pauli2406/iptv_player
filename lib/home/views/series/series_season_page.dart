@@ -29,6 +29,8 @@ class _SeriesSeasonPage extends ConsumerState<SeriesSeasonPage> {
           data: (items) {
             return MacosWindow(
               sidebar: Sidebar(
+                decoration:
+                    BoxDecoration(color: MacosTheme.of(context).canvasColor),
                 minWidth: 200,
                 builder: (context, scrollController) {
                   return SidebarItems(

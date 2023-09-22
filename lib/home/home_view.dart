@@ -32,6 +32,8 @@ class _HomeViewState extends ConsumerState<HomeView> {
             var inputFormat = DateFormat('dd/MM/yyyy HH:mm');
             return MacosWindow(
               sidebar: Sidebar(
+                decoration:
+                    BoxDecoration(color: MacosTheme.of(context).canvasColor),
                 minWidth: 200,
                 top: Padding(
                   padding: const EdgeInsets.all(8.0),

@@ -53,6 +53,7 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
 
     return MacosScaffold(
       toolBar: ToolBar(
+        decoration: BoxDecoration(color: MacosTheme.of(context).canvasColor),
         leading: MacosIconButton(
           icon: const MacosIcon(
             CupertinoIcons.sidebar_left,
@@ -82,6 +83,8 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
             if (!isUpdating) {
               return MacosWindow(
                 sidebar: Sidebar(
+                  decoration:
+                      BoxDecoration(color: MacosTheme.of(context).canvasColor),
                   dragClosed: false,
                   minWidth: 200,
                   maxWidth: 200,

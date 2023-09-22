@@ -48,6 +48,7 @@ class _SeriesItemPageState extends ConsumerState<SeriesItemPage> {
 
     return MacosScaffold(
       toolBar: ToolBar(
+        decoration: BoxDecoration(color: MacosTheme.of(context).canvasColor),
         title: Text(widget.series),
       ),
       children: [
@@ -55,42 +56,46 @@ class _SeriesItemPageState extends ConsumerState<SeriesItemPage> {
           builder: (context, scrollController) {
             final isUpdating = ref.watch(isUpdatingActiveIptvServerProvider);
             if (!isUpdating) {
-              return seriesProvider.map(
-                data: (moviesObj) {
-                  final movies = moviesObj.value;
-                  if (movies.isNotEmpty) {
-                    var size = MediaQuery.of(context).size;
-                    final double itemHeight = (size.height) / 1.5;
-                    final double itemWidth = size.width / 2;
-                    return GridView.builder(
-                      controller: scrollController,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: calculateCrossAxisCount(context),
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        childAspectRatio: (itemWidth / itemHeight),
-                      ),
-                      itemBuilder: (_, index) => M3uListItem(
-                        movies[index],
-                        height: itemHeight,
-                      ),
-                      itemCount: movies.length,
-                      padding: const EdgeInsets.all(10),
-                    );
-                  } else {
-                    return const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("No series found"),
-                        ],
-                      ),
-                    );
-                  }
-                },
-                error: (error) => Container(),
-                loading: (_) => const Center(
-                  child: ProgressCircle(),
+              return Container(
+                decoration:
+                    BoxDecoration(color: MacosTheme.of(context).canvasColor),
+                child: seriesProvider.map(
+                  data: (moviesObj) {
+                    final movies = moviesObj.value;
+                    if (movies.isNotEmpty) {
+                      var size = MediaQuery.of(context).size;
+                      final double itemHeight = (size.height) / 1.5;
+                      final double itemWidth = size.width / 2;
+                      return GridView.builder(
+                        controller: scrollController,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: calculateCrossAxisCount(context),
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: (itemWidth / itemHeight),
+                        ),
+                        itemBuilder: (_, index) => M3uListItem(
+                          movies[index],
+                          height: itemHeight,
+                        ),
+                        itemCount: movies.length,
+                        padding: const EdgeInsets.all(10),
+                      );
+                    } else {
+                      return const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("No series found"),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                  error: (error) => Container(),
+                  loading: (_) => const Center(
+                    child: ProgressCircle(),
+                  ),
                 ),
               );
             } else {

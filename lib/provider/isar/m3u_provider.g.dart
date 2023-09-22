@@ -59,9 +59,6 @@ class _SystemHash {
   }
 }
 
-typedef ClearDownloadAndPersistActivePlaylistItemsRef
-    = AutoDisposeFutureProviderRef<bool>;
-
 /// See also [clearDownloadAndPersistActivePlaylistItems].
 @ProviderFor(clearDownloadAndPersistActivePlaylistItems)
 const clearDownloadAndPersistActivePlaylistItemsProvider =
@@ -111,10 +108,10 @@ class ClearDownloadAndPersistActivePlaylistItemsProvider
     extends AutoDisposeFutureProvider<bool> {
   /// See also [clearDownloadAndPersistActivePlaylistItems].
   ClearDownloadAndPersistActivePlaylistItemsProvider({
-    this.forced,
-  }) : super.internal(
+    bool? forced,
+  }) : this._internal(
           (ref) => clearDownloadAndPersistActivePlaylistItems(
-            ref,
+            ref as ClearDownloadAndPersistActivePlaylistItemsRef,
             forced: forced,
           ),
           from: clearDownloadAndPersistActivePlaylistItemsProvider,
@@ -128,9 +125,45 @@ class ClearDownloadAndPersistActivePlaylistItemsProvider
           allTransitiveDependencies:
               ClearDownloadAndPersistActivePlaylistItemsFamily
                   ._allTransitiveDependencies,
+          forced: forced,
         );
 
+  ClearDownloadAndPersistActivePlaylistItemsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.forced,
+  }) : super.internal();
+
   final bool? forced;
+
+  @override
+  Override overrideWith(
+    FutureOr<bool> Function(
+            ClearDownloadAndPersistActivePlaylistItemsRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ClearDownloadAndPersistActivePlaylistItemsProvider._internal(
+        (ref) => create(ref as ClearDownloadAndPersistActivePlaylistItemsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        forced: forced,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<bool> createElement() {
+    return _ClearDownloadAndPersistActivePlaylistItemsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -147,8 +180,23 @@ class ClearDownloadAndPersistActivePlaylistItemsProvider
   }
 }
 
-String _$findAllMoviesHash() => r'099b9e5d46b2d364154cd037258177ef6922e03a';
-typedef FindAllMoviesRef = AutoDisposeStreamProviderRef<List<M3UItem>>;
+mixin ClearDownloadAndPersistActivePlaylistItemsRef
+    on AutoDisposeFutureProviderRef<bool> {
+  /// The parameter `forced` of this provider.
+  bool? get forced;
+}
+
+class _ClearDownloadAndPersistActivePlaylistItemsProviderElement
+    extends AutoDisposeFutureProviderElement<bool>
+    with ClearDownloadAndPersistActivePlaylistItemsRef {
+  _ClearDownloadAndPersistActivePlaylistItemsProviderElement(super.provider);
+
+  @override
+  bool? get forced =>
+      (origin as ClearDownloadAndPersistActivePlaylistItemsProvider).forced;
+}
+
+String _$findAllMoviesHash() => r'243348ac96e929ef66b94e5e7eedbfece1fe1104';
 
 /// See also [findAllMovies].
 @ProviderFor(findAllMovies)
@@ -196,10 +244,10 @@ class FindAllMoviesFamily extends Family<AsyncValue<List<M3UItem>>> {
 class FindAllMoviesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
   /// See also [findAllMovies].
   FindAllMoviesProvider({
-    this.groupTitle,
-  }) : super.internal(
+    String? groupTitle,
+  }) : this._internal(
           (ref) => findAllMovies(
-            ref,
+            ref as FindAllMoviesRef,
             groupTitle: groupTitle,
           ),
           from: findAllMoviesProvider,
@@ -211,9 +259,43 @@ class FindAllMoviesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
           dependencies: FindAllMoviesFamily._dependencies,
           allTransitiveDependencies:
               FindAllMoviesFamily._allTransitiveDependencies,
+          groupTitle: groupTitle,
         );
 
+  FindAllMoviesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.groupTitle,
+  }) : super.internal();
+
   final String? groupTitle;
+
+  @override
+  Override overrideWith(
+    Stream<List<M3UItem>> Function(FindAllMoviesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindAllMoviesProvider._internal(
+        (ref) => create(ref as FindAllMoviesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        groupTitle: groupTitle,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<List<M3UItem>> createElement() {
+    return _FindAllMoviesProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -229,8 +311,21 @@ class FindAllMoviesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
   }
 }
 
-String _$findAllSeriesHash() => r'5cbbf5506bbd4cffb7a8423df9c0c15c102f84f6';
-typedef FindAllSeriesRef = AutoDisposeStreamProviderRef<List<M3UItem>>;
+mixin FindAllMoviesRef on AutoDisposeStreamProviderRef<List<M3UItem>> {
+  /// The parameter `groupTitle` of this provider.
+  String? get groupTitle;
+}
+
+class _FindAllMoviesProviderElement
+    extends AutoDisposeStreamProviderElement<List<M3UItem>>
+    with FindAllMoviesRef {
+  _FindAllMoviesProviderElement(super.provider);
+
+  @override
+  String? get groupTitle => (origin as FindAllMoviesProvider).groupTitle;
+}
+
+String _$findAllSeriesHash() => r'ce0acce002f9be69a2971fba8fdaff65e7a765cf';
 
 /// See also [findAllSeries].
 @ProviderFor(findAllSeries)
@@ -278,10 +373,10 @@ class FindAllSeriesFamily extends Family<AsyncValue<List<M3UItem>>> {
 class FindAllSeriesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
   /// See also [findAllSeries].
   FindAllSeriesProvider({
-    this.groupTitle,
-  }) : super.internal(
+    String? groupTitle,
+  }) : this._internal(
           (ref) => findAllSeries(
-            ref,
+            ref as FindAllSeriesRef,
             groupTitle: groupTitle,
           ),
           from: findAllSeriesProvider,
@@ -293,9 +388,43 @@ class FindAllSeriesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
           dependencies: FindAllSeriesFamily._dependencies,
           allTransitiveDependencies:
               FindAllSeriesFamily._allTransitiveDependencies,
+          groupTitle: groupTitle,
         );
 
+  FindAllSeriesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.groupTitle,
+  }) : super.internal();
+
   final String? groupTitle;
+
+  @override
+  Override overrideWith(
+    Stream<List<M3UItem>> Function(FindAllSeriesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindAllSeriesProvider._internal(
+        (ref) => create(ref as FindAllSeriesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        groupTitle: groupTitle,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<List<M3UItem>> createElement() {
+    return _FindAllSeriesProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -311,8 +440,22 @@ class FindAllSeriesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
   }
 }
 
+mixin FindAllSeriesRef on AutoDisposeStreamProviderRef<List<M3UItem>> {
+  /// The parameter `groupTitle` of this provider.
+  String? get groupTitle;
+}
+
+class _FindAllSeriesProviderElement
+    extends AutoDisposeStreamProviderElement<List<M3UItem>>
+    with FindAllSeriesRef {
+  _FindAllSeriesProviderElement(super.provider);
+
+  @override
+  String? get groupTitle => (origin as FindAllSeriesProvider).groupTitle;
+}
+
 String _$findAllSeriesGroupsHash() =>
-    r'f1a73b099aeea3cb0d303307b40b216da11632bc';
+    r'c281a7ae81fed3ea8f18ba768351d535f3fb801a';
 
 /// See also [findAllSeriesGroups].
 @ProviderFor(findAllSeriesGroups)
@@ -329,9 +472,7 @@ final findAllSeriesGroupsProvider =
 
 typedef FindAllSeriesGroupsRef = AutoDisposeStreamProviderRef<List<M3UItem>>;
 String _$findAllItemsOfSeriesAndSeasonHash() =>
-    r'e6592450023f174c9cb58919b999de284e7d025b';
-typedef FindAllItemsOfSeriesAndSeasonRef
-    = AutoDisposeStreamProviderRef<List<M3UItem>>;
+    r'c1c976dac2cf0f8163e0befc0f84111760005816';
 
 /// See also [findAllItemsOfSeriesAndSeason].
 @ProviderFor(findAllItemsOfSeriesAndSeason)
@@ -385,11 +526,11 @@ class FindAllItemsOfSeriesAndSeasonProvider
     extends AutoDisposeStreamProvider<List<M3UItem>> {
   /// See also [findAllItemsOfSeriesAndSeason].
   FindAllItemsOfSeriesAndSeasonProvider({
-    required this.series,
-    required this.season,
-  }) : super.internal(
+    required String series,
+    required String season,
+  }) : this._internal(
           (ref) => findAllItemsOfSeriesAndSeason(
-            ref,
+            ref as FindAllItemsOfSeriesAndSeasonRef,
             series: series,
             season: season,
           ),
@@ -402,10 +543,48 @@ class FindAllItemsOfSeriesAndSeasonProvider
           dependencies: FindAllItemsOfSeriesAndSeasonFamily._dependencies,
           allTransitiveDependencies:
               FindAllItemsOfSeriesAndSeasonFamily._allTransitiveDependencies,
+          series: series,
+          season: season,
         );
+
+  FindAllItemsOfSeriesAndSeasonProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.series,
+    required this.season,
+  }) : super.internal();
 
   final String series;
   final String season;
+
+  @override
+  Override overrideWith(
+    Stream<List<M3UItem>> Function(FindAllItemsOfSeriesAndSeasonRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindAllItemsOfSeriesAndSeasonProvider._internal(
+        (ref) => create(ref as FindAllItemsOfSeriesAndSeasonRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        series: series,
+        season: season,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<List<M3UItem>> createElement() {
+    return _FindAllItemsOfSeriesAndSeasonProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -424,9 +603,28 @@ class FindAllItemsOfSeriesAndSeasonProvider
   }
 }
 
+mixin FindAllItemsOfSeriesAndSeasonRef
+    on AutoDisposeStreamProviderRef<List<M3UItem>> {
+  /// The parameter `series` of this provider.
+  String get series;
+
+  /// The parameter `season` of this provider.
+  String get season;
+}
+
+class _FindAllItemsOfSeriesAndSeasonProviderElement
+    extends AutoDisposeStreamProviderElement<List<M3UItem>>
+    with FindAllItemsOfSeriesAndSeasonRef {
+  _FindAllItemsOfSeriesAndSeasonProviderElement(super.provider);
+
+  @override
+  String get series => (origin as FindAllItemsOfSeriesAndSeasonProvider).series;
+  @override
+  String get season => (origin as FindAllItemsOfSeriesAndSeasonProvider).season;
+}
+
 String _$findAllSeasonsOfSeriesHash() =>
-    r'f0fe50bc33848f84f818ec6bd3439103297ff481';
-typedef FindAllSeasonsOfSeriesRef = AutoDisposeStreamProviderRef<List<M3UItem>>;
+    r'721224f4b3910e7bfec7f1e452ae4b8b6a31cc03';
 
 /// See also [findAllSeasonsOfSeries].
 @ProviderFor(findAllSeasonsOfSeries)
@@ -475,10 +673,10 @@ class FindAllSeasonsOfSeriesProvider
     extends AutoDisposeStreamProvider<List<M3UItem>> {
   /// See also [findAllSeasonsOfSeries].
   FindAllSeasonsOfSeriesProvider({
-    required this.series,
-  }) : super.internal(
+    required String series,
+  }) : this._internal(
           (ref) => findAllSeasonsOfSeries(
-            ref,
+            ref as FindAllSeasonsOfSeriesRef,
             series: series,
           ),
           from: findAllSeasonsOfSeriesProvider,
@@ -490,9 +688,43 @@ class FindAllSeasonsOfSeriesProvider
           dependencies: FindAllSeasonsOfSeriesFamily._dependencies,
           allTransitiveDependencies:
               FindAllSeasonsOfSeriesFamily._allTransitiveDependencies,
+          series: series,
         );
 
+  FindAllSeasonsOfSeriesProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.series,
+  }) : super.internal();
+
   final String series;
+
+  @override
+  Override overrideWith(
+    Stream<List<M3UItem>> Function(FindAllSeasonsOfSeriesRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindAllSeasonsOfSeriesProvider._internal(
+        (ref) => create(ref as FindAllSeasonsOfSeriesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        series: series,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<List<M3UItem>> createElement() {
+    return _FindAllSeasonsOfSeriesProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -508,8 +740,21 @@ class FindAllSeasonsOfSeriesProvider
   }
 }
 
+mixin FindAllSeasonsOfSeriesRef on AutoDisposeStreamProviderRef<List<M3UItem>> {
+  /// The parameter `series` of this provider.
+  String get series;
+}
+
+class _FindAllSeasonsOfSeriesProviderElement
+    extends AutoDisposeStreamProviderElement<List<M3UItem>>
+    with FindAllSeasonsOfSeriesRef {
+  _FindAllSeasonsOfSeriesProviderElement(super.provider);
+
+  @override
+  String get series => (origin as FindAllSeasonsOfSeriesProvider).series;
+}
+
 String _$findAllChannelsHash() => r'bf243895a58df86515a51d6a5c73829028507404';
-typedef FindAllChannelsRef = AutoDisposeStreamProviderRef<List<M3UItem>>;
 
 /// See also [findAllChannels].
 @ProviderFor(findAllChannels)
@@ -557,10 +802,10 @@ class FindAllChannelsFamily extends Family<AsyncValue<List<M3UItem>>> {
 class FindAllChannelsProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
   /// See also [findAllChannels].
   FindAllChannelsProvider({
-    this.groupTitle,
-  }) : super.internal(
+    String? groupTitle,
+  }) : this._internal(
           (ref) => findAllChannels(
-            ref,
+            ref as FindAllChannelsRef,
             groupTitle: groupTitle,
           ),
           from: findAllChannelsProvider,
@@ -572,9 +817,43 @@ class FindAllChannelsProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
           dependencies: FindAllChannelsFamily._dependencies,
           allTransitiveDependencies:
               FindAllChannelsFamily._allTransitiveDependencies,
+          groupTitle: groupTitle,
         );
 
+  FindAllChannelsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.groupTitle,
+  }) : super.internal();
+
   final String? groupTitle;
+
+  @override
+  Override overrideWith(
+    Stream<List<M3UItem>> Function(FindAllChannelsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindAllChannelsProvider._internal(
+        (ref) => create(ref as FindAllChannelsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        groupTitle: groupTitle,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<List<M3UItem>> createElement() {
+    return _FindAllChannelsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -590,8 +869,22 @@ class FindAllChannelsProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
   }
 }
 
+mixin FindAllChannelsRef on AutoDisposeStreamProviderRef<List<M3UItem>> {
+  /// The parameter `groupTitle` of this provider.
+  String? get groupTitle;
+}
+
+class _FindAllChannelsProviderElement
+    extends AutoDisposeStreamProviderElement<List<M3UItem>>
+    with FindAllChannelsRef {
+  _FindAllChannelsProviderElement(super.provider);
+
+  @override
+  String? get groupTitle => (origin as FindAllChannelsProvider).groupTitle;
+}
+
 String _$findAllChannelGroupsHash() =>
-    r'b4008ae7526be2cf26c3d69c42741515d985cdae';
+    r'6bf4ac3bb6ab9483419a94297fe6fea66d3aa39c';
 
 /// See also [findAllChannelGroups].
 @ProviderFor(findAllChannelGroups)
@@ -608,7 +901,7 @@ final findAllChannelGroupsProvider =
 
 typedef FindAllChannelGroupsRef = AutoDisposeStreamProviderRef<List<M3UItem>>;
 String _$findAllMovieGroupsHash() =>
-    r'58e7d7e4e3119580014e27d46aa78510d7ff6f6c';
+    r'5b2766eeef09ad9f803100f0e28cdaf12ab330e6';
 
 /// See also [findAllMovieGroups].
 @ProviderFor(findAllMovieGroups)
@@ -624,4 +917,5 @@ final findAllMovieGroupsProvider =
 );
 
 typedef FindAllMovieGroupsRef = AutoDisposeStreamProviderRef<List<M3UItem>>;
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member

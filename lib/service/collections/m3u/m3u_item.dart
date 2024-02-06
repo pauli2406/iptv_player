@@ -24,6 +24,8 @@ class M3UItem {
 
   String? episode;
 
+  bool? watched;
+
   Attributes? attributes;
 
   @enumerated

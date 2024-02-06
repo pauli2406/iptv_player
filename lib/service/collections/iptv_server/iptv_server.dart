@@ -10,11 +10,21 @@ class IptvServer {
 
   String url;
 
+  String port;
+
+  String user;
+
+  String password;
+
   DateTime? lastSync;
 
   IptvServer(
     this.name,
-    this.url, {
+    this.url, 
+    this.port,
+    this.user,
+    this.password,  
+    {
     this.id = Isar.autoIncrement,
     this.lastSync,
   });

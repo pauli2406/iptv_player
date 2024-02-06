@@ -16,6 +16,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:platform_builder/platform_builder.dart';
 import 'package:window_manager/window_manager.dart';
 
+const _windowOptions = WindowOptions(
+  size: Size(1440, 900),
+  center: true,
+  backgroundColor: Colors.transparent,
+  skipTaskbar: false,
+  titleBarStyle: TitleBarStyle.hidden,
+);
+
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
@@ -24,13 +32,6 @@ Future<void> main(List<String> args) async {
 
   if (Platform.instance.isMacOS || Platform.instance.isWindows) {
     await windowManager.ensureInitialized();
-    WindowOptions windowOptions = const WindowOptions(
-      size: Size(1440, 900),
-      center: true,
-      backgroundColor: Colors.transparent,
-      skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.hidden,
-    );
 
     if (args.firstOrNull == 'multi_window') {
       final arguments = args[2].isEmpty
@@ -46,40 +47,32 @@ Future<void> main(List<String> args) async {
           ),
         );
       }
-      windowManager.waitUntilReadyToShow(windowOptions, () async {
+      windowManager.waitUntilReadyToShow(_windowOptions, () async {
         await windowManager.show();
         await windowManager.focus();
       });
     } else {
-      final dir = await getApplicationDocumentsDirectory();
-      final isar = await Isar.open(allSchemas, directory: dir.path);
-      await FastCachedImageConfig.init(
-        subDir: dir.path,
-        clearCacheAfter: const Duration(days: 15),
-      );
-      runApp(
-        ProviderScope(
-          child: App(
-            isar: isar,
-          ),
-        ),
-      );
+      await _initApp();
     }
   } else {
-    final dir = await getApplicationDocumentsDirectory();
-    final isar = await Isar.open(allSchemas, directory: dir.path);
-    await FastCachedImageConfig.init(
-      subDir: dir.path,
-      clearCacheAfter: const Duration(days: 15),
-    );
-    runApp(
-      ProviderScope(
-        child: App(
-          isar: isar,
-        ),
-      ),
-    );
+    await _initApp();
   }
+}
+
+Future<void> _initApp() async {
+  final dir = await getApplicationDocumentsDirectory();
+  final isar = await Isar.open(allSchemas, directory: dir.path);
+  await FastCachedImageConfig.init(
+    subDir: dir.path,
+    clearCacheAfter: const Duration(days: 15),
+  );
+  runApp(
+    ProviderScope(
+      child: App(
+        isar: isar,
+      ),
+    ),
+  );
 }
 
 class App extends ConsumerStatefulWidget {
@@ -105,32 +98,20 @@ class _AppState extends ConsumerState<App> {
   Widget build(BuildContext context) {
     final theme = ref.watch(appThemeProvider);
     return PlatformBuilder(
-      macOSBuilder: (context) => MacosApp.router(
-        routerConfig: router,
-        title: 'iptv_player',
-        theme: MacosThemeData.light(),
-        darkTheme: MacosThemeData.dark(),
-        themeMode: theme,
-        debugShowCheckedModeBanner: false,
-      ),
-      windowsBuilder: (context) => MacosApp.router(
-        routerConfig: router,
-        title: 'iptv_player',
-        theme: MacosThemeData.light(),
-        darkTheme: MacosThemeData.dark(),
-        themeMode: theme,
-        debugShowCheckedModeBanner: false,
-      ),
-      iOSBuilder: (context) => SafeArea(
-        child: MacosApp.router(
-          routerConfig: router,
-          title: 'iptv_player',
-          theme: MacosThemeData.light(),
-          darkTheme: MacosThemeData.dark(),
-          themeMode: theme,
-          debugShowCheckedModeBanner: false,
-        ),
-      ),
+      macOSBuilder: (context) => _buildApp(theme),
+      windowsBuilder: (context) => _buildApp(theme),
+      iOSBuilder: (context) => SafeArea(child: _buildApp(theme)),
+    );
+  }
+
+  MacosApp _buildApp(ThemeMode theme) {
+    return MacosApp.router(
+      routerConfig: router,
+      title: 'iptv_player',
+      theme: MacosThemeData.light(),
+      darkTheme: MacosThemeData.dark(),
+      themeMode: theme,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:iptv_player/iptv_list/form/port_input.dart';
 import 'package:iptv_player/iptv_list/macOS/macos_mange_iptv_server_widget.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
-import 'package:platform_builder/platform_builder.dart';
 
 import '../service/collections/iptv_server/iptv_server.dart';
 import 'form/manage_iptv_server_form_state.dart';
@@ -26,7 +25,10 @@ class ManageIptvServerItem extends ConsumerStatefulWidget {
 
 class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
   final _formKey = GlobalKey<FormState>();
-  late ManageIptvServerFormState _state;
+  
+  final ValueNotifier<ManageIptvServerFormState> _stateNotifier =
+      ValueNotifier(ManageIptvServerFormState());
+
   late final TextEditingController _nameController;
   late final TextEditingController _urlController;
   late final TextEditingController _portController;
@@ -35,14 +37,14 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
 
   void _onNameChanged() {
     setState(() {
-      _state =
-          _state.copyWith(name: TextInput.dirty(value: _nameController.text));
+      _stateNotifier.value = _stateNotifier.value
+          .copyWith(name: TextInput.dirty(value: _nameController.text));
     });
   }
 
   void _onUrlChanged() {
     setState(() {
-      _state = _state.copyWith(
+      _stateNotifier.value = _stateNotifier.value.copyWith(
         url: UrlInput.dirty(value: _urlController.text),
       );
     });
@@ -50,7 +52,7 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
 
   void _onPortChanged() {
     setState(() {
-      _state = _state.copyWith(
+      _stateNotifier.value = _stateNotifier.value.copyWith(
         port: PortInput.dirty(value: _portController.text),
       );
     });
@@ -58,7 +60,7 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
 
   void _onUserChanged() {
     setState(() {
-      _state = _state.copyWith(
+      _stateNotifier.value = _stateNotifier.value.copyWith(
         user: TextInput.dirty(value: _userController.text),
       );
     });
@@ -66,7 +68,7 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
 
   void _onPasswordChanged() {
     setState(() {
-      _state = _state.copyWith(
+      _stateNotifier.value = _stateNotifier.value.copyWith(
         password: TextInput.dirty(value: _passwordController.text),
       );
     });
@@ -75,41 +77,40 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
   Future<void> _onSubmit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _state = _state.copyWith(status: FormzSubmissionStatus.inProgress);
-    });
+    _stateNotifier.value =
+        _stateNotifier.value.copyWith(status: FormzSubmissionStatus.inProgress);
 
     try {
-      if (_state.id != null) {
+      if (_stateNotifier.value.id != null) {
         await ref.read(iptvServerServiceProvider).put(
               IptvServer(
-                _state.name.value,
-                _state.url.value,
-                _state.port.value,
-                _state.user.value,
-                _state.password.value,
-                id: _state.id!,
+                _stateNotifier.value.name.value,
+                _stateNotifier.value.url.value,
+                _stateNotifier.value.port.value,
+                _stateNotifier.value.user.value,
+                _stateNotifier.value.password.value,
+                id: _stateNotifier.value.id!,
               ),
             );
       } else {
         await ref.read(iptvServerServiceProvider).put(
               IptvServer(
-                _state.name.value,
-                _state.url.value,
-                _state.port.value,
-                _state.user.value,
-                _state.password.value,
+                _stateNotifier.value.name.value,
+                _stateNotifier.value.url.value,
+                _stateNotifier.value.port.value,
+                _stateNotifier.value.user.value,
+                _stateNotifier.value.password.value,
               ),
             );
       }
-      _state = _state.copyWith(status: FormzSubmissionStatus.success);
+      _stateNotifier.value =
+          _stateNotifier.value.copyWith(status: FormzSubmissionStatus.success);
     } catch (_) {
-      _state = _state.copyWith(status: FormzSubmissionStatus.failure);
+      _stateNotifier.value =
+          _stateNotifier.value.copyWith(status: FormzSubmissionStatus.failure);
     }
 
     if (!mounted) return;
-
-    setState(() {});
 
     FocusScope.of(context)
       ..nextFocus()
@@ -117,7 +118,7 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
 
     context.pop();
 
-    if (_state.status.isSuccess) _resetForm();
+    if (_stateNotifier.value.status.isSuccess) _resetForm();
   }
 
   void _resetForm() {
@@ -127,14 +128,14 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
     _portController.clear();
     _userController.clear();
     _passwordController.clear();
-    setState(() => _state = ManageIptvServerFormState());
+    setState(() => _stateNotifier.value = ManageIptvServerFormState());
   }
 
   @override
   void initState() {
     super.initState();
     final iptvServer = widget.iptvServer;
-    _state = ManageIptvServerFormState(
+    _stateNotifier.value = ManageIptvServerFormState(
       id: iptvServer?.id,
       name: TextInput.pure(value: iptvServer?.name),
       url: UrlInput.pure(value: iptvServer?.url),
@@ -142,51 +143,38 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
       user: TextInput.pure(value: iptvServer?.user),
       password: TextInput.pure(value: iptvServer?.password),
     );
-    _nameController = TextEditingController(text: _state.name.value)
-      ..addListener(_onNameChanged);
-    _urlController = TextEditingController(text: _state.url.value)
+    _nameController =
+        TextEditingController(text: _stateNotifier.value.name.value)
+          ..addListener(_onNameChanged);
+    _urlController = TextEditingController(text: _stateNotifier.value.url.value)
       ..addListener(_onUrlChanged);
-    _portController = TextEditingController(text: _state.port.value)
-      ..addListener(_onPortChanged);
-    _userController = TextEditingController(text: _state.user.value)
-      ..addListener(_onUserChanged);
-    _passwordController = TextEditingController(text: _state.password.value)
-      ..addListener(_onPasswordChanged);
+    _portController =
+        TextEditingController(text: _stateNotifier.value.port.value)
+          ..addListener(_onPortChanged);
+    _userController =
+        TextEditingController(text: _stateNotifier.value.user.value)
+          ..addListener(_onUserChanged);
+    _passwordController =
+        TextEditingController(text: _stateNotifier.value.password.value)
+          ..addListener(_onPasswordChanged);
   }
 
   @override
   Widget build(BuildContext context) {
-    return PlatformBuilder(
-      macOSBuilder: (context) => MacOSMangeIptvServerWidget(
-        formKey: _formKey,
-        formState: _state,
-        nameController: _nameController,
-        urlController: _urlController,
-        portController: _portController,
-        userController: _userController,
-        passwordController: _passwordController,
-        onSubmit: _onSubmit,
-      ),
-      windowsBuilder: (context) => MacOSMangeIptvServerWidget(
-        formKey: _formKey,
-        formState: _state,
-        nameController: _nameController,
-        urlController: _urlController,
-        portController: _portController,
-        userController: _userController,
-        passwordController: _passwordController,
-        onSubmit: _onSubmit,
-      ),
-      iOSBuilder: (context) => MacOSMangeIptvServerWidget(
-        formKey: _formKey,
-        formState: _state,
-        nameController: _nameController,
-        urlController: _urlController,
-        portController: _portController,
-        userController: _userController,
-        passwordController: _passwordController,
-        onSubmit: _onSubmit,
-      ),
+    return ValueListenableBuilder<ManageIptvServerFormState>(
+      valueListenable: _stateNotifier,
+      builder: (context, state, child) {
+        return MacOSMangeIptvServerWidget(
+          formKey: _formKey,
+          formState: state,
+          nameController: _nameController,
+          urlController: _urlController,
+          portController: _portController,
+          userController: _userController,
+          passwordController: _passwordController,
+          onSubmit: _onSubmit,
+        );
+      },
     );
   }
 

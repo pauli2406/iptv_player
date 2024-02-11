@@ -18,15 +18,15 @@ final router = GoRouter(
           path: 'main',
           builder: (context, state) => const HomeView(),
           routes: [
-            GoRoute(
-              path: 'series',
-              builder: (context, state) {
-                M3UItem item = state.extra as M3UItem;
-                return SeriesSeasonPage(
-                  series: item.series!,
-                );
-              },
-            ),
+            // GoRoute(
+            //   path: 'series',
+            //   builder: (context, state) {
+            //     M3UItem item = state.extra as M3UItem;
+            //     return SeriesSeasonPage(
+            //       series: item.series!,
+            //     );
+            //   },
+            // ),
             GoRoute(
               path: 'player',
               builder: (context, state) {
@@ -39,7 +39,8 @@ final router = GoRouter(
                     body: Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: VideoPlayer(
-                        videoUrl: (state.extra as String),
+                        videoUrl: ((state.extra as Map)['link'] as String),
+                        epgTitle: ((state.extra as Map)['epgTitle'] as String),
                       ),
                     ),
                   ),

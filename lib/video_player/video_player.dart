@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:window_manager/window_manager.dart';
 
-class VideoPlayer extends StatefulWidget {
+class VideoPlayer extends ConsumerStatefulWidget {
   const VideoPlayer({
     required this.videoUrl,
+    required this.epgTitle,
     super.key,
   });
 
   final String videoUrl;
+  final String epgTitle;
 
   @override
-  State<VideoPlayer> createState() => _VideoPlayerState();
+  ConsumerState<VideoPlayer> createState() => _VideoPlayerState();
 }
 
-class _VideoPlayerState extends State<VideoPlayer> with WindowListener {
+class _VideoPlayerState extends ConsumerState<VideoPlayer> with WindowListener {
   final Player player = Player(
     configuration: const PlayerConfiguration(
       logLevel: MPVLogLevel.warn,
+      title: 'IPTV Player',
     ),
   );
   late VideoController videoController;
@@ -28,20 +32,15 @@ class _VideoPlayerState extends State<VideoPlayer> with WindowListener {
     super.initState();
     windowManager.addListener(this);
     videoController = VideoController(player);
-    Future.microtask(() async {
-      await player.open(
-        Media(widget.videoUrl),
-      );
-      setState(() {});
-    });
+    player.open(
+      Media(widget.videoUrl),
+    );
   }
 
   @override
   void dispose() {
-    Future.microtask(() async {
-      debugPrint('Disposing [Player] and [VideoController]...');
-      await player.dispose();
-    });
+    debugPrint('Disposing [Player] and [VideoController]...');
+    player.dispose();
     super.dispose();
   }
 
@@ -63,7 +62,17 @@ class _VideoPlayerState extends State<VideoPlayer> with WindowListener {
       },
       child: MaterialApp(
         home: Scaffold(
-          body: Video(controller: videoController),
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            centerTitle: true,
+            title: Text(
+              widget.epgTitle,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+          body: Video(
+            controller: videoController,
+          ),
         ),
         debugShowCheckedModeBanner: false,
       ),

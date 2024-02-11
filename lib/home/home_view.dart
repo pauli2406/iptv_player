@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:iptv_player/home/views/channels/channels_page.dart';
 import 'package:iptv_player/home/views/movies/movie_page.dart';
-import 'package:iptv_player/home/views/series/series_page.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:macos_ui/macos_ui.dart';
 
@@ -118,10 +117,10 @@ class _HomeViewState extends ConsumerState<HomeView> {
                         leading: MacosIcon(CupertinoIcons.film),
                         label: Text('Movies'),
                       ),
-                      SidebarItem(
-                        leading: MacosIcon(CupertinoIcons.film_fill),
-                        label: Text('Series'),
-                      ),
+                      // SidebarItem(
+                      //   leading: MacosIcon(CupertinoIcons.film_fill),
+                      //   label: Text('Series'),
+                      // ),
                     ],
                   );
                 },
@@ -131,7 +130,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 children: const [
                   ChannelsPage(),
                   MoviesPage(),
-                  SeriesPage(),
+                  // SeriesPage(),
                   Center(
                     child: Text('Home'),
                   ),

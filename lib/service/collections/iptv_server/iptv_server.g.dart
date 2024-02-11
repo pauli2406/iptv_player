@@ -17,33 +17,38 @@ const IptvServerSchema = CollectionSchema(
   name: r'IptvServer',
   id: -4870833823308418905,
   properties: {
-    r'lastSync': PropertySchema(
+    r'allowedOutputFormats': PropertySchema(
       id: 0,
+      name: r'allowedOutputFormats',
+      type: IsarType.stringList,
+    ),
+    r'lastSync': PropertySchema(
+      id: 1,
       name: r'lastSync',
       type: IsarType.dateTime,
     ),
     r'name': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'name',
       type: IsarType.string,
     ),
     r'password': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'password',
       type: IsarType.string,
     ),
     r'port': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'port',
       type: IsarType.string,
     ),
     r'url': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'url',
       type: IsarType.string,
     ),
     r'user': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'user',
       type: IsarType.string,
     )
@@ -68,6 +73,13 @@ int _iptvServerEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.allowedOutputFormats.length * 3;
+  {
+    for (var i = 0; i < object.allowedOutputFormats.length; i++) {
+      final value = object.allowedOutputFormats[i];
+      bytesCount += value.length * 3;
+    }
+  }
   bytesCount += 3 + object.name.length * 3;
   bytesCount += 3 + object.password.length * 3;
   bytesCount += 3 + object.port.length * 3;
@@ -82,12 +94,13 @@ void _iptvServerSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDateTime(offsets[0], object.lastSync);
-  writer.writeString(offsets[1], object.name);
-  writer.writeString(offsets[2], object.password);
-  writer.writeString(offsets[3], object.port);
-  writer.writeString(offsets[4], object.url);
-  writer.writeString(offsets[5], object.user);
+  writer.writeStringList(offsets[0], object.allowedOutputFormats);
+  writer.writeDateTime(offsets[1], object.lastSync);
+  writer.writeString(offsets[2], object.name);
+  writer.writeString(offsets[3], object.password);
+  writer.writeString(offsets[4], object.port);
+  writer.writeString(offsets[5], object.url);
+  writer.writeString(offsets[6], object.user);
 }
 
 IptvServer _iptvServerDeserialize(
@@ -97,14 +110,15 @@ IptvServer _iptvServerDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = IptvServer(
-    reader.readString(offsets[1]),
-    reader.readString(offsets[4]),
-    reader.readString(offsets[3]),
-    reader.readString(offsets[5]),
     reader.readString(offsets[2]),
+    reader.readString(offsets[5]),
+    reader.readString(offsets[4]),
+    reader.readString(offsets[6]),
+    reader.readString(offsets[3]),
     id: id,
-    lastSync: reader.readDateTimeOrNull(offsets[0]),
+    lastSync: reader.readDateTimeOrNull(offsets[1]),
   );
+  object.allowedOutputFormats = reader.readStringList(offsets[0]) ?? [];
   return object;
 }
 
@@ -116,9 +130,9 @@ P _iptvServerDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
@@ -126,6 +140,8 @@ P _iptvServerDeserializeProp<P>(
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -223,6 +239,233 @@ extension IptvServerQueryWhere
 
 extension IptvServerQueryFilter
     on QueryBuilder<IptvServer, IptvServer, QFilterCondition> {
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsElementEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'allowedOutputFormats',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsElementGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'allowedOutputFormats',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsElementLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'allowedOutputFormats',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsElementBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'allowedOutputFormats',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsElementStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'allowedOutputFormats',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsElementEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'allowedOutputFormats',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsElementContains(String value,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'allowedOutputFormats',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsElementMatches(String pattern,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'allowedOutputFormats',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsElementIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'allowedOutputFormats',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsElementIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'allowedOutputFormats',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'allowedOutputFormats',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'allowedOutputFormats',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'allowedOutputFormats',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'allowedOutputFormats',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'allowedOutputFormats',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition>
+      allowedOutputFormatsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'allowedOutputFormats',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
   QueryBuilder<IptvServer, IptvServer, QAfterFilterCondition> idEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
@@ -1172,6 +1415,13 @@ extension IptvServerQuerySortThenBy
 
 extension IptvServerQueryWhereDistinct
     on QueryBuilder<IptvServer, IptvServer, QDistinct> {
+  QueryBuilder<IptvServer, IptvServer, QDistinct>
+      distinctByAllowedOutputFormats() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'allowedOutputFormats');
+    });
+  }
+
   QueryBuilder<IptvServer, IptvServer, QDistinct> distinctByLastSync() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'lastSync');
@@ -1219,6 +1469,13 @@ extension IptvServerQueryProperty
   QueryBuilder<IptvServer, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<IptvServer, List<String>, QQueryOperations>
+      allowedOutputFormatsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'allowedOutputFormats');
     });
   }
 

@@ -36,7 +36,7 @@ final m3uParseServiceProvider = Provider<M3uParseService>.internal(
 
 typedef M3uParseServiceRef = ProviderRef<M3uParseService>;
 String _$clearDownloadAndPersistActivePlaylistItemsHash() =>
-    r'c8d2b7400af53386464cece9dc355a685a2aed30';
+    r'377f3b5f7f40e30875659f2f247dc83adf344f86';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -196,23 +196,23 @@ class _ClearDownloadAndPersistActivePlaylistItemsProviderElement
       (origin as ClearDownloadAndPersistActivePlaylistItemsProvider).forced;
 }
 
-String _$findAllMoviesHash() => r'243348ac96e929ef66b94e5e7eedbfece1fe1104';
+String _$findAllMoviesHash() => r'b46ce6babe319f6437a65ec2ebca6f5956386a49';
 
 /// See also [findAllMovies].
 @ProviderFor(findAllMovies)
 const findAllMoviesProvider = FindAllMoviesFamily();
 
 /// See also [findAllMovies].
-class FindAllMoviesFamily extends Family<AsyncValue<List<M3UItem>>> {
+class FindAllMoviesFamily extends Family<AsyncValue<List<VodItem>>> {
   /// See also [findAllMovies].
   const FindAllMoviesFamily();
 
   /// See also [findAllMovies].
   FindAllMoviesProvider call({
-    String? groupTitle,
+    ItemCategory? category,
   }) {
     return FindAllMoviesProvider(
-      groupTitle: groupTitle,
+      category: category,
     );
   }
 
@@ -221,7 +221,7 @@ class FindAllMoviesFamily extends Family<AsyncValue<List<M3UItem>>> {
     covariant FindAllMoviesProvider provider,
   ) {
     return call(
-      groupTitle: provider.groupTitle,
+      category: provider.category,
     );
   }
 
@@ -241,14 +241,14 @@ class FindAllMoviesFamily extends Family<AsyncValue<List<M3UItem>>> {
 }
 
 /// See also [findAllMovies].
-class FindAllMoviesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
+class FindAllMoviesProvider extends AutoDisposeStreamProvider<List<VodItem>> {
   /// See also [findAllMovies].
   FindAllMoviesProvider({
-    String? groupTitle,
+    ItemCategory? category,
   }) : this._internal(
           (ref) => findAllMovies(
             ref as FindAllMoviesRef,
-            groupTitle: groupTitle,
+            category: category,
           ),
           from: findAllMoviesProvider,
           name: r'findAllMoviesProvider',
@@ -259,7 +259,7 @@ class FindAllMoviesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
           dependencies: FindAllMoviesFamily._dependencies,
           allTransitiveDependencies:
               FindAllMoviesFamily._allTransitiveDependencies,
-          groupTitle: groupTitle,
+          category: category,
         );
 
   FindAllMoviesProvider._internal(
@@ -269,14 +269,14 @@ class FindAllMoviesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.groupTitle,
+    required this.category,
   }) : super.internal();
 
-  final String? groupTitle;
+  final ItemCategory? category;
 
   @override
   Override overrideWith(
-    Stream<List<M3UItem>> Function(FindAllMoviesRef provider) create,
+    Stream<List<VodItem>> Function(FindAllMoviesRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -287,61 +287,61 @@ class FindAllMoviesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        groupTitle: groupTitle,
+        category: category,
       ),
     );
   }
 
   @override
-  AutoDisposeStreamProviderElement<List<M3UItem>> createElement() {
+  AutoDisposeStreamProviderElement<List<VodItem>> createElement() {
     return _FindAllMoviesProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is FindAllMoviesProvider && other.groupTitle == groupTitle;
+    return other is FindAllMoviesProvider && other.category == category;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, groupTitle.hashCode);
+    hash = _SystemHash.combine(hash, category.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
-mixin FindAllMoviesRef on AutoDisposeStreamProviderRef<List<M3UItem>> {
-  /// The parameter `groupTitle` of this provider.
-  String? get groupTitle;
+mixin FindAllMoviesRef on AutoDisposeStreamProviderRef<List<VodItem>> {
+  /// The parameter `category` of this provider.
+  ItemCategory? get category;
 }
 
 class _FindAllMoviesProviderElement
-    extends AutoDisposeStreamProviderElement<List<M3UItem>>
+    extends AutoDisposeStreamProviderElement<List<VodItem>>
     with FindAllMoviesRef {
   _FindAllMoviesProviderElement(super.provider);
 
   @override
-  String? get groupTitle => (origin as FindAllMoviesProvider).groupTitle;
+  ItemCategory? get category => (origin as FindAllMoviesProvider).category;
 }
 
-String _$findAllSeriesHash() => r'ce0acce002f9be69a2971fba8fdaff65e7a765cf';
+String _$findAllSeriesHash() => r'e0ff29ea7e54e0cbe2e5eeb755e434b7e8dfb952';
 
 /// See also [findAllSeries].
 @ProviderFor(findAllSeries)
 const findAllSeriesProvider = FindAllSeriesFamily();
 
 /// See also [findAllSeries].
-class FindAllSeriesFamily extends Family<AsyncValue<List<M3UItem>>> {
+class FindAllSeriesFamily extends Family<AsyncValue<List<SeriesItem>>> {
   /// See also [findAllSeries].
   const FindAllSeriesFamily();
 
   /// See also [findAllSeries].
   FindAllSeriesProvider call({
-    String? groupTitle,
+    ItemCategory? category,
   }) {
     return FindAllSeriesProvider(
-      groupTitle: groupTitle,
+      category: category,
     );
   }
 
@@ -350,7 +350,7 @@ class FindAllSeriesFamily extends Family<AsyncValue<List<M3UItem>>> {
     covariant FindAllSeriesProvider provider,
   ) {
     return call(
-      groupTitle: provider.groupTitle,
+      category: provider.category,
     );
   }
 
@@ -370,14 +370,15 @@ class FindAllSeriesFamily extends Family<AsyncValue<List<M3UItem>>> {
 }
 
 /// See also [findAllSeries].
-class FindAllSeriesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
+class FindAllSeriesProvider
+    extends AutoDisposeStreamProvider<List<SeriesItem>> {
   /// See also [findAllSeries].
   FindAllSeriesProvider({
-    String? groupTitle,
+    ItemCategory? category,
   }) : this._internal(
           (ref) => findAllSeries(
             ref as FindAllSeriesRef,
-            groupTitle: groupTitle,
+            category: category,
           ),
           from: findAllSeriesProvider,
           name: r'findAllSeriesProvider',
@@ -388,7 +389,7 @@ class FindAllSeriesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
           dependencies: FindAllSeriesFamily._dependencies,
           allTransitiveDependencies:
               FindAllSeriesFamily._allTransitiveDependencies,
-          groupTitle: groupTitle,
+          category: category,
         );
 
   FindAllSeriesProvider._internal(
@@ -398,14 +399,14 @@ class FindAllSeriesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.groupTitle,
+    required this.category,
   }) : super.internal();
 
-  final String? groupTitle;
+  final ItemCategory? category;
 
   @override
   Override overrideWith(
-    Stream<List<M3UItem>> Function(FindAllSeriesRef provider) create,
+    Stream<List<SeriesItem>> Function(FindAllSeriesRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -416,93 +417,70 @@ class FindAllSeriesProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        groupTitle: groupTitle,
+        category: category,
       ),
     );
   }
 
   @override
-  AutoDisposeStreamProviderElement<List<M3UItem>> createElement() {
+  AutoDisposeStreamProviderElement<List<SeriesItem>> createElement() {
     return _FindAllSeriesProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is FindAllSeriesProvider && other.groupTitle == groupTitle;
+    return other is FindAllSeriesProvider && other.category == category;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, groupTitle.hashCode);
+    hash = _SystemHash.combine(hash, category.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
-mixin FindAllSeriesRef on AutoDisposeStreamProviderRef<List<M3UItem>> {
-  /// The parameter `groupTitle` of this provider.
-  String? get groupTitle;
+mixin FindAllSeriesRef on AutoDisposeStreamProviderRef<List<SeriesItem>> {
+  /// The parameter `category` of this provider.
+  ItemCategory? get category;
 }
 
 class _FindAllSeriesProviderElement
-    extends AutoDisposeStreamProviderElement<List<M3UItem>>
+    extends AutoDisposeStreamProviderElement<List<SeriesItem>>
     with FindAllSeriesRef {
   _FindAllSeriesProviderElement(super.provider);
 
   @override
-  String? get groupTitle => (origin as FindAllSeriesProvider).groupTitle;
+  ItemCategory? get category => (origin as FindAllSeriesProvider).category;
 }
 
-String _$findAllSeriesGroupsHash() =>
-    r'c281a7ae81fed3ea8f18ba768351d535f3fb801a';
+String _$findAllChannelsHash() => r'd3083680bf99c158114d0951d405598e71673894';
 
-/// See also [findAllSeriesGroups].
-@ProviderFor(findAllSeriesGroups)
-final findAllSeriesGroupsProvider =
-    AutoDisposeStreamProvider<List<M3UItem>>.internal(
-  findAllSeriesGroups,
-  name: r'findAllSeriesGroupsProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$findAllSeriesGroupsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+/// See also [findAllChannels].
+@ProviderFor(findAllChannels)
+const findAllChannelsProvider = FindAllChannelsFamily();
 
-typedef FindAllSeriesGroupsRef = AutoDisposeStreamProviderRef<List<M3UItem>>;
-String _$findAllItemsOfSeriesAndSeasonHash() =>
-    r'c1c976dac2cf0f8163e0befc0f84111760005816';
+/// See also [findAllChannels].
+class FindAllChannelsFamily extends Family<AsyncValue<List<ChannelViewModel>>> {
+  /// See also [findAllChannels].
+  const FindAllChannelsFamily();
 
-/// See also [findAllItemsOfSeriesAndSeason].
-@ProviderFor(findAllItemsOfSeriesAndSeason)
-const findAllItemsOfSeriesAndSeasonProvider =
-    FindAllItemsOfSeriesAndSeasonFamily();
-
-/// See also [findAllItemsOfSeriesAndSeason].
-class FindAllItemsOfSeriesAndSeasonFamily
-    extends Family<AsyncValue<List<M3UItem>>> {
-  /// See also [findAllItemsOfSeriesAndSeason].
-  const FindAllItemsOfSeriesAndSeasonFamily();
-
-  /// See also [findAllItemsOfSeriesAndSeason].
-  FindAllItemsOfSeriesAndSeasonProvider call({
-    required String series,
-    required String season,
+  /// See also [findAllChannels].
+  FindAllChannelsProvider call({
+    ItemCategory? category,
   }) {
-    return FindAllItemsOfSeriesAndSeasonProvider(
-      series: series,
-      season: season,
+    return FindAllChannelsProvider(
+      category: category,
     );
   }
 
   @override
-  FindAllItemsOfSeriesAndSeasonProvider getProviderOverride(
-    covariant FindAllItemsOfSeriesAndSeasonProvider provider,
+  FindAllChannelsProvider getProviderOverride(
+    covariant FindAllChannelsProvider provider,
   ) {
     return call(
-      series: provider.series,
-      season: provider.season,
+      category: provider.category,
     );
   }
 
@@ -518,111 +496,114 @@ class FindAllItemsOfSeriesAndSeasonFamily
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'findAllItemsOfSeriesAndSeasonProvider';
+  String? get name => r'findAllChannelsProvider';
 }
 
-/// See also [findAllItemsOfSeriesAndSeason].
-class FindAllItemsOfSeriesAndSeasonProvider
-    extends AutoDisposeStreamProvider<List<M3UItem>> {
-  /// See also [findAllItemsOfSeriesAndSeason].
-  FindAllItemsOfSeriesAndSeasonProvider({
-    required String series,
-    required String season,
+/// See also [findAllChannels].
+class FindAllChannelsProvider
+    extends AutoDisposeStreamProvider<List<ChannelViewModel>> {
+  /// See also [findAllChannels].
+  FindAllChannelsProvider({
+    ItemCategory? category,
   }) : this._internal(
-          (ref) => findAllItemsOfSeriesAndSeason(
-            ref as FindAllItemsOfSeriesAndSeasonRef,
-            series: series,
-            season: season,
+          (ref) => findAllChannels(
+            ref as FindAllChannelsRef,
+            category: category,
           ),
-          from: findAllItemsOfSeriesAndSeasonProvider,
-          name: r'findAllItemsOfSeriesAndSeasonProvider',
+          from: findAllChannelsProvider,
+          name: r'findAllChannelsProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$findAllItemsOfSeriesAndSeasonHash,
-          dependencies: FindAllItemsOfSeriesAndSeasonFamily._dependencies,
+                  : _$findAllChannelsHash,
+          dependencies: FindAllChannelsFamily._dependencies,
           allTransitiveDependencies:
-              FindAllItemsOfSeriesAndSeasonFamily._allTransitiveDependencies,
-          series: series,
-          season: season,
+              FindAllChannelsFamily._allTransitiveDependencies,
+          category: category,
         );
 
-  FindAllItemsOfSeriesAndSeasonProvider._internal(
+  FindAllChannelsProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.series,
-    required this.season,
+    required this.category,
   }) : super.internal();
 
-  final String series;
-  final String season;
+  final ItemCategory? category;
 
   @override
   Override overrideWith(
-    Stream<List<M3UItem>> Function(FindAllItemsOfSeriesAndSeasonRef provider)
-        create,
+    Stream<List<ChannelViewModel>> Function(FindAllChannelsRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: FindAllItemsOfSeriesAndSeasonProvider._internal(
-        (ref) => create(ref as FindAllItemsOfSeriesAndSeasonRef),
+      override: FindAllChannelsProvider._internal(
+        (ref) => create(ref as FindAllChannelsRef),
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        series: series,
-        season: season,
+        category: category,
       ),
     );
   }
 
   @override
-  AutoDisposeStreamProviderElement<List<M3UItem>> createElement() {
-    return _FindAllItemsOfSeriesAndSeasonProviderElement(this);
+  AutoDisposeStreamProviderElement<List<ChannelViewModel>> createElement() {
+    return _FindAllChannelsProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is FindAllItemsOfSeriesAndSeasonProvider &&
-        other.series == series &&
-        other.season == season;
+    return other is FindAllChannelsProvider && other.category == category;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, series.hashCode);
-    hash = _SystemHash.combine(hash, season.hashCode);
+    hash = _SystemHash.combine(hash, category.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
-mixin FindAllItemsOfSeriesAndSeasonRef
-    on AutoDisposeStreamProviderRef<List<M3UItem>> {
-  /// The parameter `series` of this provider.
-  String get series;
-
-  /// The parameter `season` of this provider.
-  String get season;
+mixin FindAllChannelsRef
+    on AutoDisposeStreamProviderRef<List<ChannelViewModel>> {
+  /// The parameter `category` of this provider.
+  ItemCategory? get category;
 }
 
-class _FindAllItemsOfSeriesAndSeasonProviderElement
-    extends AutoDisposeStreamProviderElement<List<M3UItem>>
-    with FindAllItemsOfSeriesAndSeasonRef {
-  _FindAllItemsOfSeriesAndSeasonProviderElement(super.provider);
+class _FindAllChannelsProviderElement
+    extends AutoDisposeStreamProviderElement<List<ChannelViewModel>>
+    with FindAllChannelsRef {
+  _FindAllChannelsProviderElement(super.provider);
 
   @override
-  String get series => (origin as FindAllItemsOfSeriesAndSeasonProvider).series;
-  @override
-  String get season => (origin as FindAllItemsOfSeriesAndSeasonProvider).season;
+  ItemCategory? get category => (origin as FindAllChannelsProvider).category;
 }
 
+String _$findAllSeriesGroupsHash() =>
+    r'b6d76d9ab28a1823a5cd38802cd355617a52c40a';
+
+/// See also [findAllSeriesGroups].
+@ProviderFor(findAllSeriesGroups)
+final findAllSeriesGroupsProvider =
+    AutoDisposeStreamProvider<List<ItemCategory>>.internal(
+  findAllSeriesGroups,
+  name: r'findAllSeriesGroupsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$findAllSeriesGroupsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef FindAllSeriesGroupsRef
+    = AutoDisposeStreamProviderRef<List<ItemCategory>>;
 String _$findAllSeasonsOfSeriesHash() =>
     r'721224f4b3910e7bfec7f1e452ae4b8b6a31cc03';
 
@@ -754,142 +735,13 @@ class _FindAllSeasonsOfSeriesProviderElement
   String get series => (origin as FindAllSeasonsOfSeriesProvider).series;
 }
 
-String _$findAllChannelsHash() => r'bf243895a58df86515a51d6a5c73829028507404';
-
-/// See also [findAllChannels].
-@ProviderFor(findAllChannels)
-const findAllChannelsProvider = FindAllChannelsFamily();
-
-/// See also [findAllChannels].
-class FindAllChannelsFamily extends Family<AsyncValue<List<M3UItem>>> {
-  /// See also [findAllChannels].
-  const FindAllChannelsFamily();
-
-  /// See also [findAllChannels].
-  FindAllChannelsProvider call({
-    String? groupTitle,
-  }) {
-    return FindAllChannelsProvider(
-      groupTitle: groupTitle,
-    );
-  }
-
-  @override
-  FindAllChannelsProvider getProviderOverride(
-    covariant FindAllChannelsProvider provider,
-  ) {
-    return call(
-      groupTitle: provider.groupTitle,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'findAllChannelsProvider';
-}
-
-/// See also [findAllChannels].
-class FindAllChannelsProvider extends AutoDisposeStreamProvider<List<M3UItem>> {
-  /// See also [findAllChannels].
-  FindAllChannelsProvider({
-    String? groupTitle,
-  }) : this._internal(
-          (ref) => findAllChannels(
-            ref as FindAllChannelsRef,
-            groupTitle: groupTitle,
-          ),
-          from: findAllChannelsProvider,
-          name: r'findAllChannelsProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$findAllChannelsHash,
-          dependencies: FindAllChannelsFamily._dependencies,
-          allTransitiveDependencies:
-              FindAllChannelsFamily._allTransitiveDependencies,
-          groupTitle: groupTitle,
-        );
-
-  FindAllChannelsProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.groupTitle,
-  }) : super.internal();
-
-  final String? groupTitle;
-
-  @override
-  Override overrideWith(
-    Stream<List<M3UItem>> Function(FindAllChannelsRef provider) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: FindAllChannelsProvider._internal(
-        (ref) => create(ref as FindAllChannelsRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        groupTitle: groupTitle,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeStreamProviderElement<List<M3UItem>> createElement() {
-    return _FindAllChannelsProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is FindAllChannelsProvider && other.groupTitle == groupTitle;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, groupTitle.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-mixin FindAllChannelsRef on AutoDisposeStreamProviderRef<List<M3UItem>> {
-  /// The parameter `groupTitle` of this provider.
-  String? get groupTitle;
-}
-
-class _FindAllChannelsProviderElement
-    extends AutoDisposeStreamProviderElement<List<M3UItem>>
-    with FindAllChannelsRef {
-  _FindAllChannelsProviderElement(super.provider);
-
-  @override
-  String? get groupTitle => (origin as FindAllChannelsProvider).groupTitle;
-}
-
 String _$findAllChannelGroupsHash() =>
-    r'6bf4ac3bb6ab9483419a94297fe6fea66d3aa39c';
+    r'c6e8fe1df9fe7e5e2896a37bbe95343761bf9abc';
 
 /// See also [findAllChannelGroups].
 @ProviderFor(findAllChannelGroups)
 final findAllChannelGroupsProvider =
-    AutoDisposeStreamProvider<List<M3UItem>>.internal(
+    AutoDisposeStreamProvider<List<ItemCategory>>.internal(
   findAllChannelGroups,
   name: r'findAllChannelGroupsProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -899,14 +751,15 @@ final findAllChannelGroupsProvider =
   allTransitiveDependencies: null,
 );
 
-typedef FindAllChannelGroupsRef = AutoDisposeStreamProviderRef<List<M3UItem>>;
+typedef FindAllChannelGroupsRef
+    = AutoDisposeStreamProviderRef<List<ItemCategory>>;
 String _$findAllMovieGroupsHash() =>
-    r'5b2766eeef09ad9f803100f0e28cdaf12ab330e6';
+    r'444d280b2d0be7618f77f90a442b03712063e5b5';
 
 /// See also [findAllMovieGroups].
 @ProviderFor(findAllMovieGroups)
 final findAllMovieGroupsProvider =
-    AutoDisposeStreamProvider<List<M3UItem>>.internal(
+    AutoDisposeStreamProvider<List<ItemCategory>>.internal(
   findAllMovieGroups,
   name: r'findAllMovieGroupsProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -916,6 +769,7 @@ final findAllMovieGroupsProvider =
   allTransitiveDependencies: null,
 );
 
-typedef FindAllMovieGroupsRef = AutoDisposeStreamProviderRef<List<M3UItem>>;
+typedef FindAllMovieGroupsRef
+    = AutoDisposeStreamProviderRef<List<ItemCategory>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

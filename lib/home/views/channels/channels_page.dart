@@ -5,6 +5,7 @@ import 'package:iptv_player/home/provider/search_value_provider.dart';
 import 'package:iptv_player/home/widgets/movie_list_item.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
+import 'package:iptv_player/service/collections/item_category.dart';
 import 'package:macos_ui/macos_ui.dart';
 
 import '../../../theme.dart';
@@ -19,7 +20,7 @@ class ChannelsPage extends ConsumerStatefulWidget {
 class _ChannelsPageState extends ConsumerState<ChannelsPage> {
   late TextEditingController searchController;
   int _pageIndex = 0;
-  String? _category;
+  ItemCategory? _category;
 
   int calculateCrossAxisCount(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -48,7 +49,7 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
   @override
   Widget build(BuildContext context) {
     final channelProvider = ref.watch(
-      findAllChannelsProvider(groupTitle: _category),
+      findAllChannelsProvider(category: _category),
     );
     final currentTheme = ref.watch(appThemeProvider);
     return MacosScaffold(
@@ -103,7 +104,7 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
                             onChanged: (index) {
                               setState(() {
                                 if (index - 1 >= 0) {
-                                  _category = data[index - 1].groupTitle;
+                                  _category = data[index - 1];
                                 } else {
                                   _category = null;
                                 }
@@ -117,7 +118,7 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
                               for (var item in data)
                                 SidebarItem(
                                   label: Flexible(
-                                    child: Text("${item.groupTitle}"),
+                                    child: Text("${item.categoryName}"),
                                   ),
                                 )
                             ],
@@ -147,8 +148,8 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
                     ),
                     Expanded(
                       child: channelProvider.when(
-                        data: (movies) {
-                          if (movies.isNotEmpty) {
+                        data: (channels) {
+                          if (channels.isNotEmpty) {
                             var size = MediaQuery.of(context).size;
                             final double itemHeight = (size.height) / 1.25;
                             final double itemWidth = size.width / 2;
@@ -163,10 +164,14 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
                                 childAspectRatio: (itemWidth / itemHeight),
                               ),
                               itemBuilder: (_, index) => M3uListItem(
-                                movies[index],
+                                link: channels[index].link,
+                                title: channels[index].title,
+                                logoUrl: channels[index].logoUrl,
+                                isLive: channels[index].isLive,
+                                currentEpgItem: channels[index].currentEpgItem,
                                 height: itemHeight,
                               ),
-                              itemCount: movies.length,
+                              itemCount: channels.length,
                               padding: const EdgeInsets.all(10),
                             );
                           } else {

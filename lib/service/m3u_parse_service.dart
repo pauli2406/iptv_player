@@ -1,7 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:iptv_player/service/collections/iptv_server/iptv_server.dart';
 import 'package:m3u_parser_nullsafe/m3u_parser_nullsafe.dart';
-import 'package:xtream_code_client/xtream_code_client.dart';
 
 import '../provider/isar/isar_provider.dart';
 import 'collections/m3u/m3u_item.dart';
@@ -12,8 +11,6 @@ class M3uParseService {
   final IsarService isarService;
 
   Future<IptvServer> downloadAndPersist(IptvServer iptvServer) async {
-    // XtreamCode.initialize(url: iptvServer.url, port: port, username: username, password: password)
-    // final server = XtreamCode.instance.client;
     final playlist = await download(iptvServer.url);
     persist(playlist, iptvServer);
     return iptvServer;

@@ -5,6 +5,7 @@ import 'package:iptv_player/home/provider/search_value_provider.dart';
 import 'package:iptv_player/home/widgets/movie_list_item.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
+import 'package:iptv_player/service/collections/item_category.dart';
 import 'package:macos_ui/macos_ui.dart';
 
 import '../../../theme.dart';
@@ -19,7 +20,7 @@ class MoviesPage extends ConsumerStatefulWidget {
 class _MoviesPageState extends ConsumerState<MoviesPage> {
   late TextEditingController searchController;
   int _pageIndex = 0;
-  String? _category;
+  ItemCategory? _category;
 
   int calculateCrossAxisCount(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -47,8 +48,7 @@ class _MoviesPageState extends ConsumerState<MoviesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final movieProvider =
-        ref.watch(findAllMoviesProvider(groupTitle: _category));
+    final movieProvider = ref.watch(findAllMoviesProvider(category: _category));
     final currentTheme = ref.watch(appThemeProvider);
 
     return MacosScaffold(
@@ -103,7 +103,7 @@ class _MoviesPageState extends ConsumerState<MoviesPage> {
                             onChanged: (index) {
                               setState(() {
                                 if (index - 1 >= 0) {
-                                  _category = data[index - 1].groupTitle;
+                                  _category = data[index - 1];
                                 } else {
                                   _category = null;
                                 }
@@ -120,7 +120,7 @@ class _MoviesPageState extends ConsumerState<MoviesPage> {
                                 SidebarItem(
                                   label: Flexible(
                                     child: Text(
-                                      "${item.groupTitle}",
+                                      "${item.categoryName}",
                                     ),
                                   ),
                                 )
@@ -168,7 +168,10 @@ class _MoviesPageState extends ConsumerState<MoviesPage> {
                                 childAspectRatio: (itemWidth / itemHeight),
                               ),
                               itemBuilder: (_, index) => M3uListItem(
-                                movies[index],
+                                link: movies[index].streamUrl,
+                                title: movies[index].name ?? "",
+                                logoUrl: movies[index].streamIcon ?? "",
+                                isLive: movies[index].streamType == "live",
                                 height: itemHeight,
                               ),
                               itemCount: movies.length,

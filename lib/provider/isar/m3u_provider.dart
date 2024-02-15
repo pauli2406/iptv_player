@@ -79,7 +79,11 @@ Stream<List<ChannelViewModel>> findAllChannels(FindAllChannelsRef ref,
       .findAllChannels(searchValue, category)
       .asyncMap((event) async {
     return event.map((e) {
-      var latestEpgItem = m3uService.findCurrentEpgItem(e);
+      var now = DateTime.now();
+      var latestEpgItem = e.epgItems
+          .where((element) =>
+              element.start!.isBefore(now) && element.end!.isAfter(now))
+          .firstOrNull;
       return ChannelViewModel(
         e.streamUrl,
         e.name ?? "",

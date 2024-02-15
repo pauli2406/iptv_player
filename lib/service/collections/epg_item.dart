@@ -6,7 +6,7 @@ part 'epg_item.g.dart';
 
 @Collection()
 class EpgItem {
-  final Id id;
+  Id? id;
 
   @Index(type: IndexType.hash)
   final String epgId;
@@ -44,8 +44,7 @@ class EpgItem {
   );
 
   EpgItem.fromXtreamCodeEpgItem(XTremeCodeEpgListing epgTableItem)
-      : id = int.parse(epgTableItem.id!),
-        epgId = epgTableItem.epgId!,
+      : epgId = epgTableItem.epgId!,
         title = epgTableItem.title,
         lang = epgTableItem.lang,
         start = epgTableItem.start,

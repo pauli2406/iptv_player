@@ -209,7 +209,7 @@ P _epgItemDeserializeProp<P>(
 }
 
 Id _epgItemGetId(EpgItem object) {
-  return object.id;
+  return object.id ?? Isar.autoIncrement;
 }
 
 List<IsarLinkBase<dynamic>> _epgItemGetLinks(EpgItem object) {
@@ -217,6 +217,7 @@ List<IsarLinkBase<dynamic>> _epgItemGetLinks(EpgItem object) {
 }
 
 void _epgItemAttach(IsarCollection<dynamic> col, Id id, EpgItem object) {
+  object.id = id;
   object.iptvServer
       .attach(col, col.isar.collection<IptvServer>(), r'iptvServer', id);
 }
@@ -863,7 +864,23 @@ extension EpgItemQueryFilter
     });
   }
 
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idEqualTo(Id value) {
+  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -873,7 +890,7 @@ extension EpgItemQueryFilter
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idGreaterThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -886,7 +903,7 @@ extension EpgItemQueryFilter
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idLessThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -899,8 +916,8 @@ extension EpgItemQueryFilter
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idBetween(
-    Id lower,
-    Id upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {

@@ -100,6 +100,12 @@ const ChannelItemSchema = CollectionSchema(
       name: r'iptvServer',
       target: r'IptvServer',
       single: true,
+    ),
+    r'epgItems': LinkSchema(
+      id: 7562480434960476017,
+      name: r'epgItems',
+      target: r'EpgItem',
+      single: false,
     )
   },
   embeddedSchemas: {},
@@ -257,17 +263,19 @@ P _channelItemDeserializeProp<P>(
 }
 
 Id _channelItemGetId(ChannelItem object) {
-  return object.id;
+  return object.id ?? Isar.autoIncrement;
 }
 
 List<IsarLinkBase<dynamic>> _channelItemGetLinks(ChannelItem object) {
-  return [object.iptvServer];
+  return [object.iptvServer, object.epgItems];
 }
 
 void _channelItemAttach(
     IsarCollection<dynamic> col, Id id, ChannelItem object) {
+  object.id = id;
   object.iptvServer
       .attach(col, col.isar.collection<IptvServer>(), r'iptvServer', id);
+  object.epgItems.attach(col, col.isar.collection<EpgItem>(), r'epgItems', id);
 }
 
 extension ChannelItemQueryWhereSort
@@ -1182,8 +1190,24 @@ extension ChannelItemQueryFilter
     });
   }
 
+  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition> idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition> idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
   QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition> idEqualTo(
-      Id value) {
+      Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -1193,7 +1217,7 @@ extension ChannelItemQueryFilter
   }
 
   QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition> idGreaterThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1206,7 +1230,7 @@ extension ChannelItemQueryFilter
   }
 
   QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition> idLessThan(
-    Id value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1219,8 +1243,8 @@ extension ChannelItemQueryFilter
   }
 
   QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition> idBetween(
-    Id lower,
-    Id upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -2215,6 +2239,67 @@ extension ChannelItemQueryLinks
       iptvServerIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'iptvServer', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition> epgItems(
+      FilterQuery<EpgItem> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'epgItems');
+    });
+  }
+
+  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
+      epgItemsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'epgItems', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
+      epgItemsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'epgItems', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
+      epgItemsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'epgItems', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
+      epgItemsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'epgItems', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
+      epgItemsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'epgItems', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
+      epgItemsLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'epgItems', lower, includeLower, upper, includeUpper);
     });
   }
 }

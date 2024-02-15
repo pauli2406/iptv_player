@@ -115,20 +115,19 @@ class IptvServerService {
 
   Future<void> _persistChannels(IptvServer activeIptvServer) async {
     final liveStreamItems = await client.livestreamItems();
+    final liveStreamEntities = liveStreamItems
+        .map(
+          (channel) => ChannelItem.fromLiveStreamItem(
+            channel,
+            client.streamUrl(
+                channel.streamId, activeIptvServer.allowedOutputFormats),
+          )..iptvServer.value = activeIptvServer,
+        )
+        .toList();
     isarService.isar.writeTxnSync(() async {
-      isarService.isar.channelItems.putAllSync(
-        liveStreamItems
-            .map(
-              (channel) => ChannelItem.fromLiveStreamItem(
-                channel,
-                client.streamUrl(
-                    channel.streamId, activeIptvServer.allowedOutputFormats),
-              )..iptvServer.value = activeIptvServer,
-            )
-            .toList(),
-      );
+      isarService.isar.channelItems.putAllSync(liveStreamEntities);
     });
-    _persistEpgForChannels(activeIptvServer, liveStreamItems);
+    _persistEpgForChannels(activeIptvServer, liveStreamEntities);
   }
 
   Future<void> _persistCategories(IptvServer activeIptvServer) async {
@@ -175,18 +174,29 @@ class IptvServerService {
     });
   }
 
-  Future<void> _persistEpgForChannels(IptvServer activeIptvServer,
-      List<XTremeCodeLiveStreamItem> channels) async {
+  Future<void> _persistEpgForChannels(
+      IptvServer activeIptvServer, List<ChannelItem> channels) async {
     print("Start persisting EPG for channels ${channels.length}");
-    List<XTremeCodeEpgListing> epgItems = [];
     var count = 0;
+    isarService.isar
+        .writeTxnSync(() => isarService.isar.epgItems.filter().iptvServer((q) {
+              return q.idEqualTo(activeIptvServer.id);
+            }).deleteAllSync());
+
     for (var channel in channels) {
       try {
-        final epg = await client.channelEpg(
-          channel,
+        final epg = await client.channelEpgViaStreamId(
+          channel.id!,
           20,
         );
-        epgItems.addAll(epg.epgListings);
+        var mappedEpgItems = epg.epgListings
+            .map((epg) => EpgItem.fromXtreamCodeEpgItem(
+                  epg,
+                ))
+            .toList();
+        channel.epgItems.addAll(mappedEpgItems);
+        await isarService.isar
+            .writeTxn(() async => {await channel.epgItems.save()});
         print(
             "Loaded EPG for channel ${channel.name} with ${epg.epgListings.length} items.");
       } on XTreamCodeClientException {
@@ -195,16 +205,10 @@ class IptvServerService {
       count++;
       print("Loaded EPG for $count channels from ${channels.length} channels.");
     }
-
-    isarService.isar.writeTxnSync(() async => {
-          isarService.isar.epgItems.putAllSync(
-            epgItems
-                .map((epg) => EpgItem.fromXtreamCodeEpgItem(
-                      epg,
-                    )..iptvServer.value = activeIptvServer)
-                .toList(),
-          )
-        });
+    // isarService.isar.writeTxnSync(() async => {
+    //       channels.first.epgItems.saveSync()
+    //       // for (var channel in channels) {channel.epgItems.saveSync()}
+    //     });
   }
 
   Future<XTremeCodeGeneralInformation> loadServerInformation() async {

@@ -24,12 +24,13 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
   late int _currentStreamId;
   final Player player = Player(
     configuration: const PlayerConfiguration(
-      logLevel: MPVLogLevel.debug,
+      // Set the video output driver to OpenGL or Vulkan for better performance and quality
+      vo: 'gpu-next',
+      logLevel: MPVLogLevel.info,
       title: 'IPTV Player',
       bufferSize: 64 * 1024 * 1024,
     ),
-  )..stream.log.listen((log) => debugPrint(log.toString()));
-
+  );
   late VideoController videoController;
   bool _showOverlay = false;
 
@@ -38,27 +39,30 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
     super.initState();
     _currentStreamId = widget.streamId;
     videoController = VideoController(player);
-    final link = ref.read(findChannelProvider(streamId: widget.streamId)).link;
 
+    _setupPlayer();
+  }
+
+  void _setupPlayer() {
+    final link = ref.read(findChannelProvider(streamId: widget.streamId)).link;
     if (player.platform is NativePlayer) {
       (player.platform as dynamic)
-          .setProperty('vd-lavc-software-fallback', '5000');
+        // Based on https://github.com/streamlink/streamlink-twitch-gui/wiki/Recommendations
+        // and https://github.com/classicjazz/mpv-config/blob/master/mpv.conf
+        // Selected API: select either Vulkan (preferred) or OpenGL
+        ..setProperty('gpu-api', 'vulkan')
+        ..setProperty('hwdec', 'auto')
+        // Adjust cache settings to prevent buffering issues during livestream playback
+        ..setProperty('cache', 'yes')
+        ..setProperty('cache-default', '5000')
+        // This defines how much data MPV will keep in its "back-buffer" for being able to rewind.
+        ..setProperty('demuxer-max-back-bytes', '180M')
+        // enable hardware acceleration for better performance
+        ..setProperty('hwdec', 'auto');
     }
     player.open(
       Media(link),
     );
-
-    // player.stream.playing.listen((playing) {
-    //   debugPrint('Player is playing: $playing');
-    //   if (!playing) player.play();
-    // });
-
-    // Listen to the onError event
-    player.stream.completed.listen((error) {
-      debugPrint('Player error: $error');
-      // Restart the stream
-      player.play();
-    });
   }
 
   @override
@@ -70,44 +74,13 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    ChannelViewModel channel =
-        ref.watch(findChannelProvider(streamId: _currentStreamId));
     final channels = ref.watch(findAllChannelsProvider());
     return Scaffold(
       body: SafeArea(
         child: MaterialDesktopVideoControlsTheme(
           key: ValueKey(_currentStreamId),
-          normal: MaterialDesktopVideoControlsThemeData(
-            // Modify theme options:
-            buttonBarButtonSize: 24.0,
-            buttonBarButtonColor: Colors.white,
-            // Modify top button bar:
-            topButtonBarMargin: const EdgeInsets.only(top: 36.0),
-            topButtonBar: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back),
-                color: Colors.white,
-                onPressed: () {
-                  context.pop();
-                },
-              ),
-              Text(
-                "${channel.title} - ${utf8.decode(base64.decode(channel.currentEpgItem?.title ?? ''))}",
-                style: const TextStyle(color: Colors.white),
-              ),
-              const Spacer(),
-              MaterialDesktopCustomButton(
-                onPressed: () {
-                  setState(() {
-                    _showOverlay = !_showOverlay;
-                  });
-                },
-                icon: const Icon(Icons.settings),
-              ),
-            ],
-          ),
+          normal: _buildNormalThemeData(),
           fullscreen: const MaterialDesktopVideoControlsThemeData(
-            // Modify theme options:
             displaySeekBar: false,
             automaticallyImplySkipNextButton: false,
             automaticallyImplySkipPreviousButton: false,
@@ -118,28 +91,69 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
                 controller: videoController,
                 controls: MaterialDesktopVideoControls,
               ),
-              Positioned(
-                right: 0,
-                top: 46,
-                child: Visibility(
-                  visible: _showOverlay,
-                  child: OverlayChannelListWidget(
-                      channels: channels,
-                      onClose: () => setState(() => _showOverlay = false),
-                      onChannelSelected: (channel) {
-                        debugPrint('Channel selected: ${channel.title}');
-                        setState(() {
-                          _currentStreamId = channel.streamId!;
-                          _showOverlay = false;
-                          player.open(Media(channel.link));
-                        });
-                      }),
-                ),
-              ),
+              _buildOverlayChannelList(channels),
             ],
           ),
         ),
       ),
     );
+  }
+
+  MaterialDesktopVideoControlsThemeData _buildNormalThemeData() {
+    return MaterialDesktopVideoControlsThemeData(
+      buttonBarButtonSize: 24.0,
+      buttonBarButtonColor: Colors.white,
+      topButtonBarMargin: const EdgeInsets.only(top: 36.0),
+      topButtonBar: _buildTopButtonBar(),
+    );
+  }
+
+  List<Widget> _buildTopButtonBar() {
+    final channel = ref.watch(findChannelProvider(streamId: _currentStreamId));
+    return [
+      IconButton(
+        icon: const Icon(Icons.arrow_back),
+        color: Colors.white,
+        onPressed: context.pop,
+      ),
+      Text(
+        "${channel.title} - ${utf8.decode(base64.decode(channel.currentEpgItem?.title ?? ''))}",
+        style: const TextStyle(color: Colors.white),
+      ),
+      const Spacer(),
+      MaterialDesktopCustomButton(
+        onPressed: _toggleOverlay,
+        icon: const Icon(Icons.list_outlined),
+      ),
+    ];
+  }
+
+  void _toggleOverlay() {
+    setState(() {
+      _showOverlay = !_showOverlay;
+    });
+  }
+
+  Widget _buildOverlayChannelList(AsyncValue<List<ChannelViewModel>> channels) {
+    return Positioned(
+      right: 0,
+      top: 46,
+      child: Visibility(
+        visible: _showOverlay,
+        child: OverlayChannelListWidget(
+          channels: channels,
+          onClose: _toggleOverlay,
+          onChannelSelected: _handleChannelSelection,
+        ),
+      ),
+    );
+  }
+
+  void _handleChannelSelection(ChannelViewModel channel) {
+    setState(() {
+      _currentStreamId = channel.streamId!;
+      _showOverlay = false;
+      player.open(Media(channel.link));
+    });
   }
 }

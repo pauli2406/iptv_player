@@ -455,7 +455,135 @@ class _FindAllSeriesProviderElement
   ItemCategory? get category => (origin as FindAllSeriesProvider).category;
 }
 
-String _$findAllChannelsHash() => r'd3083680bf99c158114d0951d405598e71673894';
+String _$findChannelHash() => r'3f5bb1ec124c773e486ef45cabfdca3d19044d8d';
+
+/// See also [findChannel].
+@ProviderFor(findChannel)
+const findChannelProvider = FindChannelFamily();
+
+/// See also [findChannel].
+class FindChannelFamily extends Family<ChannelViewModel> {
+  /// See also [findChannel].
+  const FindChannelFamily();
+
+  /// See also [findChannel].
+  FindChannelProvider call({
+    required int streamId,
+  }) {
+    return FindChannelProvider(
+      streamId: streamId,
+    );
+  }
+
+  @override
+  FindChannelProvider getProviderOverride(
+    covariant FindChannelProvider provider,
+  ) {
+    return call(
+      streamId: provider.streamId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'findChannelProvider';
+}
+
+/// See also [findChannel].
+class FindChannelProvider extends AutoDisposeProvider<ChannelViewModel> {
+  /// See also [findChannel].
+  FindChannelProvider({
+    required int streamId,
+  }) : this._internal(
+          (ref) => findChannel(
+            ref as FindChannelRef,
+            streamId: streamId,
+          ),
+          from: findChannelProvider,
+          name: r'findChannelProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$findChannelHash,
+          dependencies: FindChannelFamily._dependencies,
+          allTransitiveDependencies:
+              FindChannelFamily._allTransitiveDependencies,
+          streamId: streamId,
+        );
+
+  FindChannelProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.streamId,
+  }) : super.internal();
+
+  final int streamId;
+
+  @override
+  Override overrideWith(
+    ChannelViewModel Function(FindChannelRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindChannelProvider._internal(
+        (ref) => create(ref as FindChannelRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        streamId: streamId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<ChannelViewModel> createElement() {
+    return _FindChannelProviderElement(this);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FindChannelProvider && other.streamId == streamId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, streamId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FindChannelRef on AutoDisposeProviderRef<ChannelViewModel> {
+  /// The parameter `streamId` of this provider.
+  int get streamId;
+}
+
+class _FindChannelProviderElement
+    extends AutoDisposeProviderElement<ChannelViewModel> with FindChannelRef {
+  _FindChannelProviderElement(super.provider);
+
+  @override
+  int get streamId => (origin as FindChannelProvider).streamId;
+}
+
+String _$findAllChannelsHash() => r'0c0db088883cfca70a5074c793de917fe29bdaf4';
 
 /// See also [findAllChannels].
 @ProviderFor(findAllChannels)

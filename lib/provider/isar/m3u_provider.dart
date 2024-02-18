@@ -1,6 +1,5 @@
 import 'package:iptv_player/home/provider/search_value_provider.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
-import 'package:iptv_player/service/collections/channel_item.dart';
 import 'package:iptv_player/service/collections/epg_item.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
 import 'package:iptv_player/service/collections/m3u/m3u_item.dart';
@@ -57,16 +56,37 @@ Stream<List<SeriesItem>> findAllSeries(FindAllSeriesRef ref,
 }
 
 class ChannelViewModel {
+  int? streamId;
   String link, title, logoUrl;
   bool isLive;
   EpgItem? currentEpgItem;
 
   ChannelViewModel(
+    this.streamId,
     this.link,
     this.title,
     this.logoUrl,
     this.isLive,
     this.currentEpgItem,
+  );
+}
+
+@riverpod
+ChannelViewModel findChannel(FindChannelRef ref, {required int streamId}) {
+  final m3uService = ref.watch(m3uServiceProvider);
+  final channel = m3uService.findChannel(streamId)!;
+  final now = DateTime.now();
+  final latestEpgItem = channel.epgItems
+      .where((element) =>
+          element.start!.isBefore(now) && element.end!.isAfter(now))
+      .firstOrNull;
+  return ChannelViewModel(
+    channel.id,
+    channel.streamUrl,
+    channel.name ?? "",
+    channel.streamIcon ?? "",
+    channel.streamType == "live",
+    latestEpgItem,
   );
 }
 
@@ -85,6 +105,7 @@ Stream<List<ChannelViewModel>> findAllChannels(FindAllChannelsRef ref,
               element.start!.isBefore(now) && element.end!.isAfter(now))
           .firstOrNull;
       return ChannelViewModel(
+        e.id,
         e.streamUrl,
         e.name ?? "",
         e.streamIcon ?? "",

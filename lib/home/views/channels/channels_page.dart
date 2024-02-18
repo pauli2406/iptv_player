@@ -164,11 +164,7 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
                                 childAspectRatio: (itemWidth / itemHeight),
                               ),
                               itemBuilder: (_, index) => M3uListItem(
-                                link: channels[index].link,
-                                title: channels[index].title,
-                                logoUrl: channels[index].logoUrl,
-                                isLive: channels[index].isLive,
-                                currentEpgItem: channels[index].currentEpgItem,
+                                channelViewModel: channels[index],
                                 height: itemHeight,
                               ),
                               itemCount: channels.length,

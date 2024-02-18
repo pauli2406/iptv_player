@@ -44,7 +44,8 @@ class EpgItem {
   );
 
   EpgItem.fromXtreamCodeEpgItem(XTremeCodeEpgListing epgTableItem)
-      : epgId = epgTableItem.epgId!,
+      : id = Isar.autoIncrement,
+        epgId = epgTableItem.epgId!,
         title = epgTableItem.title,
         lang = epgTableItem.lang,
         start = epgTableItem.start,

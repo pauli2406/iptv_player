@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart' hide OverlayVisibilityMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iptv_player/home/provider/search_value_provider.dart';
-import 'package:iptv_player/home/widgets/movie_list_item.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
@@ -167,13 +166,11 @@ class _MoviesPageState extends ConsumerState<MoviesPage> {
                                 mainAxisSpacing: 10,
                                 childAspectRatio: (itemWidth / itemHeight),
                               ),
-                              itemBuilder: (_, index) => M3uListItem(
-                                link: movies[index].streamUrl,
-                                title: movies[index].name ?? "",
-                                logoUrl: movies[index].streamIcon ?? "",
-                                isLive: movies[index].streamType == "live",
-                                height: itemHeight,
-                              ),
+                              itemBuilder: (_, index) => Container(),
+                              // M3uListItem(
+                              //   channelViewModel: movies[index],
+                              //   height: itemHeight,
+                              // ),
                               itemCount: movies.length,
                               padding: const EdgeInsets.all(10),
                             );

@@ -116,6 +116,17 @@ class M3uService {
         .watch(fireImmediately: true);
   }
 
+  ChannelItem? findChannel(
+    int streamId,
+  ) {
+    QueryBuilder<ChannelItem, ChannelItem, QFilterCondition> query =
+        isarService.isar.channelItems.filter();
+    query = query.idEqualTo(streamId);
+    return query.iptvServer((q) {
+      return q.idEqualTo(_activeIptvServer!.id);
+    }).findFirstSync();
+  }
+
   Stream<List<ChannelItem>> findAllChannels(
       String? searchValue, ItemCategory? category) {
     QueryBuilder<ChannelItem, ChannelItem, QFilterCondition> query =

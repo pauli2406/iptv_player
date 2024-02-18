@@ -281,14 +281,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.10"
-  desktop_multi_window:
-    dependency: "direct main"
-    description:
-      name: desktop_multi_window
-      sha256: "29971186ae0790e32b156f127f9c22c5ee77bdb94b14f7cea23f2356d0c76cfc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.0"
   dio:
     dependency: transitive
     description:
@@ -993,14 +985,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.3"
-  screen_retriever:
-    dependency: transitive
-    description:
-      name: screen_retriever
-      sha256: "6ee02c8a1158e6dae7ca430da79436e3b1c9563c8cf02f524af997c201ac2b90"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.9"
   shelf:
     dependency: transitive
     description:
@@ -1230,14 +1214,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.2.0"
-  window_manager:
-    dependency: "direct main"
-    description:
-      name: window_manager
-      sha256: b3c895bdf936c77b83c5254bec2e6b3f066710c1f89c38b20b8acc382b525494
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.8"
   xdg_directories:
     dependency: transitive
     description:

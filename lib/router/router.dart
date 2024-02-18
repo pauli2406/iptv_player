@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iptv_player/home/home_view.dart';
-import 'package:iptv_player/home/views/series/series_season_page.dart';
-import 'package:iptv_player/service/collections/m3u/m3u_item.dart';
 
 import '../iptv_list/iptv_server_list.dart';
 import '../video_player/video_player.dart';
@@ -30,20 +28,8 @@ final router = GoRouter(
             GoRoute(
               path: 'player',
               builder: (context, state) {
-                return SafeArea(
-                  child: Scaffold(
-                    backgroundColor: Colors.black,
-                    appBar: AppBar(
-                      backgroundColor: Colors.black,
-                    ),
-                    body: Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: VideoPlayer(
-                        videoUrl: ((state.extra as Map)['link'] as String),
-                        epgTitle: ((state.extra as Map)['epgTitle'] as String),
-                      ),
-                    ),
-                  ),
+                return VideoPlayer(
+                  streamId: ((state.extra as Map)['streamId'] as int),
                 );
               },
             ),

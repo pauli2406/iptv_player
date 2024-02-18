@@ -10,13 +10,12 @@ environment:
 dependency_overrides:
   isar_generator:
     git:
-      url: https://github.com/ndelanou/isar.git
+      url: https://github.com/ndelanou/isar.git 
       ref: analyzer-v6 
       path: packages/isar_generator 
 
 dependencies:
   cupertino_icons: ^1.0.6
-  desktop_multi_window: ^0.2.0
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.4.10 
@@ -34,7 +33,6 @@ dependencies:
   formz: ^0.6.1
   http: ^1.2.0 
   intl: ^0.19.0
-  window_manager: ^0.3.8
   fast_cached_network_image: ^1.2.7
   flutter_launcher_icons: ^0.13.1
   xtream_code_client: 

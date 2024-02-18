@@ -74,8 +74,11 @@ class IptvServerService {
   }
 
   Future<void> _persistItems(IptvServer activeIptvServer) async {
+    print("Loading channels...");
     await _persistChannels(activeIptvServer);
+    print("Loading VODs...");
     await _persistVods(activeIptvServer);
+    print("Loading series...");
     await _persistSeries(activeIptvServer);
   }
 
@@ -144,8 +147,10 @@ class IptvServerService {
             .toList(),
       );
     });
-
+    print("Persisted ${liveStreamCategories.length} categories.");
+    print("Loading VOD categories...");
     final vodCategories = await client.vodCategories();
+
     isarService.isar.writeTxnSync(() async {
       isarService.isar.itemCategorys.putAllSync(
         vodCategories
@@ -158,7 +163,8 @@ class IptvServerService {
             .toList(),
       );
     });
-
+    print("Persisted ${vodCategories.length} VOD categories.");
+    print("Loading Series categories...");
     final seriesCategories = await client.seriesCategories();
     isarService.isar.writeTxnSync(() async {
       isarService.isar.itemCategorys.putAllSync(
@@ -195,8 +201,10 @@ class IptvServerService {
                 ))
             .toList();
         channel.epgItems.addAll(mappedEpgItems);
-        await isarService.isar
-            .writeTxn(() async => {await channel.epgItems.save()});
+        await isarService.isar.writeTxn(() async => {
+              await isarService.isar.epgItems.putAll(mappedEpgItems),
+              await channel.epgItems.save()
+            });
         print(
             "Loaded EPG for channel ${channel.name} with ${epg.epgListings.length} items.");
       } on XTreamCodeClientException {

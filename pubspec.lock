@@ -604,10 +604,11 @@ packages:
   macos_ui:
     dependency: "direct main"
     description:
-      name: macos_ui
-      sha256: d351f0bada7e5b0cee8cf394299878a6c04e5cfcd784fa1d40e44299501124d8
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: dev
+      resolved-ref: e9da375ec75cf6d484026fe527d0c5ee82a336be
+      url: "https://github.com/macosui/macos_ui.git"
+    source: git
     version: "2.0.5"
   macos_window_utils:
     dependency: transitive
@@ -636,10 +637,11 @@ packages:
   media_kit:
     dependency: "direct main"
     description:
-      name: media_kit
-      sha256: "3289062540e3b8b9746e5c50d95bd78a9289826b7227e253dff806d002b9e67a"
-      url: "https://pub.dev"
-    source: hosted
+      path: media_kit
+      ref: main
+      resolved-ref: "63c6ebe8366db7ecfbd13ab9ce76b11dd86dae48"
+      url: "https://github.com/media-kit/media-kit.git"
+    source: git
     version: "1.1.10+1"
   media_kit_libs_android_video:
     dependency: transitive
@@ -676,10 +678,11 @@ packages:
   media_kit_libs_video:
     dependency: "direct main"
     description:
-      name: media_kit_libs_video
-      sha256: "3688e0c31482074578652bf038ce6301a5d21e1eda6b54fc3117ffeb4bdba067"
-      url: "https://pub.dev"
-    source: hosted
+      path: "libs/universal/media_kit_libs_video"
+      ref: main
+      resolved-ref: "63c6ebe8366db7ecfbd13ab9ce76b11dd86dae48"
+      url: "https://github.com/media-kit/media-kit.git"
+    source: git
     version: "1.0.4"
   media_kit_libs_windows_video:
     dependency: transitive
@@ -700,10 +703,11 @@ packages:
   media_kit_video:
     dependency: "direct main"
     description:
-      name: media_kit_video
-      sha256: c048d11a19e379aebbe810647636e3fc6d18374637e2ae12def4ff8a4b99a882
-      url: "https://pub.dev"
-    source: hosted
+      path: media_kit_video
+      ref: main
+      resolved-ref: "63c6ebe8366db7ecfbd13ab9ce76b11dd86dae48"
+      url: "https://github.com/media-kit/media-kit.git"
+    source: git
     version: "1.2.4"
   meta:
     dependency: transitive

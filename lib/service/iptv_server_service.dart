@@ -74,12 +74,12 @@ class IptvServerService {
   }
 
   Future<void> _persistItems(IptvServer activeIptvServer) async {
-    print("Loading channels...");
-    await _persistChannels(activeIptvServer);
     print("Loading VODs...");
     await _persistVods(activeIptvServer);
     print("Loading series...");
     await _persistSeries(activeIptvServer);
+    print("Loading channels...");
+    await _persistChannels(activeIptvServer);
   }
 
   Future<void> _persistSeries(IptvServer activeIptvServer) async {

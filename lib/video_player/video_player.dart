@@ -7,6 +7,7 @@ import 'package:iptv_player/provider/isar/m3u_provider.dart';
 import 'package:iptv_player/video_player/overlay_channel_list.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:platform_builder/platform.dart';
 
 class VideoPlayer extends ConsumerStatefulWidget {
   const VideoPlayer({
@@ -77,29 +78,67 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
     final channels = ref.watch(findAllChannelsProvider());
     return Scaffold(
       body: SafeArea(
-        child: MaterialDesktopVideoControlsTheme(
-          key: ValueKey(_currentStreamId),
-          normal: _buildNormalThemeData(),
-          fullscreen: const MaterialDesktopVideoControlsThemeData(
-            displaySeekBar: false,
-            automaticallyImplySkipNextButton: false,
-            automaticallyImplySkipPreviousButton: false,
-          ),
-          child: Stack(
-            children: [
-              Video(
-                controller: videoController,
-                controls: MaterialDesktopVideoControls,
-              ),
-              _buildOverlayChannelList(channels),
-            ],
-          ),
-        ),
+        child: (Platform.instance.isMacOS || Platform.instance.isWindows)
+            ? _materialDesktopVideoControlsTheme(channels)
+            : _materialVideoControlsTheme(channels),
       ),
     );
   }
 
-  MaterialDesktopVideoControlsThemeData _buildNormalThemeData() {
+  MaterialDesktopVideoControlsTheme _materialDesktopVideoControlsTheme(
+      AsyncValue<List<ChannelViewModel>> channels) {
+    return MaterialDesktopVideoControlsTheme(
+      key: ValueKey(_currentStreamId),
+      normal: _buildMaterialDesktopThemeData(),
+      fullscreen: const MaterialDesktopVideoControlsThemeData(
+        displaySeekBar: false,
+        automaticallyImplySkipNextButton: false,
+        automaticallyImplySkipPreviousButton: false,
+      ),
+      child: Stack(
+        children: [
+          Video(
+            controller: videoController,
+            controls: MaterialDesktopVideoControls,
+          ),
+          _buildOverlayChannelList(channels),
+        ],
+      ),
+    );
+  }
+
+  MaterialVideoControlsTheme _materialVideoControlsTheme(
+      AsyncValue<List<ChannelViewModel>> channels) {
+    return MaterialVideoControlsTheme(
+      key: ValueKey(_currentStreamId),
+      normal: _buildMaterialThemeData(),
+      fullscreen: const MaterialVideoControlsThemeData(
+        displaySeekBar: false,
+        automaticallyImplySkipNextButton: false,
+        automaticallyImplySkipPreviousButton: false,
+      ),
+      child: Stack(
+        children: [
+          Video(
+            controller: videoController,
+            controls: MaterialVideoControls,
+          ),
+          _buildOverlayChannelList(channels),
+        ],
+      ),
+    );
+  }
+
+  MaterialVideoControlsThemeData _buildMaterialThemeData() {
+    return MaterialVideoControlsThemeData(
+      buttonBarButtonSize: 24.0,
+      buttonBarButtonColor: Colors.white,
+      topButtonBarMargin: const EdgeInsets.only(top: 36.0),
+      topButtonBar: _buildTopButtonBar(),
+    );
+  }
+
+  MaterialDesktopVideoControlsThemeData _buildMaterialDesktopThemeData() {
     return MaterialDesktopVideoControlsThemeData(
       buttonBarButtonSize: 24.0,
       buttonBarButtonColor: Colors.white,

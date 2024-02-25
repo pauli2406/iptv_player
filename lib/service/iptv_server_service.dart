@@ -3,7 +3,10 @@ import 'package:iptv_player/service/collections/epg_item.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
 import 'package:iptv_player/service/collections/iptv_server/iptv_server.dart';
 import 'package:iptv_player/service/collections/channel_item.dart';
+import 'package:iptv_player/service/collections/series_episode.dart';
+import 'package:iptv_player/service/collections/series_info.dart';
 import 'package:iptv_player/service/collections/series_item.dart';
+import 'package:iptv_player/service/collections/series_season.dart';
 import 'package:iptv_player/service/collections/vod_item.dart';
 import 'package:iptv_player/service/m3u_parse_service.dart';
 import 'package:iptv_player/service/m3u_service.dart';
@@ -76,25 +79,56 @@ class IptvServerService {
   Future<void> _persistItems(IptvServer activeIptvServer) async {
     print("Loading VODs...");
     await _persistVods(activeIptvServer);
-    print("Loading series...");
+    // print("Loading series...");
     await _persistSeries(activeIptvServer);
     print("Loading channels...");
-    await _persistChannels(activeIptvServer);
+    // await _persistChannels(activeIptvServer);
   }
 
   Future<void> _persistSeries(IptvServer activeIptvServer) async {
     final seriesItems = await client.seriesItems();
+    final seriesEntities = await Future.wait(
+      seriesItems.map(
+        (series) async {
+          final item = SeriesItem.fromXtreamCodeSeriesItem(
+            series,
+          );
+          try {
+            final seriesInfo = await client.seriesInfo(series);
+            final episodes = seriesInfo.episodes?.values
+                .expand((x) => x)
+                .map(
+                  (e) => SeriesEpisode.fromXtreamCodeSeriesEpisode(
+                    e,
+                    client.seriesUrl(
+                      int.parse(e.id),
+                      e.containerExtension,
+                    ),
+                  ),
+                )
+                .toList();
+            item.info.value =
+                SeriesInfo.fromXTremeCodeSeriesInfo(seriesInfo.info);
+            item.seasons.addAll(
+              seriesInfo.seasons
+                  .map(
+                    (season) => SeriesSeason.fromXtreamCodeSeriesSeason(
+                      season,
+                    ),
+                  )
+                  .toList(),
+            );
+            item.episodes.addAll(
+              episodes ?? [],
+            );
+          } catch (_) {}
+          return item;
+        },
+      ).toList(),
+    );
     isarService.isar.writeTxnSync(() async {
       isarService.isar.seriesItems.putAllSync(
-        seriesItems
-            .map(
-              (series) => SeriesItem.fromXtreamCodeSeriesItem(
-                series,
-                client.streamUrl(
-                    series.seriesId, activeIptvServer.allowedOutputFormats),
-              )..iptvServer.value = activeIptvServer,
-            )
-            .toList(),
+        seriesEntities,
       );
     });
   }
@@ -107,8 +141,7 @@ class IptvServerService {
             .map(
               (vod) => VodItem.fromXtreamCodeVodItem(
                 vod,
-                client.streamUrl(
-                    vod.streamId, activeIptvServer.allowedOutputFormats),
+                client.movieUrl(vod.streamId, vod.containerExtension!),
               )..iptvServer.value = activeIptvServer,
             )
             .toList(),
@@ -213,10 +246,6 @@ class IptvServerService {
       count++;
       print("Loaded EPG for $count channels from ${channels.length} channels.");
     }
-    // isarService.isar.writeTxnSync(() async => {
-    //       channels.first.epgItems.saveSync()
-    //       // for (var channel in channels) {channel.epgItems.saveSync()}
-    //     });
   }
 
   Future<XTremeCodeGeneralInformation> loadServerInformation() async {

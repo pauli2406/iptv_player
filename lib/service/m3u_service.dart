@@ -116,6 +116,17 @@ class M3uService {
         .watch(fireImmediately: true);
   }
 
+  VodItem? findVod(
+    int streamId,
+  ) {
+    QueryBuilder<VodItem, VodItem, QFilterCondition> query =
+        isarService.isar.vodItems.filter();
+    query = query.idEqualTo(streamId);
+    return query.iptvServer((q) {
+      return q.idEqualTo(_activeIptvServer!.id);
+    }).findFirstSync();
+  }
+
   ChannelItem? findChannel(
     int streamId,
   ) {

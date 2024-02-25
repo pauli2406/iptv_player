@@ -11,10 +11,12 @@ class M3uListItem extends StatefulWidget {
   const M3uListItem({
     required this.channelViewModel,
     required this.height,
+    required this.route,
     super.key,
   });
   final ChannelViewModel channelViewModel;
   final double height;
+  final String route;
 
   @override
   State<M3uListItem> createState() => _M3uListItemState();
@@ -35,7 +37,7 @@ class _M3uListItemState extends State<M3uListItem> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () async {
-          context.go("/main/player", extra: {
+          context.go(widget.route, extra: {
             'link': widget.channelViewModel.link,
             'streamId': widget.channelViewModel.streamId,
           });
@@ -54,7 +56,7 @@ class _M3uListItemState extends State<M3uListItem> {
                   top: Radius.circular(10),
                 ),
                 child: FastCachedImage(
-                  fit: BoxFit.fitHeight,
+                  fit: BoxFit.fitWidth,
                   url: widget.channelViewModel.logoUrl,
                   loadingBuilder: (context, progress) {
                     return Center(
@@ -70,14 +72,16 @@ class _M3uListItemState extends State<M3uListItem> {
                 ),
               ),
             ),
-            Padding(
+            Container(
+              height: widget.height / 18,
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 widget.channelViewModel.title,
                 style: MacosTheme.of(context).typography.body,
               ),
             ),
-            Padding(
+            Container(
+              height: widget.height / 12,
               padding: const EdgeInsets.symmetric(
                 vertical: 8.0,
                 horizontal: 48.0,
@@ -86,6 +90,7 @@ class _M3uListItemState extends State<M3uListItem> {
                 utf8.decode(base64.decode(
                     widget.channelViewModel.currentEpgItem?.title ?? "")),
                 style: MacosTheme.of(context).typography.caption1,
+                maxLines: 2,
               ),
             )
           ]),

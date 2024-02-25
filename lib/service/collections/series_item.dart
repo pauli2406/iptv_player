@@ -1,4 +1,7 @@
 import 'package:iptv_player/service/collections/iptv_server/iptv_server.dart';
+import 'package:iptv_player/service/collections/series_episode.dart';
+import 'package:iptv_player/service/collections/series_info.dart';
+import 'package:iptv_player/service/collections/series_season.dart';
 import 'package:isar/isar.dart';
 import 'package:xtream_code_client/xtream_code_client.dart';
 
@@ -27,7 +30,6 @@ class SeriesItem {
     this.episodeRunTime,
     this.categoryId,
     required this.categoryIds,
-    this.streamUrl,
   });
 
   Id id;
@@ -50,12 +52,13 @@ class SeriesItem {
   String? episodeRunTime;
   String? categoryId;
   List<int> categoryIds;
-  String? streamUrl;
   final iptvServer = IsarLink<IptvServer>();
+  final seasons = IsarLinks<SeriesSeason>();
+  final info = IsarLink<SeriesInfo>();
+  final episodes = IsarLinks<SeriesEpisode>();
 
   SeriesItem.fromXtreamCodeSeriesItem(
     XTremeCodeSeriesItem seriesItem,
-    this.streamUrl,
   )   : id = seriesItem.seriesId,
         num = seriesItem.num,
         name = seriesItem.name,

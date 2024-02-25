@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iptv_player/home/home_view.dart';
+import 'package:iptv_player/video_player/channel/channel_video_player.dart';
+import 'package:iptv_player/video_player/vod/vod_video_player.dart';
 
 import '../iptv_list/iptv_server_list.dart';
-import '../video_player/video_player.dart';
 
 final router = GoRouter(
   debugLogDiagnostics: true,
@@ -26,9 +26,17 @@ final router = GoRouter(
             //   },
             // ),
             GoRoute(
-              path: 'player',
+              path: 'channel/player',
               builder: (context, state) {
-                return VideoPlayer(
+                return ChannelVideoPlayer(
+                  streamId: ((state.extra as Map)['streamId'] as int),
+                );
+              },
+            ),
+            GoRoute(
+              path: 'movie/player',
+              builder: (context, state) {
+                return VodVideoPlayer(
                   streamId: ((state.extra as Map)['streamId'] as int),
                 );
               },

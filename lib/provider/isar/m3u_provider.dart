@@ -36,13 +36,27 @@ Future<bool> clearDownloadAndPersistActivePlaylistItems(
 }
 
 @riverpod
-Stream<List<VodItem>> findAllMovies(FindAllMoviesRef ref,
+Stream<List<ChannelViewModel>> findAllMovies(FindAllMoviesRef ref,
     {ItemCategory? category}) {
   final searchValue = ref.watch(movieSearchValueProvider);
   final activeIptvServer = ref.watch(m3uServiceProvider).getActiveIptvServer()!;
 
   final m3uService = ref.watch(m3uServiceProvider);
-  return m3uService.findAllMovies(activeIptvServer, searchValue, category);
+
+  return m3uService
+      .findAllMovies(activeIptvServer, searchValue, category)
+      .asyncMap((event) async {
+    return event.map((e) {
+      return ChannelViewModel(
+        e.id,
+        e.streamUrl,
+        e.name ?? "",
+        e.streamIcon ?? "",
+        e.streamType == "live",
+        null,
+      );
+    }).toList();
+  });
 }
 
 @riverpod
@@ -68,6 +82,20 @@ class ChannelViewModel {
     this.logoUrl,
     this.isLive,
     this.currentEpgItem,
+  );
+}
+
+@riverpod
+ChannelViewModel findMovie(FindMovieRef ref, {required int streamId}) {
+  final m3uService = ref.watch(m3uServiceProvider);
+  final vod = m3uService.findVod(streamId)!;
+  return ChannelViewModel(
+    vod.id,
+    vod.streamUrl,
+    vod.name ?? "",
+    vod.streamIcon ?? "",
+    vod.streamType == "live",
+    null
   );
 }
 

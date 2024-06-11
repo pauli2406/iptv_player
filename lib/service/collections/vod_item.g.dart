@@ -25,7 +25,7 @@ const VodItemSchema = CollectionSchema(
     r'categoryId': PropertySchema(
       id: 1,
       name: r'categoryId',
-      type: IsarType.string,
+      type: IsarType.long,
     ),
     r'categoryIds': PropertySchema(
       id: 2,
@@ -120,12 +120,6 @@ int _vodItemEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.categoryId;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
   bytesCount += 3 + object.categoryIds.length * 8;
   {
     final value = object.containerExtension;
@@ -186,7 +180,7 @@ void _vodItemSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDateTime(offsets[0], object.added);
-  writer.writeString(offsets[1], object.categoryId);
+  writer.writeLong(offsets[1], object.categoryId);
   writer.writeLongList(offsets[2], object.categoryIds);
   writer.writeString(offsets[3], object.containerExtension);
   writer.writeString(offsets[4], object.customSid);
@@ -210,7 +204,7 @@ VodItem _vodItemDeserialize(
 ) {
   final object = VodItem(
     added: reader.readDateTimeOrNull(offsets[0]),
-    categoryId: reader.readStringOrNull(offsets[1]),
+    categoryId: reader.readLongOrNull(offsets[1]),
     categoryIds: reader.readLongList(offsets[2]) ?? [],
     containerExtension: reader.readStringOrNull(offsets[3]),
     customSid: reader.readStringOrNull(offsets[4]),
@@ -239,7 +233,7 @@ P _vodItemDeserializeProp<P>(
     case 0:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 2:
       return (reader.readLongList(offset) ?? []) as P;
     case 3:
@@ -447,54 +441,46 @@ extension VodItemQueryFilter
   }
 
   QueryBuilder<VodItem, VodItem, QAfterFilterCondition> categoryIdEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+      int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'categoryId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<VodItem, VodItem, QAfterFilterCondition> categoryIdGreaterThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'categoryId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<VodItem, VodItem, QAfterFilterCondition> categoryIdLessThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'categoryId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<VodItem, VodItem, QAfterFilterCondition> categoryIdBetween(
-    String? lower,
-    String? upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -503,75 +489,6 @@ extension VodItemQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> categoryIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'categoryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> categoryIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'categoryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> categoryIdContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'categoryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> categoryIdMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'categoryId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> categoryIdIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'categoryId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> categoryIdIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'categoryId',
-        value: '',
       ));
     });
   }
@@ -2686,10 +2603,9 @@ extension VodItemQueryWhereDistinct
     });
   }
 
-  QueryBuilder<VodItem, VodItem, QDistinct> distinctByCategoryId(
-      {bool caseSensitive = true}) {
+  QueryBuilder<VodItem, VodItem, QDistinct> distinctByCategoryId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'categoryId', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'categoryId');
     });
   }
 
@@ -2796,7 +2712,7 @@ extension VodItemQueryProperty
     });
   }
 
-  QueryBuilder<VodItem, String?, QQueryOperations> categoryIdProperty() {
+  QueryBuilder<VodItem, int?, QQueryOperations> categoryIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'categoryId');
     });

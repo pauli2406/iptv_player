@@ -29,8 +29,8 @@ class SeriesEpisode {
   });
 
   Id? id;
-  String streamId;
-  String? episodeNum;
+  int? streamId;
+  int? episodeNum;
   String? title;
   String? containerExtension;
   List<String> subtitles;
@@ -38,8 +38,8 @@ class SeriesEpisode {
   DateTime? added;
   int? season;
   String? directSource;
-  String? tmdbId;
-  String? releaseDate;
+  int? tmdbId;
+  DateTime? releaseDate;
   String? plot;
   int? durationSecs;
   String? duration;

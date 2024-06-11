@@ -20,7 +20,7 @@ const SeriesSeasonSchema = CollectionSchema(
     r'airDate': PropertySchema(
       id: 0,
       name: r'airDate',
-      type: IsarType.string,
+      type: IsarType.dateTime,
     ),
     r'cover': PropertySchema(
       id: 1,
@@ -84,12 +84,6 @@ int _seriesSeasonEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
-    final value = object.airDate;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
     final value = object.cover;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -122,7 +116,7 @@ void _seriesSeasonSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.airDate);
+  writer.writeDateTime(offsets[0], object.airDate);
   writer.writeString(offsets[1], object.cover);
   writer.writeString(offsets[2], object.coverBig);
   writer.writeLong(offsets[3], object.episodeCount);
@@ -140,7 +134,7 @@ SeriesSeason _seriesSeasonDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = SeriesSeason(
-    airDate: reader.readStringOrNull(offsets[0]),
+    airDate: reader.readDateTimeOrNull(offsets[0]),
     cover: reader.readStringOrNull(offsets[1]),
     coverBig: reader.readStringOrNull(offsets[2]),
     episodeCount: reader.readLongOrNull(offsets[3]),
@@ -162,7 +156,7 @@ P _seriesSeasonDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 1:
       return (reader.readStringOrNull(offset)) as P;
     case 2:
@@ -297,58 +291,49 @@ extension SeriesSeasonQueryFilter
   }
 
   QueryBuilder<SeriesSeason, SeriesSeason, QAfterFilterCondition>
-      airDateEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+      airDateEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'airDate',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<SeriesSeason, SeriesSeason, QAfterFilterCondition>
       airDateGreaterThan(
-    String? value, {
+    DateTime? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'airDate',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<SeriesSeason, SeriesSeason, QAfterFilterCondition>
       airDateLessThan(
-    String? value, {
+    DateTime? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'airDate',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<SeriesSeason, SeriesSeason, QAfterFilterCondition>
       airDateBetween(
-    String? lower,
-    String? upper, {
+    DateTime? lower,
+    DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -357,77 +342,6 @@ extension SeriesSeasonQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesSeason, SeriesSeason, QAfterFilterCondition>
-      airDateStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'airDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesSeason, SeriesSeason, QAfterFilterCondition>
-      airDateEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'airDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesSeason, SeriesSeason, QAfterFilterCondition>
-      airDateContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'airDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesSeason, SeriesSeason, QAfterFilterCondition>
-      airDateMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'airDate',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesSeason, SeriesSeason, QAfterFilterCondition>
-      airDateIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'airDate',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesSeason, SeriesSeason, QAfterFilterCondition>
-      airDateIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'airDate',
-        value: '',
       ));
     });
   }
@@ -1668,10 +1582,9 @@ extension SeriesSeasonQuerySortThenBy
 
 extension SeriesSeasonQueryWhereDistinct
     on QueryBuilder<SeriesSeason, SeriesSeason, QDistinct> {
-  QueryBuilder<SeriesSeason, SeriesSeason, QDistinct> distinctByAirDate(
-      {bool caseSensitive = true}) {
+  QueryBuilder<SeriesSeason, SeriesSeason, QDistinct> distinctByAirDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'airDate', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'airDate');
     });
   }
 
@@ -1736,7 +1649,7 @@ extension SeriesSeasonQueryProperty
     });
   }
 
-  QueryBuilder<SeriesSeason, String?, QQueryOperations> airDateProperty() {
+  QueryBuilder<SeriesSeason, DateTime?, QQueryOperations> airDateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'airDate');
     });

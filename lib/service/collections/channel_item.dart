@@ -31,11 +31,11 @@ class ChannelItem {
   final String? streamIcon;
   final String? epgChannelId;
   final DateTime? added;
-  final String? customSid;
+  final int? customSid;
   final int? tvArchive;
   final String? directSource;
   final int? tvArchiveDuration;
-  final String? categoryId;
+  final int? categoryId;
   final List<int> categoryIds;
   final String? thumbnail;
   final String streamUrl;

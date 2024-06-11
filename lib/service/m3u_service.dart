@@ -3,7 +3,6 @@ import 'package:iptv_player/service/collections/channel_item.dart';
 import 'package:iptv_player/service/collections/epg_item.dart';
 import 'package:iptv_player/service/collections/iptv_server/iptv_server.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
-import 'package:iptv_player/service/collections/series_item.dart';
 import 'package:iptv_player/service/collections/vod_item.dart';
 import 'package:isar/isar.dart';
 import 'package:xtream_code_client/xtream_code_client.dart';
@@ -48,7 +47,7 @@ class M3uService {
       query = query.titleContains(searchValue, caseSensitive: false);
     }
     if (category != null) {
-      query = query.categoryIdEqualTo(category.id.toString());
+      query = query.categoryIdEqualTo(category.id);
     }
     return query.iptvServer((q) {
       return q.idEqualTo(_activeIptvServer!.id);
@@ -81,19 +80,19 @@ class M3uService {
         .watch(fireImmediately: true);
   }
 
-  Stream<List<SeriesItem>> findAllSeries(IptvServer activeIptvServer,
-      String? searchValue, ItemCategory? category) {
-    var query = isarService.isar.seriesItems.filter().iptvServer((q) {
-      return q.idEqualTo(_activeIptvServer!.id);
-    });
-    if (searchValue != null && searchValue.isNotEmpty) {
-      query = query.nameContains(searchValue, caseSensitive: false);
-    }
-    if (category != null) {
-      query = query.categoryIdEqualTo(category.id.toString());
-    }
-    return query.sortByName().watch(fireImmediately: true);
-  }
+  // Stream<List<SeriesItem>> findAllSeries(IptvServer activeIptvServer,
+  //     String? searchValue, ItemCategory? category) {
+  //   var query = isarService.isar.seriesItems.filter().iptvServer((q) {
+  //     return q.idEqualTo(_activeIptvServer!.id);
+  //   });
+  //   if (searchValue != null && searchValue.isNotEmpty) {
+  //     query = query.nameContains(searchValue, caseSensitive: false);
+  //   }
+  //   if (category != null) {
+  //     query = query.categoryIdEqualTo(category.id.toString());
+  //   }
+  //   return query.sortByName().watch(fireImmediately: true);
+  // }
 
   Stream<List<ItemCategory>> findAllSeriesGroups(IptvServer activeIptvServer) {
     return findAllCategoriesOfType(ItemCategoryType.series);
@@ -146,7 +145,7 @@ class M3uService {
       query = query.nameContains(searchValue, caseSensitive: false);
     }
     if (category != null) {
-      query = query.categoryIdEqualTo(category.id.toString());
+      query = query.categoryIdEqualTo(category.id);
     }
     return query.iptvServer((q) {
       return q.idEqualTo(_activeIptvServer!.id);

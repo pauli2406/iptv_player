@@ -35,14 +35,14 @@ class SeriesInfo {
   String? cast;
   String? director;
   String? genre;
-  String? releaseDate;
+  DateTime? releaseDate;
   DateTime? lastModified;
-  String? rating;
+  double? rating;
   double? rating5based;
   List<String> backdropPath = const [];
   String? youtubeTrailer;
-  String? episodeRunTime;
-  String? categoryId;
+  int? episodeRunTime;
+  int? categoryId;
   List<int> categoryIds = const [];
 
   SeriesInfo.fromXTremeCodeSeriesInfo(XTremeCodeInfo info) {

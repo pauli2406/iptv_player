@@ -8,8 +8,7 @@ part 'epg_item.g.dart';
 class EpgItem {
   Id? id;
 
-  @Index(type: IndexType.hash)
-  final String epgId;
+  final int? epgId;
 
   final String? title;
 
@@ -21,8 +20,7 @@ class EpgItem {
 
   final String? description;
 
-  @Index(type: IndexType.hash)
-  final String channelId;
+  final String? channelId;
 
   final DateTime? startTimestamp;
 

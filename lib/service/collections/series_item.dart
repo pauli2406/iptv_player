@@ -45,12 +45,12 @@ class SeriesItem {
   String? genre;
   String? releaseDate;
   DateTime? lastModified;
-  String? rating;
+  double? rating;
   double? rating5based;
   List<String> backdropPath;
   String? youtubeTrailer;
-  String? episodeRunTime;
-  String? categoryId;
+  int? episodeRunTime;
+  int? categoryId;
   List<int> categoryIds;
   final iptvServer = IsarLink<IptvServer>();
   final seasons = IsarLinks<SeriesSeason>();
@@ -59,7 +59,7 @@ class SeriesItem {
 
   SeriesItem.fromXtreamCodeSeriesItem(
     XTremeCodeSeriesItem seriesItem,
-  )   : id = seriesItem.seriesId,
+  )   : id = seriesItem.seriesId!,
         num = seriesItem.num,
         name = seriesItem.name,
         title = seriesItem.title,

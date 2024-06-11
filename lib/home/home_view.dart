@@ -139,7 +139,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
             );
           },
           error: (error, __) {
-            print(error);
+            debugPrint(error.toString());
             return const Text("Error");
           },
           loading: () => MacosScaffold(

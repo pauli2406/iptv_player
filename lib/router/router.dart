@@ -19,7 +19,7 @@ final router = GoRouter(
             // GoRoute(
             //   path: 'series',
             //   builder: (context, state) {
-            //     M3UItem item = state.extra as M3UItem;
+            //     SeriesItem item = state.extra as SeriesItem;
             //     return SeriesSeasonPage(
             //       series: item.series!,
             //     );

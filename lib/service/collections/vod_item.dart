@@ -35,7 +35,7 @@ class VodItem {
   final double? rating;
   final double? rating5based;
   final DateTime? added;
-  final String? categoryId;
+  final int? categoryId;
   final List<int> categoryIds;
   final String? containerExtension;
   final String? customSid;
@@ -46,7 +46,7 @@ class VodItem {
   VodItem.fromXtreamCodeVodItem(
     XTremeCodeVodItem vodItem,
     this.streamUrl,
-  )   : id = vodItem.streamId,
+  )   : id = vodItem.streamId!,
         num = vodItem.num,
         name = vodItem.name,
         title = vodItem.title,

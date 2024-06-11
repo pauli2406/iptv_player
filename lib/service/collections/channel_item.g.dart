@@ -25,7 +25,7 @@ const ChannelItemSchema = CollectionSchema(
     r'categoryId': PropertySchema(
       id: 1,
       name: r'categoryId',
-      type: IsarType.string,
+      type: IsarType.long,
     ),
     r'categoryIds': PropertySchema(
       id: 2,
@@ -35,7 +35,7 @@ const ChannelItemSchema = CollectionSchema(
     r'customSid': PropertySchema(
       id: 3,
       name: r'customSid',
-      type: IsarType.string,
+      type: IsarType.long,
     ),
     r'directSource': PropertySchema(
       id: 4,
@@ -121,19 +121,7 @@ int _channelItemEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.categoryId;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
   bytesCount += 3 + object.categoryIds.length * 8;
-  {
-    final value = object.customSid;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
   {
     final value = object.directSource;
     if (value != null) {
@@ -181,9 +169,9 @@ void _channelItemSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDateTime(offsets[0], object.added);
-  writer.writeString(offsets[1], object.categoryId);
+  writer.writeLong(offsets[1], object.categoryId);
   writer.writeLongList(offsets[2], object.categoryIds);
-  writer.writeString(offsets[3], object.customSid);
+  writer.writeLong(offsets[3], object.customSid);
   writer.writeString(offsets[4], object.directSource);
   writer.writeString(offsets[5], object.epgChannelId);
   writer.writeString(offsets[6], object.name);
@@ -204,9 +192,9 @@ ChannelItem _channelItemDeserialize(
 ) {
   final object = ChannelItem(
     added: reader.readDateTimeOrNull(offsets[0]),
-    categoryId: reader.readStringOrNull(offsets[1]),
+    categoryId: reader.readLongOrNull(offsets[1]),
     categoryIds: reader.readLongList(offsets[2]) ?? [],
-    customSid: reader.readStringOrNull(offsets[3]),
+    customSid: reader.readLongOrNull(offsets[3]),
     directSource: reader.readStringOrNull(offsets[4]),
     epgChannelId: reader.readStringOrNull(offsets[5]),
     id: id,
@@ -232,11 +220,11 @@ P _channelItemDeserializeProp<P>(
     case 0:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 2:
       return (reader.readLongList(offset) ?? []) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
@@ -448,58 +436,49 @@ extension ChannelItemQueryFilter
   }
 
   QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      categoryIdEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+      categoryIdEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'categoryId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
       categoryIdGreaterThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'categoryId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
       categoryIdLessThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'categoryId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
       categoryIdBetween(
-    String? lower,
-    String? upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -508,77 +487,6 @@ extension ChannelItemQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      categoryIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'categoryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      categoryIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'categoryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      categoryIdContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'categoryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      categoryIdMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'categoryId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      categoryIdIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'categoryId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      categoryIdIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'categoryId',
-        value: '',
       ));
     });
   }
@@ -747,58 +655,49 @@ extension ChannelItemQueryFilter
   }
 
   QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      customSidEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+      customSidEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'customSid',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
       customSidGreaterThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'customSid',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
       customSidLessThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'customSid',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
       customSidBetween(
-    String? lower,
-    String? upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -807,77 +706,6 @@ extension ChannelItemQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      customSidStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'customSid',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      customSidEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'customSid',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      customSidContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'customSid',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      customSidMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'customSid',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      customSidIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'customSid',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
-      customSidIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'customSid',
-        value: '',
       ));
     });
   }
@@ -2650,10 +2478,9 @@ extension ChannelItemQueryWhereDistinct
     });
   }
 
-  QueryBuilder<ChannelItem, ChannelItem, QDistinct> distinctByCategoryId(
-      {bool caseSensitive = true}) {
+  QueryBuilder<ChannelItem, ChannelItem, QDistinct> distinctByCategoryId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'categoryId', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'categoryId');
     });
   }
 
@@ -2663,10 +2490,9 @@ extension ChannelItemQueryWhereDistinct
     });
   }
 
-  QueryBuilder<ChannelItem, ChannelItem, QDistinct> distinctByCustomSid(
-      {bool caseSensitive = true}) {
+  QueryBuilder<ChannelItem, ChannelItem, QDistinct> distinctByCustomSid() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'customSid', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'customSid');
     });
   }
 
@@ -2753,7 +2579,7 @@ extension ChannelItemQueryProperty
     });
   }
 
-  QueryBuilder<ChannelItem, String?, QQueryOperations> categoryIdProperty() {
+  QueryBuilder<ChannelItem, int?, QQueryOperations> categoryIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'categoryId');
     });
@@ -2765,7 +2591,7 @@ extension ChannelItemQueryProperty
     });
   }
 
-  QueryBuilder<ChannelItem, String?, QQueryOperations> customSidProperty() {
+  QueryBuilder<ChannelItem, int?, QQueryOperations> customSidProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'customSid');
     });

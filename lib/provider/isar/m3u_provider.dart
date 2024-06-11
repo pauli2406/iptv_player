@@ -59,15 +59,15 @@ Stream<List<ChannelViewModel>> findAllMovies(FindAllMoviesRef ref,
   });
 }
 
-@riverpod
-Stream<List<SeriesItem>> findAllSeries(FindAllSeriesRef ref,
-    {ItemCategory? category}) {
-  final searchValue = ref.watch(seriesSearchValueProvider);
-  final m3uService = ref.watch(m3uServiceProvider);
-  final activeIptvServer = m3uService.getActiveIptvServer()!;
+// @riverpod
+// Stream<List<SeriesItem>> findAllSeries(FindAllSeriesRef ref,
+//     {ItemCategory? category}) {
+//   final searchValue = ref.watch(seriesSearchValueProvider);
+//   final m3uService = ref.watch(m3uServiceProvider);
+//   final activeIptvServer = m3uService.getActiveIptvServer()!;
 
-  return m3uService.findAllSeries(activeIptvServer, searchValue, category);
-}
+//   return m3uService.findAllSeries(activeIptvServer, searchValue, category);
+// }
 
 class ChannelViewModel {
   int? streamId;
@@ -142,7 +142,6 @@ Stream<List<ChannelViewModel>> findAllChannels(FindAllChannelsRef ref,
       );
     }).toList();
   });
-  // return m3uService.findAllChannels(searchValue, category);
 }
 
 @riverpod

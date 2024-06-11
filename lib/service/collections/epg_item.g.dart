@@ -35,7 +35,7 @@ const EpgItemSchema = CollectionSchema(
     r'epgId': PropertySchema(
       id: 3,
       name: r'epgId',
-      type: IsarType.string,
+      type: IsarType.long,
     ),
     r'lang': PropertySchema(
       id: 4,
@@ -68,34 +68,7 @@ const EpgItemSchema = CollectionSchema(
   deserialize: _epgItemDeserialize,
   deserializeProp: _epgItemDeserializeProp,
   idName: r'id',
-  indexes: {
-    r'epgId': IndexSchema(
-      id: 7630417913149996013,
-      name: r'epgId',
-      unique: false,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'epgId',
-          type: IndexType.hash,
-          caseSensitive: true,
-        )
-      ],
-    ),
-    r'channelId': IndexSchema(
-      id: -8352446570702114471,
-      name: r'channelId',
-      unique: false,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'channelId',
-          type: IndexType.hash,
-          caseSensitive: true,
-        )
-      ],
-    )
-  },
+  indexes: {},
   links: {
     r'iptvServer': LinkSchema(
       id: 4343131501680117919,
@@ -117,14 +90,18 @@ int _epgItemEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.channelId.length * 3;
+  {
+    final value = object.channelId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final value = object.description;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
   }
-  bytesCount += 3 + object.epgId.length * 3;
   {
     final value = object.lang;
     if (value != null) {
@@ -149,7 +126,7 @@ void _epgItemSerialize(
   writer.writeString(offsets[0], object.channelId);
   writer.writeString(offsets[1], object.description);
   writer.writeDateTime(offsets[2], object.end);
-  writer.writeString(offsets[3], object.epgId);
+  writer.writeLong(offsets[3], object.epgId);
   writer.writeString(offsets[4], object.lang);
   writer.writeDateTime(offsets[5], object.start);
   writer.writeDateTime(offsets[6], object.startTimestamp);
@@ -165,13 +142,13 @@ EpgItem _epgItemDeserialize(
 ) {
   final object = EpgItem(
     id,
-    reader.readString(offsets[3]),
+    reader.readLongOrNull(offsets[3]),
     reader.readStringOrNull(offsets[8]),
     reader.readStringOrNull(offsets[4]),
     reader.readDateTimeOrNull(offsets[5]),
     reader.readDateTimeOrNull(offsets[2]),
     reader.readStringOrNull(offsets[1]),
-    reader.readString(offsets[0]),
+    reader.readStringOrNull(offsets[0]),
     reader.readDateTimeOrNull(offsets[6]),
     reader.readDateTimeOrNull(offsets[7]),
   );
@@ -186,13 +163,13 @@ P _epgItemDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
       return (reader.readStringOrNull(offset)) as P;
     case 2:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
@@ -295,101 +272,28 @@ extension EpgItemQueryWhere on QueryBuilder<EpgItem, EpgItem, QWhereClause> {
       ));
     });
   }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterWhereClause> epgIdEqualTo(String epgId) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'epgId',
-        value: [epgId],
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterWhereClause> epgIdNotEqualTo(
-      String epgId) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'epgId',
-              lower: [],
-              upper: [epgId],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'epgId',
-              lower: [epgId],
-              includeLower: false,
-              upper: [],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'epgId',
-              lower: [epgId],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'epgId',
-              lower: [],
-              upper: [epgId],
-              includeUpper: false,
-            ));
-      }
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterWhereClause> channelIdEqualTo(
-      String channelId) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'channelId',
-        value: [channelId],
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterWhereClause> channelIdNotEqualTo(
-      String channelId) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'channelId',
-              lower: [],
-              upper: [channelId],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'channelId',
-              lower: [channelId],
-              includeLower: false,
-              upper: [],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'channelId',
-              lower: [channelId],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'channelId',
-              lower: [],
-              upper: [channelId],
-              includeUpper: false,
-            ));
-      }
-    });
-  }
 }
 
 extension EpgItemQueryFilter
     on QueryBuilder<EpgItem, EpgItem, QFilterCondition> {
+  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> channelIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'channelId',
+      ));
+    });
+  }
+
+  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> channelIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'channelId',
+      ));
+    });
+  }
+
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> channelIdEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -402,7 +306,7 @@ extension EpgItemQueryFilter
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> channelIdGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -417,7 +321,7 @@ extension EpgItemQueryFilter
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> channelIdLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -432,8 +336,8 @@ extension EpgItemQueryFilter
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> channelIdBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -734,55 +638,63 @@ extension EpgItemQueryFilter
     });
   }
 
+  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'epgId',
+      ));
+    });
+  }
+
+  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'epgId',
+      ));
+    });
+  }
+
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+      int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'epgId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdGreaterThan(
-    String value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'epgId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdLessThan(
-    String value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'epgId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdBetween(
-    String lower,
-    String upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -791,75 +703,6 @@ extension EpgItemQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'epgId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'epgId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'epgId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'epgId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'epgId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'epgId',
-        value: '',
       ));
     });
   }
@@ -1710,10 +1553,9 @@ extension EpgItemQueryWhereDistinct
     });
   }
 
-  QueryBuilder<EpgItem, EpgItem, QDistinct> distinctByEpgId(
-      {bool caseSensitive = true}) {
+  QueryBuilder<EpgItem, EpgItem, QDistinct> distinctByEpgId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'epgId', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'epgId');
     });
   }
 
@@ -1758,7 +1600,7 @@ extension EpgItemQueryProperty
     });
   }
 
-  QueryBuilder<EpgItem, String, QQueryOperations> channelIdProperty() {
+  QueryBuilder<EpgItem, String?, QQueryOperations> channelIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'channelId');
     });
@@ -1776,7 +1618,7 @@ extension EpgItemQueryProperty
     });
   }
 
-  QueryBuilder<EpgItem, String, QQueryOperations> epgIdProperty() {
+  QueryBuilder<EpgItem, int?, QQueryOperations> epgIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'epgId');
     });

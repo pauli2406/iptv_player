@@ -30,7 +30,7 @@ const SeriesInfoSchema = CollectionSchema(
     r'categoryId': PropertySchema(
       id: 2,
       name: r'categoryId',
-      type: IsarType.string,
+      type: IsarType.long,
     ),
     r'categoryIds': PropertySchema(
       id: 3,
@@ -50,7 +50,7 @@ const SeriesInfoSchema = CollectionSchema(
     r'episodeRunTime': PropertySchema(
       id: 6,
       name: r'episodeRunTime',
-      type: IsarType.string,
+      type: IsarType.long,
     ),
     r'genre': PropertySchema(
       id: 7,
@@ -75,7 +75,7 @@ const SeriesInfoSchema = CollectionSchema(
     r'rating': PropertySchema(
       id: 11,
       name: r'rating',
-      type: IsarType.string,
+      type: IsarType.double,
     ),
     r'rating5based': PropertySchema(
       id: 12,
@@ -85,7 +85,7 @@ const SeriesInfoSchema = CollectionSchema(
     r'releaseDate': PropertySchema(
       id: 13,
       name: r'releaseDate',
-      type: IsarType.string,
+      type: IsarType.dateTime,
     ),
     r'title': PropertySchema(
       id: 14,
@@ -136,12 +136,6 @@ int _seriesInfoEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  {
-    final value = object.categoryId;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
   bytesCount += 3 + object.categoryIds.length * 8;
   {
     final value = object.cover;
@@ -151,12 +145,6 @@ int _seriesInfoEstimateSize(
   }
   {
     final value = object.director;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.episodeRunTime;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -175,18 +163,6 @@ int _seriesInfoEstimateSize(
   }
   {
     final value = object.plot;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.rating;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.releaseDate;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -220,18 +196,18 @@ void _seriesInfoSerialize(
 ) {
   writer.writeStringList(offsets[0], object.backdropPath);
   writer.writeString(offsets[1], object.cast);
-  writer.writeString(offsets[2], object.categoryId);
+  writer.writeLong(offsets[2], object.categoryId);
   writer.writeLongList(offsets[3], object.categoryIds);
   writer.writeString(offsets[4], object.cover);
   writer.writeString(offsets[5], object.director);
-  writer.writeString(offsets[6], object.episodeRunTime);
+  writer.writeLong(offsets[6], object.episodeRunTime);
   writer.writeString(offsets[7], object.genre);
   writer.writeDateTime(offsets[8], object.lastModified);
   writer.writeString(offsets[9], object.name);
   writer.writeString(offsets[10], object.plot);
-  writer.writeString(offsets[11], object.rating);
+  writer.writeDouble(offsets[11], object.rating);
   writer.writeDouble(offsets[12], object.rating5based);
-  writer.writeString(offsets[13], object.releaseDate);
+  writer.writeDateTime(offsets[13], object.releaseDate);
   writer.writeString(offsets[14], object.title);
   writer.writeString(offsets[15], object.year);
   writer.writeString(offsets[16], object.youtubeTrailer);
@@ -246,19 +222,19 @@ SeriesInfo _seriesInfoDeserialize(
   final object = SeriesInfo(
     backdropPath: reader.readStringList(offsets[0]) ?? [],
     cast: reader.readStringOrNull(offsets[1]),
-    categoryId: reader.readStringOrNull(offsets[2]),
+    categoryId: reader.readLongOrNull(offsets[2]),
     categoryIds: reader.readLongList(offsets[3]) ?? [],
     cover: reader.readStringOrNull(offsets[4]),
     director: reader.readStringOrNull(offsets[5]),
-    episodeRunTime: reader.readStringOrNull(offsets[6]),
+    episodeRunTime: reader.readLongOrNull(offsets[6]),
     genre: reader.readStringOrNull(offsets[7]),
     id: id,
     lastModified: reader.readDateTimeOrNull(offsets[8]),
     name: reader.readStringOrNull(offsets[9]),
     plot: reader.readStringOrNull(offsets[10]),
-    rating: reader.readStringOrNull(offsets[11]),
+    rating: reader.readDoubleOrNull(offsets[11]),
     rating5based: reader.readDoubleOrNull(offsets[12]),
-    releaseDate: reader.readStringOrNull(offsets[13]),
+    releaseDate: reader.readDateTimeOrNull(offsets[13]),
     title: reader.readStringOrNull(offsets[14]),
     year: reader.readStringOrNull(offsets[15]),
     youtubeTrailer: reader.readStringOrNull(offsets[16]),
@@ -278,7 +254,7 @@ P _seriesInfoDeserializeProp<P>(
     case 1:
       return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 3:
       return (reader.readLongList(offset) ?? []) as P;
     case 4:
@@ -286,7 +262,7 @@ P _seriesInfoDeserializeProp<P>(
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
@@ -296,11 +272,11 @@ P _seriesInfoDeserializeProp<P>(
     case 10:
       return (reader.readStringOrNull(offset)) as P;
     case 11:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 12:
       return (reader.readDoubleOrNull(offset)) as P;
     case 13:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 14:
       return (reader.readStringOrNull(offset)) as P;
     case 15:
@@ -793,56 +769,48 @@ extension SeriesInfoQueryFilter
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition> categoryIdEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+      int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'categoryId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
       categoryIdGreaterThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'categoryId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
       categoryIdLessThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'categoryId',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition> categoryIdBetween(
-    String? lower,
-    String? upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -851,78 +819,6 @@ extension SeriesInfoQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      categoryIdStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'categoryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      categoryIdEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'categoryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      categoryIdContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'categoryId',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition> categoryIdMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'categoryId',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      categoryIdIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'categoryId',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      categoryIdIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'categoryId',
-        value: '',
       ));
     });
   }
@@ -1389,58 +1285,49 @@ extension SeriesInfoQueryFilter
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      episodeRunTimeEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+      episodeRunTimeEqualTo(int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'episodeRunTime',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
       episodeRunTimeGreaterThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'episodeRunTime',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
       episodeRunTimeLessThan(
-    String? value, {
+    int? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'episodeRunTime',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
       episodeRunTimeBetween(
-    String? lower,
-    String? upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -1449,77 +1336,6 @@ extension SeriesInfoQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      episodeRunTimeStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'episodeRunTime',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      episodeRunTimeEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'episodeRunTime',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      episodeRunTimeContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'episodeRunTime',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      episodeRunTimeMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'episodeRunTime',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      episodeRunTimeIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'episodeRunTime',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      episodeRunTimeIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'episodeRunTime',
-        value: '',
       ));
     });
   }
@@ -2124,54 +1940,54 @@ extension SeriesInfoQueryFilter
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition> ratingEqualTo(
-    String? value, {
-    bool caseSensitive = true,
+    double? value, {
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'rating',
         value: value,
-        caseSensitive: caseSensitive,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition> ratingGreaterThan(
-    String? value, {
+    double? value, {
     bool include = false,
-    bool caseSensitive = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'rating',
         value: value,
-        caseSensitive: caseSensitive,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition> ratingLessThan(
-    String? value, {
+    double? value, {
     bool include = false,
-    bool caseSensitive = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'rating',
         value: value,
-        caseSensitive: caseSensitive,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition> ratingBetween(
-    String? lower,
-    String? upper, {
+    double? lower,
+    double? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -2180,76 +1996,7 @@ extension SeriesInfoQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition> ratingStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'rating',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition> ratingEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'rating',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition> ratingContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'rating',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition> ratingMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'rating',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition> ratingIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'rating',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      ratingIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'rating',
-        value: '',
+        epsilon: epsilon,
       ));
     });
   }
@@ -2357,58 +2104,49 @@ extension SeriesInfoQueryFilter
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      releaseDateEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+      releaseDateEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'releaseDate',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
       releaseDateGreaterThan(
-    String? value, {
+    DateTime? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'releaseDate',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
       releaseDateLessThan(
-    String? value, {
+    DateTime? value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'releaseDate',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
       releaseDateBetween(
-    String? lower,
-    String? upper, {
+    DateTime? lower,
+    DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -2417,77 +2155,6 @@ extension SeriesInfoQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      releaseDateStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'releaseDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      releaseDateEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'releaseDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      releaseDateContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'releaseDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      releaseDateMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'releaseDate',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      releaseDateIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'releaseDate',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesInfo, SeriesInfo, QAfterFilterCondition>
-      releaseDateIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'releaseDate',
-        value: '',
       ));
     });
   }
@@ -3343,10 +3010,9 @@ extension SeriesInfoQueryWhereDistinct
     });
   }
 
-  QueryBuilder<SeriesInfo, SeriesInfo, QDistinct> distinctByCategoryId(
-      {bool caseSensitive = true}) {
+  QueryBuilder<SeriesInfo, SeriesInfo, QDistinct> distinctByCategoryId() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'categoryId', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'categoryId');
     });
   }
 
@@ -3370,11 +3036,9 @@ extension SeriesInfoQueryWhereDistinct
     });
   }
 
-  QueryBuilder<SeriesInfo, SeriesInfo, QDistinct> distinctByEpisodeRunTime(
-      {bool caseSensitive = true}) {
+  QueryBuilder<SeriesInfo, SeriesInfo, QDistinct> distinctByEpisodeRunTime() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'episodeRunTime',
-          caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'episodeRunTime');
     });
   }
 
@@ -3405,10 +3069,9 @@ extension SeriesInfoQueryWhereDistinct
     });
   }
 
-  QueryBuilder<SeriesInfo, SeriesInfo, QDistinct> distinctByRating(
-      {bool caseSensitive = true}) {
+  QueryBuilder<SeriesInfo, SeriesInfo, QDistinct> distinctByRating() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'rating', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'rating');
     });
   }
 
@@ -3418,10 +3081,9 @@ extension SeriesInfoQueryWhereDistinct
     });
   }
 
-  QueryBuilder<SeriesInfo, SeriesInfo, QDistinct> distinctByReleaseDate(
-      {bool caseSensitive = true}) {
+  QueryBuilder<SeriesInfo, SeriesInfo, QDistinct> distinctByReleaseDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'releaseDate', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'releaseDate');
     });
   }
 
@@ -3469,7 +3131,7 @@ extension SeriesInfoQueryProperty
     });
   }
 
-  QueryBuilder<SeriesInfo, String?, QQueryOperations> categoryIdProperty() {
+  QueryBuilder<SeriesInfo, int?, QQueryOperations> categoryIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'categoryId');
     });
@@ -3493,7 +3155,7 @@ extension SeriesInfoQueryProperty
     });
   }
 
-  QueryBuilder<SeriesInfo, String?, QQueryOperations> episodeRunTimeProperty() {
+  QueryBuilder<SeriesInfo, int?, QQueryOperations> episodeRunTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'episodeRunTime');
     });
@@ -3523,7 +3185,7 @@ extension SeriesInfoQueryProperty
     });
   }
 
-  QueryBuilder<SeriesInfo, String?, QQueryOperations> ratingProperty() {
+  QueryBuilder<SeriesInfo, double?, QQueryOperations> ratingProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'rating');
     });
@@ -3535,7 +3197,7 @@ extension SeriesInfoQueryProperty
     });
   }
 
-  QueryBuilder<SeriesInfo, String?, QQueryOperations> releaseDateProperty() {
+  QueryBuilder<SeriesInfo, DateTime?, QQueryOperations> releaseDateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'releaseDate');
     });

@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart' hide OverlayVisibilityMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:iptv_player/home/widgets/movie_list_item.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
 import 'package:iptv_player/theme.dart';
 import 'package:macos_ui/macos_ui.dart';
 
-class ReusableWidget extends ConsumerStatefulWidget {
+class GridLayoutWidget extends ConsumerStatefulWidget {
   final String title;
   final AsyncValue<List> channelProvider;
   final AsyncValue<List<ItemCategory>> categories;
@@ -15,12 +14,13 @@ class ReusableWidget extends ConsumerStatefulWidget {
   final double height;
   final double width;
   final TextEditingController searchController;
-  final String route;
+  final Widget Function(BuildContext, double, dynamic) itemBuilder;
 
   final String errorText;
   final Function(ItemCategory?) onCategoryChanged;
 
-  ReusableWidget({
+  const GridLayoutWidget({
+    super.key,
     required this.title,
     required this.channelProvider,
     required this.categories,
@@ -30,14 +30,14 @@ class ReusableWidget extends ConsumerStatefulWidget {
     required this.errorText,
     required this.onCategoryChanged,
     required this.searchController,
-    required this.route,
+    required this.itemBuilder,
   });
 
   @override
-  ConsumerState<ReusableWidget> createState() => _ReusableWidgetState();
+  ConsumerState<GridLayoutWidget> createState() => _GridLayoutWidgetState();
 }
 
-class _ReusableWidgetState extends ConsumerState<ReusableWidget> {
+class _GridLayoutWidgetState extends ConsumerState<GridLayoutWidget> {
   late TextEditingController searchController;
   int _pageIndex = 0;
 
@@ -175,10 +175,10 @@ class _ReusableWidgetState extends ConsumerState<ReusableWidget> {
                                 mainAxisSpacing: 10,
                                 childAspectRatio: (itemWidth / itemHeight),
                               ),
-                              itemBuilder: (_, index) => M3uListItem(
-                                channelViewModel: channels[index],
-                                height: itemHeight,
-                                route: widget.route,
+                              itemBuilder: (_, index) => widget.itemBuilder(
+                                context,
+                                itemHeight,
+                                channels[index],
                               ),
                               itemCount: channels.length,
                               padding: const EdgeInsets.all(10),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iptv_player/home/provider/search_value_provider.dart';
 import 'package:iptv_player/home/widgets/grid_layout_widget.dart';
+import 'package:iptv_player/home/widgets/movie_list_item.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
 
@@ -16,19 +17,6 @@ class ChannelsPage extends ConsumerStatefulWidget {
 class _ChannelsPageState extends ConsumerState<ChannelsPage> {
   late TextEditingController searchController;
   ItemCategory? _category;
-
-  int calculateCrossAxisCount(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    if (width > 1500) {
-      return 5;
-    } else if (width > 1000) {
-      return 4;
-    } else if (width > 700) {
-      return 3;
-    } else {
-      return 2;
-    }
-  }
 
   @override
   void initState() {
@@ -47,21 +35,25 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
       findAllChannelsProvider(category: _category),
     );
     final categories = ref.watch(findAllChannelGroupsProvider);
-    return ReusableWidget(
+    return GridLayoutWidget(
       title: 'Channels',
       channelProvider: channelProvider,
       categories: categories,
       placeHolderForSearchField: 'Search for a channel',
-      height: 1.75,
+      height: 1.65,
       width: 2,
       errorText: 'No channels found',
-      route: "/main/channel/player",
       onCategoryChanged: (ItemCategory? category) {
         setState(() {
           _category = category;
         });
       },
       searchController: searchController,
+      itemBuilder: (context, itemHeight, item) => M3uListItem(
+        channelViewModel: item,
+        height: itemHeight,
+        route: '/main/channel/player',
+      ),
     );
   }
 }

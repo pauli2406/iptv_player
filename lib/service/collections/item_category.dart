@@ -16,7 +16,7 @@ class ItemCategory {
   ItemCategory(this.id, this.categoryName, this.parentId, this.type);
 
   ItemCategory.fromCategory(XTremeCodeCategory category, this.type)
-      : id = int.parse(category.categoryId),
+      : id = category.categoryId!,
         categoryName = category.categoryName,
         parentId = category.parentId;
 }

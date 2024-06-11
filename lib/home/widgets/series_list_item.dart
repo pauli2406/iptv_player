@@ -2,13 +2,13 @@ import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:go_router/go_router.dart';
-import 'package:iptv_player/service/collections/m3u/m3u_item.dart';
+import 'package:iptv_player/service/collections/series_item.dart';
 import 'package:macos_ui/macos_ui.dart';
 
 class SeriesListItem extends StatefulWidget {
-  const SeriesListItem(this.m3uItem, {required this.height, super.key});
+  const SeriesListItem(this.seriesItem, {required this.height, super.key});
 
-  final M3UItem m3uItem;
+  final SeriesItem seriesItem;
   final double height;
 
   @override
@@ -30,7 +30,7 @@ class _SeriesListItemState extends State<SeriesListItem> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () async {
-          context.go("/main/series", extra: widget.m3uItem);
+          context.go("/main/series", extra: widget.seriesItem);
         },
         child: Container(
           decoration: BoxDecoration(
@@ -47,8 +47,8 @@ class _SeriesListItemState extends State<SeriesListItem> {
                 ),
                 child: FastCachedImage(
                   fit: BoxFit.fitHeight,
-                  url: widget.m3uItem.attributes?.tvgLogo ??
-                      "https://placehold.co/600x400",
+                  url:
+                      widget.seriesItem.cover ?? "https://placehold.co/600x400",
                   loadingBuilder: (context, progress) {
                     return Center(
                       child: ProgressBar(
@@ -64,7 +64,7 @@ class _SeriesListItemState extends State<SeriesListItem> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "${widget.m3uItem.series}",
+                "${widget.seriesItem.title}",
                 style: MacosTheme.of(context).typography.body,
               ),
             )

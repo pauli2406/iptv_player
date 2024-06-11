@@ -19,7 +19,7 @@ class SeriesSeason {
   });
 
   Id? id;
-  String? airDate;
+  DateTime? airDate;
   int? episodeCount;
   int? seriesId;
   String? name;

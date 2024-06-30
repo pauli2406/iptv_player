@@ -124,7 +124,7 @@ const SeriesEpisodeSchema = CollectionSchema(
   getId: _seriesEpisodeGetId,
   getLinks: _seriesEpisodeGetLinks,
   attach: _seriesEpisodeAttach,
-  version: '3.1.0+1',
+  version: '3.1.7',
 );
 
 int _seriesEpisodeEstimateSize(

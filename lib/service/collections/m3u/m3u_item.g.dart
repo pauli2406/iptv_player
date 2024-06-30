@@ -115,7 +115,7 @@ const M3UItemSchema = CollectionSchema(
   getId: _m3UItemGetId,
   getLinks: _m3UItemGetLinks,
   attach: _m3UItemAttach,
-  version: '3.1.0+1',
+  version: '3.1.7',
 );
 
 int _m3UItemEstimateSize(

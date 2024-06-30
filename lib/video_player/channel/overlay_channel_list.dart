@@ -8,7 +8,7 @@ typedef OnChannelSelectedCallback = void Function(ChannelViewModel channel);
 
 class OverlayChannelListWidget extends StatefulWidget {
   final AsyncValue<List<ChannelViewModel>> channels;
-  final Function onClose;
+  final VoidCallback onClose;
   final OnChannelSelectedCallback onChannelSelected;
 
   const OverlayChannelListWidget({
@@ -19,11 +19,10 @@ class OverlayChannelListWidget extends StatefulWidget {
   });
 
   @override
-  _OverlayChannelListWidgetState createState() =>
-      _OverlayChannelListWidgetState();
+  OverlayChannelListWidgetState createState() => OverlayChannelListWidgetState();
 }
 
-class _OverlayChannelListWidgetState extends State<OverlayChannelListWidget> {
+class OverlayChannelListWidgetState extends State<OverlayChannelListWidget> {
   int? _hoveredIndex;
   final searchTextNotifier = ValueNotifier<String>('');
 
@@ -38,193 +37,120 @@ class _OverlayChannelListWidgetState extends State<OverlayChannelListWidget> {
       ),
       child: Column(
         children: <Widget>[
-          Container(
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: Colors.white,
-                  width: 1.0,
-                ),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 8.0),
-                  child: Text(
-                    '',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  onPressed: () {
-                    widget.onClose();
-                  },
-                ),
-              ],
+          _buildHeader(),
+          _buildSearchField(),
+          _buildChannelList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.white, width: 1.0)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(left: 8.0),
+            child: Text(
+              '',
+              style: TextStyle(color: Colors.white, fontSize: 16),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: (value) => searchTextNotifier.value = value,
-              decoration: const InputDecoration(
-                hintText: 'Search channels...',
-                hintStyle: TextStyle(color: Colors.white),
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 5.0,
-                  horizontal: 5.0,
-                ),
-              ),
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-          Expanded(
-            child: ValueListenableBuilder<String>(
-                valueListenable: searchTextNotifier,
-                builder: (context, searchText, _) {
-                  return widget.channels.when(
-                    data: (channels) {
-                      final filteredChannels = channels
-                          .where((channel) => channel.title
-                              .toLowerCase()
-                              .contains(searchText.toLowerCase()))
-                          .toList();
-                      return ListView.builder(
-                        itemCount: filteredChannels.length,
-                        prototypeItem: filteredChannels.isNotEmpty
-                            ? InkWell(
-                                child: ListTile(
-                                  title: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        filteredChannels.first.title,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      Text(
-                                        utf8.decode(
-                                          base64.decode(
-                                            filteredChannels.first
-                                                    .currentEpgItem?.title ??
-                                                '',
-                                          ),
-                                        ),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 8,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : const ListTile(
-                                title: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "No channels found",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                        itemBuilder: (context, index) {
-                          return filteredChannels.isNotEmpty
-                              ? InkWell(
-                                  onTap: () => widget.onChannelSelected(
-                                      filteredChannels[index]),
-                                  onHover: (value) {
-                                    setState(() {
-                                      _hoveredIndex = value ? index : null;
-                                    });
-                                  },
-                                  child: Container(
-                                    color: _hoveredIndex == index
-                                        ? Colors.blue
-                                        : null,
-                                    child: ListTile(
-                                      title: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            filteredChannels[index].title,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                          Text(
-                                            utf8.decode(
-                                              base64.decode(
-                                                filteredChannels[index]
-                                                        .currentEpgItem
-                                                        ?.title ??
-                                                    '',
-                                              ),
-                                            ),
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 8,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : const ListTile(
-                                  title: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "No channels found",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                        },
-                      );
-                    },
-                    error: (error, _) => const ListTile(
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Error loading channels",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    loading: () => const CircularProgressIndicator(),
-                  );
-                }),
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.white),
+            onPressed: widget.onClose,
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        onChanged: (value) => searchTextNotifier.value = value,
+        decoration: const InputDecoration(
+          hintText: 'Search channels...',
+          hintStyle: TextStyle(color: Colors.white),
+          border: OutlineInputBorder(),
+          contentPadding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+        ),
+        style: const TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _buildChannelList() {
+    return Expanded(
+      child: ValueListenableBuilder<String>(
+        valueListenable: searchTextNotifier,
+        builder: (context, searchText, _) {
+          return widget.channels.when(
+            data: (channels) => _buildListView(channels, searchText),
+            error: (_, __) => const ListTile(
+              title: Text(
+                "Error loading channels",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
+            loading: () => const CircularProgressIndicator(),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildListView(List<ChannelViewModel> channels, String searchText) {
+    final filteredChannels = channels
+        .where((channel) => channel.title.toLowerCase().contains(searchText.toLowerCase()))
+        .toList();
+
+    if (filteredChannels.isEmpty) {
+      return const ListTile(
+        title: Text(
+          "No channels found",
+          style: TextStyle(fontSize: 16),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: filteredChannels.length,
+      itemBuilder: (context, index) {
+        final channel = filteredChannels[index];
+        return InkWell(
+          onTap: () => widget.onChannelSelected(channel),
+          onHover: (value) {
+            setState(() {
+              _hoveredIndex = value ? index : null;
+            });
+          },
+          child: Container(
+            color: _hoveredIndex == index ? Colors.blue : null,
+            child: ListTile(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    channel.title,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                  Text(
+                    utf8.decode(base64.decode(channel.currentEpgItem?.title ?? '')),
+                    style: const TextStyle(color: Colors.white, fontSize: 8),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

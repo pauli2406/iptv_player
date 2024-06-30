@@ -49,7 +49,7 @@ const M3UMetaDataSchema = CollectionSchema(
   getId: _m3UMetaDataGetId,
   getLinks: _m3UMetaDataGetLinks,
   attach: _m3UMetaDataAttach,
-  version: '3.1.0+1',
+  version: '3.1.7',
 );
 
 int _m3UMetaDataEstimateSize(

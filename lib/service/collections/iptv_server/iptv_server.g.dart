@@ -64,7 +64,7 @@ const IptvServerSchema = CollectionSchema(
   getId: _iptvServerGetId,
   getLinks: _iptvServerGetLinks,
   attach: _iptvServerAttach,
-  version: '3.1.0+1',
+  version: '3.1.7',
 );
 
 int _iptvServerEstimateSize(

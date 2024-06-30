@@ -54,18 +54,6 @@ class M3uService {
     }).watch(fireImmediately: true);
   }
 
-  // Stream<List<M3UItem>> findAllItemsOfSeriesAndSeason(
-  //     IptvServer activeIptvServer, String series, String season) {
-  //   return isarService.isar.seriesItems
-  //       .filter()
-  //       .iptvServer((q) {
-  //         return q.idEqualTo(_activeIptvServer!.id);
-  //       })
-  //       .seriesEqualTo(series)
-  //       .seasonEqualTo(season)
-  //       .watch(fireImmediately: true);
-  // }
-
   Stream<List<M3UItem>> findAllSeasonsOfSeries(
       IptvServer activeIptvServer, String series) {
     return isarService.isar.m3UItems
@@ -79,20 +67,6 @@ class M3uService {
         .distinctBySeason()
         .watch(fireImmediately: true);
   }
-
-  // Stream<List<SeriesItem>> findAllSeries(IptvServer activeIptvServer,
-  //     String? searchValue, ItemCategory? category) {
-  //   var query = isarService.isar.seriesItems.filter().iptvServer((q) {
-  //     return q.idEqualTo(_activeIptvServer!.id);
-  //   });
-  //   if (searchValue != null && searchValue.isNotEmpty) {
-  //     query = query.nameContains(searchValue, caseSensitive: false);
-  //   }
-  //   if (category != null) {
-  //     query = query.categoryIdEqualTo(category.id.toString());
-  //   }
-  //   return query.sortByName().watch(fireImmediately: true);
-  // }
 
   Stream<List<ItemCategory>> findAllSeriesGroups(IptvServer activeIptvServer) {
     return findAllCategoriesOfType(ItemCategoryType.series);
@@ -210,3 +184,5 @@ class M3uService {
     }
   }
 }
+
+

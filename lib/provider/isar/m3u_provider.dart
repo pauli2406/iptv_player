@@ -3,8 +3,6 @@ import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:iptv_player/service/collections/epg_item.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
 import 'package:iptv_player/service/collections/m3u/m3u_item.dart';
-import 'package:iptv_player/service/collections/series_item.dart';
-import 'package:iptv_player/service/collections/vod_item.dart';
 import 'package:iptv_player/service/m3u_parse_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

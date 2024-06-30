@@ -81,7 +81,7 @@ const EpgItemSchema = CollectionSchema(
   getId: _epgItemGetId,
   getLinks: _epgItemGetLinks,
   attach: _epgItemAttach,
-  version: '3.1.0+1',
+  version: '3.1.7',
 );
 
 int _epgItemEstimateSize(

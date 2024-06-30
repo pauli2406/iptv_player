@@ -111,7 +111,7 @@ const VodItemSchema = CollectionSchema(
   getId: _vodItemGetId,
   getLinks: _vodItemGetLinks,
   attach: _vodItemAttach,
-  version: '3.1.0+1',
+  version: '3.1.7',
 );
 
 int _vodItemEstimateSize(

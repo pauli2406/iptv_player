@@ -114,7 +114,7 @@ const SeriesInfoSchema = CollectionSchema(
   getId: _seriesInfoGetId,
   getLinks: _seriesInfoGetLinks,
   attach: _seriesInfoAttach,
-  version: '3.1.0+1',
+  version: '3.1.7',
 );
 
 int _seriesInfoEstimateSize(

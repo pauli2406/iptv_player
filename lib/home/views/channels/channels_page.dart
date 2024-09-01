@@ -36,6 +36,7 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
       findAllChannelsProvider(category: _category),
     );
     final categories = ref.watch(findAllChannelGroupsProvider);
+    
     return GridLayoutWidget(
       title: 'Channels',
       channelProvider: channelProvider,

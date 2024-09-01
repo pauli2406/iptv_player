@@ -227,13 +227,13 @@ class IptvServerService {
     debugPrint("Start persisting EPG for channels ${channels.length}");
     try {
       debugPrint("Download EPG");
-      final epg = await client.epg(useLocalFile: true);
+      final epg = await client.epg(useLocalFile: false);
       debugPrint("Downloaded EPG successfully");
       isarService.isar.writeTxnSync(() {
-      isarService.isar.epgItems
-          .filter()
-          .iptvServer((q) => q.idEqualTo(activeIptvServer.id))
-          .deleteAllSync();
+        isarService.isar.epgItems
+            .filter()
+            .iptvServer((q) => q.idEqualTo(activeIptvServer.id))
+            .deleteAllSync();
         debugPrint("Cleared existing EPG");
         var items = epg.programmes
             .map((item) =>

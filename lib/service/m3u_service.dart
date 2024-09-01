@@ -111,6 +111,25 @@ class M3uService {
     }).findFirstSync();
   }
 
+List<EpgItem> epgOfChannel(String epgChannelId) {
+    QueryBuilder<EpgItem, EpgItem, QFilterCondition> query =
+        isarService.isar.epgItems.filter();
+    query = query.channelIdEqualTo(epgChannelId);
+    return query.iptvServer((q) {
+      return q.idEqualTo(_activeIptvServer!.id);
+    }).findAllSync();
+  }
+
+  List<EpgItem> epgOfChannels() {
+    QueryBuilder<EpgItem, EpgItem, QFilterCondition> query =
+        isarService.isar.epgItems.filter();
+    var now = DateTime.now();
+    query = query.startLessThan(now).and().endGreaterThan(now);
+    return query.iptvServer((q) {
+      return q.idEqualTo(_activeIptvServer!.id);
+    }).findAllSync();
+  }
+
   Stream<List<ChannelItem>> findAllChannels(
       String? searchValue, ItemCategory? category) {
     QueryBuilder<ChannelItem, ChannelItem, QFilterCondition> query =
@@ -168,7 +187,6 @@ class M3uService {
   }
 
   EpgItem? findCurrentEpgItem(ChannelItem channel) {
-    var now = DateTime.now();
     if (channel.epgChannelId == null) {
       return null;
     } else {
@@ -178,11 +196,7 @@ class M3uService {
             return q.idEqualTo(_activeIptvServer!.id);
           })
           .channelIdEqualTo(channel.epgChannelId!)
-          .startLessThan(now)
-          .endGreaterThan(now)
           .findFirstSync();
     }
   }
 }
-
-

@@ -20,21 +20,21 @@ dependencies:
     hosted: https://pub.isar-community.dev/
   isar_flutter_libs: # contains Isar Core
     version: *isar_version
-    hosted: https://pub.isar-community.dev/
+    hosted: https://pub.isar-community.dev/ 
   macos_ui: ^2.0.9
   media_kit: ^1.1.11                             # Primary package.
   media_kit_video: ^1.2.5                        # For video rendering.
   media_kit_libs_video: ^1.0.4
   m3u_parser_nullsafe: ^1.0.3
   riverpod_annotation: ^3.0.0-dev.3
-  path_provider: ^2.1.4
-  platform_builder: ^3.0.0
+  path_provider: ^2.1.4  
+  platform_builder: ^3.0.0 
   formz: ^0.7.0
   http: ^1.2.2
-  intl: ^0.19.0
+  intl: ^0.19.0 
   fast_cached_network_image: ^1.2.9
   flutter_launcher_icons: ^0.13.1
-  xtream_code_client:
+  xtream_code_client: 
     path: ../../packages/xtream_code_client
 
 dev_dependencies:
@@ -63,7 +63,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
 
-  # The following line ensures that the Material Icons font is
+  # The following line ensures that the Materi al Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
@@ -71,6 +71,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/no_image_available.png
+    - assets/iptv_test_epg.xml 
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -87,25 +87,24 @@ class ChannelViewModel {
 ChannelViewModel findMovie(FindMovieRef ref, {required int streamId}) {
   final m3uService = ref.watch(m3uServiceProvider);
   final vod = m3uService.findVod(streamId)!;
-  return ChannelViewModel(
-    vod.id,
-    vod.streamUrl,
-    vod.name ?? "",
-    vod.streamIcon ?? "",
-    vod.streamType == "live",
-    null
-  );
+  return ChannelViewModel(vod.id, vod.streamUrl, vod.name ?? "",
+      vod.streamIcon ?? "", vod.streamType == "live", null);
 }
 
 @riverpod
 ChannelViewModel findChannel(FindChannelRef ref, {required int streamId}) {
   final m3uService = ref.watch(m3uServiceProvider);
   final channel = m3uService.findChannel(streamId)!;
-  final now = DateTime.now();
-  final latestEpgItem = channel.epgItems
-      .where((element) =>
-          element.start!.isBefore(now) && element.end!.isAfter(now))
-      .firstOrNull;
+  var now = DateTime.now();
+
+  final latestEpgItem =
+      m3uService.epgOfChannel(channel.epgChannelId!).firstWhere(
+            (item) =>
+                item.start != null &&
+                item.end != null &&
+                item.start!.isBefore(now) &&
+                item.end!.isAfter(now),
+          );
   return ChannelViewModel(
     channel.id,
     channel.streamUrl,
@@ -121,22 +120,28 @@ Stream<List<ChannelViewModel>> findAllChannels(FindAllChannelsRef ref,
     {ItemCategory? category}) {
   final searchValue = ref.watch(channelSearchValueProvider);
   final m3uService = ref.watch(m3uServiceProvider);
+
   return m3uService
       .findAllChannels(searchValue, category)
-      .asyncMap((event) async {
-    return event.map((e) {
-      var now = DateTime.now();
-      var latestEpgItem = e.epgItems
-          .where((element) =>
-              element.start!.isBefore(now) && element.end!.isAfter(now))
-          .firstOrNull;
+      .asyncMap((channels) async {
+    final latestEpgItems = m3uService.epgOfChannels();
+    var now = DateTime.now();
+    final epgMap = Map.fromEntries(latestEpgItems
+        .where((item) =>
+            item.start != null &&
+            item.end != null &&
+            item.start!.isBefore(now) &&
+            item.end!.isAfter(now))
+        .map((item) => MapEntry(item.channelId, item)));
+
+    return channels.map((e) {
       return ChannelViewModel(
         e.id,
         e.streamUrl,
         e.name ?? "",
         e.streamIcon ?? "",
         e.streamType == "live",
-        latestEpgItem,
+        epgMap[e.epgChannelId],
       );
     }).toList();
   });

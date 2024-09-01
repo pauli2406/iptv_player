@@ -57,7 +57,7 @@ class VodItem {
         rating5based = vodItem.rating5based,
         added = vodItem.added,
         categoryId = vodItem.categoryId,
-        categoryIds = vodItem.categoryIds,
+        categoryIds = vodItem.categoryIds ?? [],
         containerExtension = vodItem.containerExtension,
         customSid = vodItem.customSid,
         directSource = vodItem.directSource;

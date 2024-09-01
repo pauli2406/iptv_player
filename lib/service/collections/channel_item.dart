@@ -1,4 +1,3 @@
-import 'package:iptv_player/service/collections/epg_item.dart';
 import 'package:iptv_player/service/collections/iptv_server/iptv_server.dart';
 import 'package:isar/isar.dart';
 import 'package:xtream_code_client/xtream_code_client.dart';
@@ -40,7 +39,6 @@ class ChannelItem {
   final String? thumbnail;
   final String streamUrl;
   final iptvServer = IsarLink<IptvServer>();
-  final epgItems = IsarLinks<EpgItem>();
 
   ChannelItem.fromLiveStreamItem(
     XTremeCodeLiveStreamItem liveStreamItem,
@@ -57,6 +55,6 @@ class ChannelItem {
         directSource = liveStreamItem.directSource,
         tvArchiveDuration = liveStreamItem.tvArchiveDuration,
         categoryId = liveStreamItem.categoryId,
-        categoryIds = liveStreamItem.categoryIds,
+        categoryIds = liveStreamItem.categoryIds ?? [],
         thumbnail = liveStreamItem.thumbnail;
 }

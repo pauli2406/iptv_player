@@ -57,7 +57,7 @@ class SeriesEpisode {
         episodeNum = seriesEpisode.episodeNum,
         title = seriesEpisode.title,
         containerExtension = seriesEpisode.containerExtension,
-        subtitles = seriesEpisode.subtitles,
+        subtitles = seriesEpisode.subtitles?? [],
         customSid = seriesEpisode.customSid,
         added = seriesEpisode.added,
         season = seriesEpisode.season,

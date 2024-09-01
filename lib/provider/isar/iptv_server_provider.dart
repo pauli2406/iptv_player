@@ -21,9 +21,10 @@ Stream<List<IptvServer>> iptvServerItems(IptvServerItemsRef ref) {
 }
 
 @riverpod
-Stream<IptvServer?> activeIptvServer(ActiveIptvServerRef ref) {
+Future<IptvServer?> activeIptvServer(ActiveIptvServerRef ref) async {
   final activeServer = ref.watch(m3uServiceProvider).getActiveIptvServer();
-  return ref.watch(iptvServerServiceProvider).findByIdStream(activeServer!.id);
+  if (activeServer == null) return null;
+  return ref.watch(iptvServerServiceProvider).findById(activeServer.id);
 }
 
 @riverpod

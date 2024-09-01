@@ -32,33 +32,13 @@ const EpgItemSchema = CollectionSchema(
       name: r'end',
       type: IsarType.dateTime,
     ),
-    r'epgId': PropertySchema(
-      id: 3,
-      name: r'epgId',
-      type: IsarType.long,
-    ),
-    r'lang': PropertySchema(
-      id: 4,
-      name: r'lang',
-      type: IsarType.string,
-    ),
     r'start': PropertySchema(
-      id: 5,
+      id: 3,
       name: r'start',
       type: IsarType.dateTime,
     ),
-    r'startTimestamp': PropertySchema(
-      id: 6,
-      name: r'startTimestamp',
-      type: IsarType.dateTime,
-    ),
-    r'stopTimestamp': PropertySchema(
-      id: 7,
-      name: r'stopTimestamp',
-      type: IsarType.dateTime,
-    ),
     r'title': PropertySchema(
-      id: 8,
+      id: 4,
       name: r'title',
       type: IsarType.string,
     )
@@ -68,7 +48,21 @@ const EpgItemSchema = CollectionSchema(
   deserialize: _epgItemDeserialize,
   deserializeProp: _epgItemDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'channelId': IndexSchema(
+      id: -8352446570702114471,
+      name: r'channelId',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'channelId',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
   links: {
     r'iptvServer': LinkSchema(
       id: 4343131501680117919,
@@ -90,20 +84,9 @@ int _epgItemEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.channelId;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.channelId.length * 3;
   {
     final value = object.description;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.lang;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -126,12 +109,8 @@ void _epgItemSerialize(
   writer.writeString(offsets[0], object.channelId);
   writer.writeString(offsets[1], object.description);
   writer.writeDateTime(offsets[2], object.end);
-  writer.writeLong(offsets[3], object.epgId);
-  writer.writeString(offsets[4], object.lang);
-  writer.writeDateTime(offsets[5], object.start);
-  writer.writeDateTime(offsets[6], object.startTimestamp);
-  writer.writeDateTime(offsets[7], object.stopTimestamp);
-  writer.writeString(offsets[8], object.title);
+  writer.writeDateTime(offsets[3], object.start);
+  writer.writeString(offsets[4], object.title);
 }
 
 EpgItem _epgItemDeserialize(
@@ -141,16 +120,12 @@ EpgItem _epgItemDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = EpgItem(
-    id,
-    reader.readLongOrNull(offsets[3]),
-    reader.readStringOrNull(offsets[8]),
-    reader.readStringOrNull(offsets[4]),
-    reader.readDateTimeOrNull(offsets[5]),
-    reader.readDateTimeOrNull(offsets[2]),
-    reader.readStringOrNull(offsets[1]),
-    reader.readStringOrNull(offsets[0]),
-    reader.readDateTimeOrNull(offsets[6]),
-    reader.readDateTimeOrNull(offsets[7]),
+    channelId: reader.readString(offsets[0]),
+    description: reader.readStringOrNull(offsets[1]),
+    end: reader.readDateTimeOrNull(offsets[2]),
+    id: id,
+    start: reader.readDateTimeOrNull(offsets[3]),
+    title: reader.readStringOrNull(offsets[4]),
   );
   return object;
 }
@@ -163,22 +138,14 @@ P _epgItemDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 1:
       return (reader.readStringOrNull(offset)) as P;
     case 2:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 3:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
-    case 5:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 6:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 7:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 8:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -186,7 +153,7 @@ P _epgItemDeserializeProp<P>(
 }
 
 Id _epgItemGetId(EpgItem object) {
-  return object.id ?? Isar.autoIncrement;
+  return object.id;
 }
 
 List<IsarLinkBase<dynamic>> _epgItemGetLinks(EpgItem object) {
@@ -272,28 +239,57 @@ extension EpgItemQueryWhere on QueryBuilder<EpgItem, EpgItem, QWhereClause> {
       ));
     });
   }
+
+  QueryBuilder<EpgItem, EpgItem, QAfterWhereClause> channelIdEqualTo(
+      String channelId) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'channelId',
+        value: [channelId],
+      ));
+    });
+  }
+
+  QueryBuilder<EpgItem, EpgItem, QAfterWhereClause> channelIdNotEqualTo(
+      String channelId) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'channelId',
+              lower: [],
+              upper: [channelId],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'channelId',
+              lower: [channelId],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'channelId',
+              lower: [channelId],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'channelId',
+              lower: [],
+              upper: [channelId],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
 }
 
 extension EpgItemQueryFilter
     on QueryBuilder<EpgItem, EpgItem, QFilterCondition> {
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> channelIdIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'channelId',
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> channelIdIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'channelId',
-      ));
-    });
-  }
-
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> channelIdEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -306,7 +302,7 @@ extension EpgItemQueryFilter
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> channelIdGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -321,7 +317,7 @@ extension EpgItemQueryFilter
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> channelIdLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -336,8 +332,8 @@ extension EpgItemQueryFilter
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> channelIdBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -638,92 +634,7 @@ extension EpgItemQueryFilter
     });
   }
 
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'epgId',
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'epgId',
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdEqualTo(
-      int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'epgId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'epgId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'epgId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> epgIdBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'epgId',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'id',
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'id',
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idEqualTo(Id? value) {
+  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -733,7 +644,7 @@ extension EpgItemQueryFilter
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idGreaterThan(
-    Id? value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -746,7 +657,7 @@ extension EpgItemQueryFilter
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idLessThan(
-    Id? value, {
+    Id value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -759,8 +670,8 @@ extension EpgItemQueryFilter
   }
 
   QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> idBetween(
-    Id? lower,
-    Id? upper, {
+    Id lower,
+    Id upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -771,152 +682,6 @@ extension EpgItemQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> langIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'lang',
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> langIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'lang',
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> langEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'lang',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> langGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'lang',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> langLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'lang',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> langBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'lang',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> langStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'lang',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> langEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'lang',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> langContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'lang',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> langMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'lang',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> langIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'lang',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> langIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'lang',
-        value: '',
       ));
     });
   }
@@ -982,148 +747,6 @@ extension EpgItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'start',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> startTimestampIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'startTimestamp',
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition>
-      startTimestampIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'startTimestamp',
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> startTimestampEqualTo(
-      DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'startTimestamp',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition>
-      startTimestampGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'startTimestamp',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> startTimestampLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'startTimestamp',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> startTimestampBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'startTimestamp',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> stopTimestampIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'stopTimestamp',
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition>
-      stopTimestampIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'stopTimestamp',
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> stopTimestampEqualTo(
-      DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'stopTimestamp',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition>
-      stopTimestampGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'stopTimestamp',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> stopTimestampLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'stopTimestamp',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterFilterCondition> stopTimestampBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'stopTimestamp',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1335,30 +958,6 @@ extension EpgItemQuerySortBy on QueryBuilder<EpgItem, EpgItem, QSortBy> {
     });
   }
 
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> sortByEpgId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'epgId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> sortByEpgIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'epgId', Sort.desc);
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> sortByLang() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'lang', Sort.asc);
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> sortByLangDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'lang', Sort.desc);
-    });
-  }
-
   QueryBuilder<EpgItem, EpgItem, QAfterSortBy> sortByStart() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'start', Sort.asc);
@@ -1368,30 +967,6 @@ extension EpgItemQuerySortBy on QueryBuilder<EpgItem, EpgItem, QSortBy> {
   QueryBuilder<EpgItem, EpgItem, QAfterSortBy> sortByStartDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'start', Sort.desc);
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> sortByStartTimestamp() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startTimestamp', Sort.asc);
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> sortByStartTimestampDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startTimestamp', Sort.desc);
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> sortByStopTimestamp() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stopTimestamp', Sort.asc);
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> sortByStopTimestampDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stopTimestamp', Sort.desc);
     });
   }
 
@@ -1446,18 +1021,6 @@ extension EpgItemQuerySortThenBy
     });
   }
 
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> thenByEpgId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'epgId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> thenByEpgIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'epgId', Sort.desc);
-    });
-  }
-
   QueryBuilder<EpgItem, EpgItem, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -1470,18 +1033,6 @@ extension EpgItemQuerySortThenBy
     });
   }
 
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> thenByLang() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'lang', Sort.asc);
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> thenByLangDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'lang', Sort.desc);
-    });
-  }
-
   QueryBuilder<EpgItem, EpgItem, QAfterSortBy> thenByStart() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'start', Sort.asc);
@@ -1491,30 +1042,6 @@ extension EpgItemQuerySortThenBy
   QueryBuilder<EpgItem, EpgItem, QAfterSortBy> thenByStartDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'start', Sort.desc);
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> thenByStartTimestamp() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startTimestamp', Sort.asc);
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> thenByStartTimestampDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startTimestamp', Sort.desc);
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> thenByStopTimestamp() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stopTimestamp', Sort.asc);
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QAfterSortBy> thenByStopTimestampDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'stopTimestamp', Sort.desc);
     });
   }
 
@@ -1553,34 +1080,9 @@ extension EpgItemQueryWhereDistinct
     });
   }
 
-  QueryBuilder<EpgItem, EpgItem, QDistinct> distinctByEpgId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'epgId');
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QDistinct> distinctByLang(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'lang', caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<EpgItem, EpgItem, QDistinct> distinctByStart() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'start');
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QDistinct> distinctByStartTimestamp() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'startTimestamp');
-    });
-  }
-
-  QueryBuilder<EpgItem, EpgItem, QDistinct> distinctByStopTimestamp() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'stopTimestamp');
     });
   }
 
@@ -1600,7 +1102,7 @@ extension EpgItemQueryProperty
     });
   }
 
-  QueryBuilder<EpgItem, String?, QQueryOperations> channelIdProperty() {
+  QueryBuilder<EpgItem, String, QQueryOperations> channelIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'channelId');
     });
@@ -1618,33 +1120,9 @@ extension EpgItemQueryProperty
     });
   }
 
-  QueryBuilder<EpgItem, int?, QQueryOperations> epgIdProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'epgId');
-    });
-  }
-
-  QueryBuilder<EpgItem, String?, QQueryOperations> langProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'lang');
-    });
-  }
-
   QueryBuilder<EpgItem, DateTime?, QQueryOperations> startProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'start');
-    });
-  }
-
-  QueryBuilder<EpgItem, DateTime?, QQueryOperations> startTimestampProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'startTimestamp');
-    });
-  }
-
-  QueryBuilder<EpgItem, DateTime?, QQueryOperations> stopTimestampProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'stopTimestamp');
     });
   }
 

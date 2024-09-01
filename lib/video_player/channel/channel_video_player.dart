@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -76,7 +74,7 @@ class _ChannelVideoPlayerState extends ConsumerState<ChannelVideoPlayer> {
         onPressed: context.pop,
       ),
       Text(
-        "${channel.title} - ${utf8.decode(base64.decode(channel.currentEpgItem?.title ?? ''))}",
+        "${channel.title} - ${channel.currentEpgItem?.title ?? ''}",
         style: const TextStyle(color: Colors.white),
       ),
       const Spacer(),

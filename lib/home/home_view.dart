@@ -126,7 +126,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 },
               ),
               child: IndexedStack(
-                index: _categoryIndex,
+                index: _categoryIndex, 
                 children: const [
                   ChannelsPage(),
                   MoviesPage(),
@@ -135,7 +135,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     child: Text('Home'),
                   ),
                 ],
-              ),
+              )
             );
           },
           error: (error, __) {

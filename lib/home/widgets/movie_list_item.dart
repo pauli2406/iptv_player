@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -49,51 +47,58 @@ class _M3uListItemState extends State<M3uListItem> {
                 ? MacosTheme.of(context).dividerColor
                 : MacosTheme.of(context).canvasColor,
           ),
-          child: Column(children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(10),
-                ),
-                child: FastCachedImage(
-                  fit: BoxFit.fitWidth,
-                  url: widget.channelViewModel.logoUrl,
-                  loadingBuilder: (context, progress) {
-                    return Center(
-                      child: ProgressBar(
-                        value: progress.progressPercentage.value,
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, exception, stacktrace) => Image.asset(
-                    "assets/images/no_image_available.png",
-                    fit: BoxFit.fitHeight,
+          child: Column(
+            children: [
+              Expanded(
+                flex: 3,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(10),
+                  ),
+                  child: FastCachedImage(
+                    fit: BoxFit.fitWidth,
+                    url: widget.channelViewModel.logoUrl,
+                    loadingBuilder: (context, progress) {
+                      return Center(
+                        child: ProgressBar(
+                          value: progress.progressPercentage.value,
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, exception, stacktrace) =>
+                        Image.asset(
+                      "assets/images/no_image_available.png",
+                      fit: BoxFit.fitHeight,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Container(
-              height: widget.height / 18,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                widget.channelViewModel.title,
-                style: MacosTheme.of(context).typography.body,
+              SizedBox(
+                height: widget.height / 18,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    widget.channelViewModel.title,
+                    style: MacosTheme.of(context).typography.body,
+                  ),
+                ),
               ),
-            ),
-            Container(
-              height: widget.height / 12,
-              padding: const EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 48.0,
-              ),
-              child: Text(
-                utf8.decode(base64.decode(
-                    widget.channelViewModel.currentEpgItem?.title ?? "")),
-                style: MacosTheme.of(context).typography.caption1,
-                maxLines: 2,
-              ),
-            )
-          ]),
+              SizedBox(
+                height: widget.height / 12,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 48.0,
+                  ),
+                  child: Text(
+                    widget.channelViewModel.currentEpgItem?.title ?? '',
+                    style: MacosTheme.of(context).typography.caption1,
+                    maxLines: 2,
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

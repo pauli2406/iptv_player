@@ -59,10 +59,10 @@ class SeriesInfo {
     lastModified = info.lastModified;
     rating = info.rating;
     rating5based = info.rating5based;
-    backdropPath = info.backdropPath;
+    backdropPath = info.backdropPath ?? [];
     youtubeTrailer = info.youtubeTrailer;
     episodeRunTime = info.episodeRunTime;
     categoryId = info.categoryId;
-    categoryIds = info.categoryIds;
+    categoryIds = info.categoryIds ?? [];
   }
 }

@@ -71,7 +71,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   appkit_ui_element_colors: 39bb2d80be3f19b152ccf4c70d5bbe6cba43d74a
-  cupertino_http: afa11b9e2786b62da2671e4ddd32caf792503748
+  cupertino_http: 1d506209e339211efa0764caa7b2de4bc55b6818
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   isar_flutter_libs: 43385c99864c168fadba7c9adeddc5d38838ca6a
   macos_ui: 6229a8922cd97bafb7d9636c8eb8dfb0744183ca

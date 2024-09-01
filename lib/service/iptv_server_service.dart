@@ -65,7 +65,7 @@ class IptvServerService {
         activeIptvServer.lastSync!.isBefore(date24HoursAgo)) {
       final serverInformation = await loadServerInformation();
       activeIptvServer.allowedOutputFormats =
-          serverInformation.userInfo.allowedOutputFormats;
+          serverInformation.userInfo.allowedOutputFormats ?? [];
       await put(activeIptvServer);
       await _persistCategories(activeIptvServer);
       await _persistItems(activeIptvServer);
@@ -225,38 +225,26 @@ class IptvServerService {
   Future<void> _persistEpgForChannels(
       IptvServer activeIptvServer, List<ChannelItem> channels) async {
     debugPrint("Start persisting EPG for channels ${channels.length}");
-    var count = 0;
-    isarService.isar
-        .writeTxnSync(() => isarService.isar.epgItems.filter().iptvServer((q) {
-              return q.idEqualTo(activeIptvServer.id);
-            }).deleteAllSync());
-
-    for (var channel in channels) {
-      try {
-        final epg = await client.channelEpgViaStreamId(
-          channel.id!,
-          20,
-        );
-        var mappedEpgItems = epg.epgListings
-            .map((epg) => EpgItem.fromXtreamCodeEpgItem(
-                  epg,
-                ))
+    try {
+      debugPrint("Download EPG");
+      final epg = await client.epg(useLocalFile: true);
+      debugPrint("Downloaded EPG successfully");
+      isarService.isar.writeTxnSync(() {
+      isarService.isar.epgItems
+          .filter()
+          .iptvServer((q) => q.idEqualTo(activeIptvServer.id))
+          .deleteAllSync();
+        debugPrint("Cleared existing EPG");
+        var items = epg.programmes
+            .map((item) =>
+                EpgItem.fromProgramme(item, item.channel, activeIptvServer)
+                  ..iptvServer.value = activeIptvServer)
             .toList();
-        channel.epgItems.clear();
-        channel.epgItems.addAll(mappedEpgItems);
-        await isarService.isar.writeTxn(() async => {
-              await isarService.isar.epgItems.putAll(mappedEpgItems),
-              await channel.epgItems.save()
-            });
-        debugPrint(
-            "Loaded EPG for channel ${channel.name} with ${epg.epgListings.length} items.");
-      } on XTreamCodeClientException {
-        debugPrint(
-            "Failed to load EPG for channel ${channel.name}. Continuing...");
-      }
-      count++;
-      debugPrint(
-          "Loaded EPG for $count channels from ${channels.length} channels.");
+        isarService.isar.epgItems.putAllSync(items);
+        debugPrint("Finished persisting EPG data");
+      });
+    } catch (e) {
+      debugPrint("Error fetching or processing EPG data: $e");
     }
   }
 

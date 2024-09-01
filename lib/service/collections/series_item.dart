@@ -74,9 +74,9 @@ class SeriesItem {
         lastModified = seriesItem.lastModified,
         rating = seriesItem.rating,
         rating5based = seriesItem.rating5based,
-        backdropPath = seriesItem.backdropPath,
+        backdropPath = seriesItem.backdropPath ?? [],
         youtubeTrailer = seriesItem.youtubeTrailer,
         episodeRunTime = seriesItem.episodeRunTime,
         categoryId = seriesItem.categoryId,
-        categoryIds = seriesItem.categoryIds;
+        categoryIds = seriesItem.categoryIds ?? [];
 }

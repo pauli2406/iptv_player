@@ -96,8 +96,6 @@ class _GridLayoutWidgetState extends ConsumerState<GridLayoutWidget> {
             if (!isUpdating) {
               return MacosWindow(
                 sidebar: Sidebar(
-                  decoration:
-                      BoxDecoration(color: MacosTheme.of(context).canvasColor),
                   dragClosed: false,
                   minWidth: 200,
                   maxWidth: 200,

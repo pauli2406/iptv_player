@@ -30,113 +30,112 @@ class _HomeViewState extends ConsumerState<HomeView> {
           data: (activeServer) {
             var inputFormat = DateFormat('dd/MM/yyyy HH:mm');
             return MacosWindow(
-              sidebar: Sidebar(
-                decoration:
-                    BoxDecoration(color: MacosTheme.of(context).canvasColor),
-                minWidth: 200,
-                top: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      MacosBackButton(
-                        onPressed: () => context.pop(),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Back",
-                        style: MacosTheme.of(context).typography.headline,
-                      ),
-                    ],
+                sidebar: Sidebar(
+                  // decoration:
+                  //     BoxDecoration(color: MacosTheme.of(context).canvasColor),
+                  minWidth: 200,
+                  top: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        MacosBackButton(
+                          onPressed: () => context.pop(),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "Back",
+                          style: MacosTheme.of(context).typography.headline,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                bottom: Column(
-                  children: [
-                    ref.watch(activeIptvServerProvider).when(
-                          data: (data) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Active Server: ${data?.name}",
-                                  style: MacosTheme.of(context)
-                                      .typography
-                                      .headline,
-                                ),
-                                Text(
-                                    "Last Sync at: ${inputFormat.format(data!.lastSync!)}",
+                  bottom: Column(
+                    children: [
+                      ref.watch(activeIptvServerProvider).when(
+                            data: (data) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Active Server: ${data?.name}",
                                     style: MacosTheme.of(context)
                                         .typography
-                                        .subheadline),
-                              ],
-                            );
-                          },
-                          error: (_, __) => const Text("Error"),
-                          loading: () => Container(),
-                        ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    MacosIconButton(
-                      icon: const Icon(
-                        CupertinoIcons.refresh,
-                        size: 15,
+                                        .headline,
+                                  ),
+                                  Text(
+                                      "Last Sync at: ${inputFormat.format(data!.lastSync!)}",
+                                      style: MacosTheme.of(context)
+                                          .typography
+                                          .subheadline),
+                                ],
+                              );
+                            },
+                            error: (_, __) => const Text("Error"),
+                            loading: () => Container(),
+                          ),
+                      const SizedBox(
+                        height: 5,
                       ),
-                      boxConstraints:
-                          BoxConstraints.tight(const Size.square(30)),
-                      shape: BoxShape.circle,
-                      disabledColor: CupertinoColors.lightBackgroundGray,
-                      onPressed: () async {
-                        ref
-                            .read(isUpdatingActiveIptvServerProvider.notifier)
-                            .toggle();
-                        await ref
-                            .read(iptvServerServiceProvider)
-                            .refreshServerItems(forced: true);
-                        ref
-                            .read(isUpdatingActiveIptvServerProvider.notifier)
-                            .toggle();
+                      MacosIconButton(
+                        icon: const Icon(
+                          CupertinoIcons.refresh,
+                          size: 15,
+                        ),
+                        boxConstraints:
+                            BoxConstraints.tight(const Size.square(30)),
+                        shape: BoxShape.circle,
+                        disabledColor: CupertinoColors.lightBackgroundGray,
+                        onPressed: () async {
+                          ref
+                              .read(isUpdatingActiveIptvServerProvider.notifier)
+                              .toggle();
+                          await ref
+                              .read(iptvServerServiceProvider)
+                              .refreshServerItems(forced: true);
+                          ref
+                              .read(isUpdatingActiveIptvServerProvider.notifier)
+                              .toggle();
+                        },
+                      ),
+                    ],
+                  ),
+                  builder: (context, scrollController) {
+                    return SidebarItems(
+                      scrollController: scrollController,
+                      currentIndex: _categoryIndex,
+                      onChanged: (categoryIndex) {
+                        setState(() => _categoryIndex = categoryIndex);
                       },
+                      items: const [
+                        SidebarItem(
+                          leading: MacosIcon(CupertinoIcons.tv),
+                          label: Text('Channels'),
+                        ),
+                        SidebarItem(
+                          leading: MacosIcon(CupertinoIcons.film),
+                          label: Text('Movies'),
+                        ),
+                        // SidebarItem(
+                        //   leading: MacosIcon(CupertinoIcons.film_fill),
+                        //   label: Text('Series'),
+                        // ),
+                      ],
+                    );
+                  },
+                ),
+                child: IndexedStack(
+                  index: _categoryIndex,
+                  children: const [
+                    ChannelsPage(),
+                    MoviesPage(),
+                    // SeriesPage(),
+                    Center(
+                      child: Text('Home'),
                     ),
                   ],
-                ),
-                builder: (context, scrollController) {
-                  return SidebarItems(
-                    scrollController: scrollController,
-                    currentIndex: _categoryIndex,
-                    onChanged: (categoryIndex) {
-                      setState(() => _categoryIndex = categoryIndex);
-                    },
-                    items: const [
-                      SidebarItem(
-                        leading: MacosIcon(CupertinoIcons.tv),
-                        label: Text('Channels'),
-                      ),
-                      SidebarItem(
-                        leading: MacosIcon(CupertinoIcons.film),
-                        label: Text('Movies'),
-                      ),
-                      // SidebarItem(
-                      //   leading: MacosIcon(CupertinoIcons.film_fill),
-                      //   label: Text('Series'),
-                      // ),
-                    ],
-                  );
-                },
-              ),
-              child: IndexedStack(
-                index: _categoryIndex, 
-                children: const [
-                  ChannelsPage(),
-                  MoviesPage(),
-                  // SeriesPage(),
-                  Center(
-                    child: Text('Home'),
-                  ),
-                ],
-              )
-            );
+                ));
           },
           error: (error, __) {
             debugPrint(error.toString());

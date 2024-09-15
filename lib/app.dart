@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iptv_player/provider/isar/isar_provider.dart';
 import 'package:iptv_player/router/router.dart';
@@ -6,6 +6,7 @@ import 'package:iptv_player/service/collections/theme/theme.dart';
 import 'package:iptv_player/theme.dart';
 import 'package:isar/isar.dart';
 import 'package:macos_ui/macos_ui.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:platform_builder/platform_builder.dart';
 
 class App extends ConsumerStatefulWidget {
@@ -29,20 +30,18 @@ class _AppState extends ConsumerState<App> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ref.watch(appThemeProvider);
     return PlatformBuilder(
-      macOSBuilder: (context) => _buildApp(theme),
-      windowsBuilder: (context) => _buildApp(theme),
-      iOSBuilder: (context) => SafeArea(child: _buildApp(theme)),
+      macOSBuilder: (context) => _buildApp(),
+      windowsBuilder: (context) => _buildApp(),
+      iOSBuilder: (context) => SafeArea(child: _buildApp()),
     );
   }
 
-  MacosApp _buildApp(ThemeMode theme) {
+  MacosApp _buildApp() {
+    final theme = ref.watch(appThemeProvider);
     return MacosApp.router(
       routerConfig: router,
       title: 'iptv_player',
-      theme: MacosThemeData.light(),
-      darkTheme: MacosThemeData.dark(),
       themeMode: theme,
       debugShowCheckedModeBanner: false,
     );

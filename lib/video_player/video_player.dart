@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
+import 'package:iptv_player/video_player/custom_controls/material_desktop_audio_track_button.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:platform_builder/platform.dart';
@@ -62,6 +63,7 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
     player.open(
       Media(widget.stream.link),
     );
+    // .then((_) => player.setAudioTrack(AudioTrack.auto())); // Fixed the 'then' method to accept a function
   }
 
   @override
@@ -135,10 +137,21 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
 
   MaterialDesktopVideoControlsThemeData _buildMaterialDesktopThemeData() {
     return MaterialDesktopVideoControlsThemeData(
+      playAndPauseOnTap: false,
       buttonBarButtonSize: 24.0,
       buttonBarButtonColor: Colors.white,
       topButtonBarMargin: const EdgeInsets.only(top: 36.0),
       topButtonBar: widget.topButtonBar,
+      bottomButtonBar: const [
+        MaterialDesktopSkipPreviousButton(),
+        MaterialDesktopPlayOrPauseButton(),
+        MaterialDesktopSkipNextButton(),
+        MaterialDesktopVolumeButton(),
+        MaterialDesktopPositionIndicator(),
+        Spacer(),
+        MaterialDesktopFullscreenButton(),
+        MaterialDesktopAudioTrackButton(),
+      ],
     );
   }
 }

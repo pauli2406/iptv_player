@@ -19,7 +19,8 @@ class OverlayChannelListWidget extends StatefulWidget {
   });
 
   @override
-  OverlayChannelListWidgetState createState() => OverlayChannelListWidgetState();
+  OverlayChannelListWidgetState createState() =>
+      OverlayChannelListWidgetState();
 }
 
 class OverlayChannelListWidgetState extends State<OverlayChannelListWidget> {
@@ -107,7 +108,8 @@ class OverlayChannelListWidgetState extends State<OverlayChannelListWidget> {
 
   Widget _buildListView(List<ChannelViewModel> channels, String searchText) {
     final filteredChannels = channels
-        .where((channel) => channel.title.toLowerCase().contains(searchText.toLowerCase()))
+        .where((channel) =>
+            channel.title.toLowerCase().contains(searchText.toLowerCase()))
         .toList();
 
     if (filteredChannels.isEmpty) {
@@ -142,7 +144,7 @@ class OverlayChannelListWidgetState extends State<OverlayChannelListWidget> {
                     style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
                   Text(
-                    utf8.decode(base64.decode(channel.currentEpgItem?.title ?? '')),
+                    channel.currentEpgItem?.title ?? '',
                     style: const TextStyle(color: Colors.white, fontSize: 8),
                   ),
                 ],

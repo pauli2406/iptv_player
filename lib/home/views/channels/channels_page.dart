@@ -35,7 +35,7 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
       findAllChannelsProvider(category: _category),
     );
     final categories = ref.watch(findAllChannelGroupsProvider);
-    
+
     return GridLayoutWidget(
       title: 'Channels',
       channelProvider: channelProvider,
@@ -50,10 +50,13 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
         });
       },
       searchController: searchController,
-      itemBuilder: (context, itemHeight, item) => M3uListItem(
-        channelViewModel: item,
-        height: itemHeight,
-        route: '/main/channel/player',
+      itemBuilder: (context, itemHeight, item) => AspectRatio(
+        aspectRatio: 1,
+        child: M3uListItem(
+          channelViewModel: item,
+          height: itemHeight,
+          route: '/main/channel/player',
+        ),
       ),
     );
   }

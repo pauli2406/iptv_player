@@ -74,17 +74,17 @@ class _M3uListItemState extends State<M3uListItem> {
                 ),
               ),
               SizedBox(
-                height: widget.height / 18,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     widget.channelViewModel.title,
                     style: MacosTheme.of(context).typography.body,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
               ),
               SizedBox(
-                height: widget.height / 12,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 8.0,

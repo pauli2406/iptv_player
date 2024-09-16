@@ -96,15 +96,20 @@ ChannelViewModel findChannel(FindChannelRef ref, {required int streamId}) {
   final m3uService = ref.watch(m3uServiceProvider);
   final channel = m3uService.findChannel(streamId)!;
   var now = DateTime.now();
+  EpgItem? latestEpgItem;
+  if (channel.epgChannelId != null) {
+    var epgItems = m3uService.epgOfChannel(channel.epgChannelId!);
+    if (epgItems.isNotEmpty) {
+      latestEpgItem = epgItems.firstWhere(
+        (item) =>
+            item.start != null &&
+            item.end != null &&
+            item.start!.isBefore(now) &&
+            item.end!.isAfter(now),
+      );
+    }
+  }
 
-  final latestEpgItem =
-      m3uService.epgOfChannel(channel.epgChannelId!).firstWhere(
-            (item) =>
-                item.start != null &&
-                item.end != null &&
-                item.start!.isBefore(now) &&
-                item.end!.isAfter(now),
-          );
   return ChannelViewModel(
     channel.id,
     channel.streamUrl,

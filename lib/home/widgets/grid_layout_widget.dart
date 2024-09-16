@@ -43,11 +43,11 @@ class _GridLayoutWidgetState extends ConsumerState<GridLayoutWidget> {
 
   int calculateCrossAxisCount(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    if (width > 1500) {
+    if (width > 1300) {
       return 5;
-    } else if (width > 1100) {
+    } else if (width > 900) {
       return 4;
-    } else if (width > 800) {
+    } else if (width > 700) {
       return 3;
     } else {
       return 2;
@@ -125,9 +125,7 @@ class _GridLayoutWidgetState extends ConsumerState<GridLayoutWidget> {
                           ),
                           for (var item in data)
                             SidebarItem(
-                              label: Flexible(
-                                child: Text("${item.categoryName}"),
-                              ),
+                              label: Text("${item.categoryName}"),
                             )
                         ],
                       ),

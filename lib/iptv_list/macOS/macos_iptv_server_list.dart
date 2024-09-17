@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:iptv_player/service/collections/iptv_server/iptv_server.dart';
 import 'package:iptv_player/theme.dart';
 import 'package:macos_ui/macos_ui.dart';
+import 'package:platform_builder/platform.dart';
 
 import '../../provider/isar/iptv_server_provider.dart';
 import '../../provider/isar/m3u_provider.dart';
@@ -79,32 +80,51 @@ class MacOSIptvServerList extends ConsumerWidget {
     final currentTheme = ref.watch(appThemeProvider);
     return ToolBar(
       decoration: BoxDecoration(color: MacosTheme.of(context).canvasColor),
-      actions: [
-        ToolBarIconButton(
-          label: "Add",
-          icon: const MacosIcon(
-            CupertinoIcons.add_circled,
-          ),
-          onPressed: () => showMacosSheet(
-            barrierDismissible: true,
-            context: context,
-            builder: (_) => const MacosSheet(child: ManageIptvServerItem()),
-          ),
-          showLabel: true,
-        ),
-        ToolBarIconButton(
-          label: currentTheme == ThemeMode.light ? "Dark Mode" : "Light Mode",
-          icon: const MacosIcon(
-            CupertinoIcons.color_filter,
-          ),
-          onPressed: () => ref
-              .read(appThemeProvider.notifier)
-              .setAndPersistThemeMode(currentTheme == ThemeMode.light
-                  ? ThemeMode.dark
-                  : ThemeMode.light),
-          showLabel: true,
-        ),
-      ],
+      actions: Platform.instance.isMacOS
+          ? [
+              ToolBarIconButton(
+                label: "Add",
+                icon: const MacosIcon(
+                  CupertinoIcons.add_circled,
+                ),
+                onPressed: () => showMacosSheet(
+                  barrierDismissible: true,
+                  context: context,
+                  builder: (_) =>
+                      const MacosSheet(child: ManageIptvServerItem()),
+                ),
+                showLabel: true,
+              ),
+              ToolBarIconButton(
+                label: currentTheme == ThemeMode.light
+                    ? "Dark Mode"
+                    : "Light Mode",
+                icon: const MacosIcon(
+                  CupertinoIcons.color_filter,
+                ),
+                onPressed: () => ref
+                    .read(appThemeProvider.notifier)
+                    .setAndPersistThemeMode(currentTheme == ThemeMode.light
+                        ? ThemeMode.dark
+                        : ThemeMode.light),
+                showLabel: true,
+              ),
+            ]
+          : [
+              ToolBarIconButton(
+                label: "Add",
+                icon: const MacosIcon(
+                  CupertinoIcons.add_circled,
+                ),
+                onPressed: () => showMacosSheet(
+                  barrierDismissible: true,
+                  context: context,
+                  builder: (_) =>
+                      const MacosSheet(child: ManageIptvServerItem()),
+                ),
+                showLabel: true,
+              ),
+            ],
     );
   }
 

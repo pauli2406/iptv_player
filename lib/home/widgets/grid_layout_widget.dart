@@ -5,6 +5,7 @@ import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
 import 'package:iptv_player/theme.dart';
 import 'package:macos_ui/macos_ui.dart';
+import 'package:platform_builder/platform.dart';
 
 class GridLayoutWidget extends ConsumerStatefulWidget {
   final String title;
@@ -72,21 +73,26 @@ class _GridLayoutWidgetState extends ConsumerState<GridLayoutWidget> {
           onPressed: () => MacosWindowScope.of(context).toggleSidebar(),
         ),
         title: Text(widget.title),
-        actions: [
-          ToolBarIconButton(
-            label: currentTheme == ThemeMode.light ? "Dark Mode" : "Light Mode",
-            icon: const MacosIcon(
-              CupertinoIcons.color_filter,
-            ),
-            onPressed: () =>
-                ref.read(appThemeProvider.notifier).setAndPersistThemeMode(
-                      currentTheme == ThemeMode.light
-                          ? ThemeMode.dark
-                          : ThemeMode.light,
-                    ),
-            showLabel: true,
-          ),
-        ],
+        actions: Platform.instance.isMacOS
+            ? [
+                ToolBarIconButton(
+                  label: currentTheme == ThemeMode.light
+                      ? "Dark Mode"
+                      : "Light Mode",
+                  icon: const MacosIcon(
+                    CupertinoIcons.color_filter,
+                  ),
+                  onPressed: () => ref
+                      .read(appThemeProvider.notifier)
+                      .setAndPersistThemeMode(
+                        currentTheme == ThemeMode.light
+                            ? ThemeMode.dark
+                            : ThemeMode.light,
+                      ),
+                  showLabel: true,
+                )
+              ]
+            : null,
       ),
       children: [
         ContentArea(

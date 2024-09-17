@@ -123,6 +123,7 @@ class MacOSMangeIptvServerWidget extends StatelessWidget {
           controller: passwordController,
           placeholder: 'Password',
           label: 'Password',
+          obscureText: true,
           textInput: formState.password,
           key: const Key('password_form_field'),
         ),
@@ -135,6 +136,7 @@ class MacOSMangeIptvServerWidget extends StatelessWidget {
     required String placeholder,
     required String label,
     required TextInput textInput,
+    bool obscureText = false,
     Key? key,
   }) {
     return Column(
@@ -145,6 +147,7 @@ class MacOSMangeIptvServerWidget extends StatelessWidget {
         MacOsFormTextField(
           controller: controller,
           placeholder: placeholder,
+          obscureText: obscureText,
           showError:
               textInput.isPure || (!textInput.isPure && textInput.isValid),
           errorText: textInput.displayError?.text(),

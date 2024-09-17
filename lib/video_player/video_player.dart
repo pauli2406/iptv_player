@@ -1,5 +1,9 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:iptv_player/home/provider/volume_value_provider.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
 import 'package:iptv_player/video_player/custom_controls/material_desktop_audio_track_button.dart';
 import 'package:media_kit/media_kit.dart';
@@ -35,6 +39,8 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
   );
   late VideoController videoController;
 
+  StreamSubscription<double>? subscription;
+
   @override
   void initState() {
     super.initState();
@@ -51,7 +57,6 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
         // and https://github.com/classicjazz/mpv-config/blob/master/mpv.conf
         // Selected API: select either Vulkan (preferred) or OpenGL
         ..setProperty('gpu-api', 'vulkan')
-        ..setProperty('hwdec', 'auto')
         // Adjust cache settings to prevent buffering issues during livestream playback
         ..setProperty('cache', 'yes')
         ..setProperty('cache-default', '5000')
@@ -60,15 +65,21 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
         // enable hardware acceleration for better performance
         ..setProperty('hwdec', 'auto');
     }
+    double volume = ref.read(volumeValueProvider);
+    player.setVolume(volume);
     player.open(
       Media(widget.stream.link),
     );
-    // .then((_) => player.setAudioTrack(AudioTrack.auto())); // Fixed the 'then' method to accept a function
+
+    subscription ??= player.stream.volume.listen((event) {
+      ref.read(volumeValueProvider.notifier).setValue(event);
+    });
   }
 
   @override
   void dispose() {
     debugPrint('Disposing [Player] and [VideoController]...');
+    subscription?.cancel();
     player.dispose();
     super.dispose();
   }
@@ -88,11 +99,7 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
     return MaterialDesktopVideoControlsTheme(
       key: ValueKey(_currentStreamId),
       normal: _buildMaterialDesktopThemeData(),
-      fullscreen: const MaterialDesktopVideoControlsThemeData(
-        displaySeekBar: false,
-        automaticallyImplySkipNextButton: false,
-        automaticallyImplySkipPreviousButton: false,
-      ),
+      fullscreen: _buildMaterialDesktopThemeData(),
       child: Stack(
         children: [
           Video(

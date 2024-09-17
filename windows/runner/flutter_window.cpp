@@ -4,14 +4,6 @@
 
 #include "flutter/generated_plugin_registrant.h"
 
-#include <desktop_multi_window/desktop_multi_window_plugin.h>
-#include <isar_flutter_libs/isar_flutter_libs_plugin.h>
-#include <media_kit_libs_windows_video/media_kit_libs_windows_video_plugin_c_api.h>
-#include <media_kit_video/media_kit_video_plugin_c_api.h>
-#include <screen_brightness_windows/screen_brightness_windows_plugin.h>
-#include <screen_retriever/screen_retriever_plugin.h>
-#include <window_manager/window_manager_plugin.h>
-
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
     : project_(project) {}
 
@@ -33,32 +25,16 @@ bool FlutterWindow::OnCreate() {
     return false;
   }
   RegisterPlugins(flutter_controller_->engine());
-
-  DesktopMultiWindowSetWindowCreatedCallback([](void *controller) {
-      auto *flutter_view_controller =
-          reinterpret_cast<flutter::FlutterViewController *>(controller);
-      auto *registry = flutter_view_controller->engine();
-      DesktopMultiWindowPluginRegisterWithRegistrar(
-          registry->GetRegistrarForPlugin("DesktopMultiWindowPlugin"));
-      IsarFlutterLibsPluginRegisterWithRegistrar(
-          registry->GetRegistrarForPlugin("IsarFlutterLibsPlugin"));
-      MediaKitLibsWindowsVideoPluginCApiRegisterWithRegistrar(
-          registry->GetRegistrarForPlugin("MediaKitLibsWindowsVideoPluginCApi"));
-      MediaKitVideoPluginCApiRegisterWithRegistrar(
-          registry->GetRegistrarForPlugin("MediaKitVideoPluginCApi"));
-      ScreenBrightnessWindowsPluginRegisterWithRegistrar(
-          registry->GetRegistrarForPlugin("ScreenBrightnessWindowsPlugin"));
-      ScreenRetrieverPluginRegisterWithRegistrar(
-          registry->GetRegistrarForPlugin("ScreenRetrieverPlugin"));
-      WindowManagerPluginRegisterWithRegistrar(
-          registry->GetRegistrarForPlugin("WindowManagerPlugin"));
-    });
-
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
     this->Show();
   });
+
+  // Flutter can complete the first frame before the "show window" callback is
+  // registered. The following call ensures a frame is pending to ensure the
+  // window is shown. It is a no-op if the first frame hasn't completed yet.
+  flutter_controller_->ForceRedraw();
 
   return true;
 }

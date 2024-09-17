@@ -39,7 +39,12 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     child: Row(
                       children: [
                         MacosBackButton(
-                          onPressed: () => context.pop(),
+                          onPressed: () {
+                            ref
+                                .read(m3uServiceProvider)
+                                .disposeXtreamCodeClient();
+                            context.pop();
+                          },
                         ),
                         const SizedBox(
                           width: 10,

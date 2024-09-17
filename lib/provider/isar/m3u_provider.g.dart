@@ -588,7 +588,7 @@ class _FindMovieProviderElement
   int get streamId => (origin as FindMovieProvider).streamId;
 }
 
-String _$findChannelHash() => r'd426c20ba0ededdab7b018947545be6243ffa433';
+String _$findChannelHash() => r'4776b5a9ae7897038ceed88ee793da654bb8912c';
 
 /// See also [findChannel].
 @ProviderFor(findChannel)

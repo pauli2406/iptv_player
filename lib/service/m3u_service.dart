@@ -27,6 +27,10 @@ class M3uService {
     );
   }
 
+  void disposeXtreamCodeClient() {
+    XtreamCode.instance.dispose();
+  }
+
   IptvServer? getActiveIptvServer() {
     return _activeIptvServer;
   }
@@ -84,6 +88,9 @@ class M3uService {
     return isarService.isar.itemCategorys
         .where(distinct: true)
         .filter()
+        .iptvServer((q) {
+          return q.idEqualTo(_activeIptvServer!.id);
+        })
         .typeEqualTo(type)
         .sortByCategoryName()
         .watch(fireImmediately: true);
@@ -111,7 +118,7 @@ class M3uService {
     }).findFirstSync();
   }
 
-List<EpgItem> epgOfChannel(String epgChannelId) {
+  List<EpgItem> epgOfChannel(String epgChannelId) {
     QueryBuilder<EpgItem, EpgItem, QFilterCondition> query =
         isarService.isar.epgItems.filter();
     query = query.channelIdEqualTo(epgChannelId);

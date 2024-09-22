@@ -36,7 +36,7 @@ final m3uParseServiceProvider = Provider<M3uParseService>.internal(
 
 typedef M3uParseServiceRef = ProviderRef<M3uParseService>;
 String _$clearDownloadAndPersistActivePlaylistItemsHash() =>
-    r'377f3b5f7f40e30875659f2f247dc83adf344f86';
+    r'388618e79dea1ddb8e5807e6857d27a34b1f85e3';
 
 /// Copied from Dart SDK
 class _SystemHash {

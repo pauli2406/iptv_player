@@ -14,6 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^3.0.0-dev.3
+  fluent_ui: ^4.9.1
   go_router: ^14.2.7
   isar:  
     version: *isar_version
@@ -114,5 +115,5 @@ msix_config:
   publisher_display_name: Marcel Pochert
   identity_name: iptvplayer
   msix_version: 1.0.0.2
-  logo_path: "assets\logo\iptv_logo_2.png"  # Corrected line
-  capabilities: internetClient 
+  # logo_path: "assets\logo\iptv_logo_2.png"  # Corrected line
+  capabilities: internetClient

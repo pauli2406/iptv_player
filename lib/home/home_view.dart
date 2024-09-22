@@ -1,11 +1,14 @@
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:iptv_player/home/home_view_windows.dart';
 import 'package:iptv_player/home/views/channels/channels_page.dart';
 import 'package:iptv_player/home/views/movies/movie_page.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:macos_ui/macos_ui.dart';
+import 'package:platform_builder/platform_builder.dart';
 
 import '../provider/isar/m3u_provider.dart';
 
@@ -26,6 +29,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    return PlatformBuilder(
+      macOSBuilder: (context) => WindowsHomeView(),
+      windowsBuilder: (context) => WindowsHomeView(),
+      iOSBuilder: (context) => macOSHomeView(),
+    );
+  }
+
+  Widget macOSHomeView() {
     return ref.watch(clearDownloadAndPersistActivePlaylistItemsProvider()).when(
           data: (activeServer) {
             var inputFormat = DateFormat('dd/MM/yyyy HH:mm');

@@ -1,9 +1,11 @@
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:fluent_ui/fluent_ui.dart' hide ProgressBar;
 import 'package:flutter/gestures.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
+import 'package:iptv_player/shared/theme_service.dart';
 import 'package:macos_ui/macos_ui.dart';
+import 'package:platform_builder/platform_builder.dart';
 
 class M3uListItem extends StatefulWidget {
   const M3uListItem({
@@ -44,8 +46,8 @@ class _M3uListItemState extends State<M3uListItem> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: isHovering
-                ? MacosTheme.of(context).dividerColor
-                : MacosTheme.of(context).canvasColor,
+                ? ThemeService().hoverColor(context)
+                : ThemeService().defaultBackground(context),
           ),
           child: Column(
             children: [
@@ -60,8 +62,16 @@ class _M3uListItemState extends State<M3uListItem> {
                     url: widget.channelViewModel.logoUrl,
                     loadingBuilder: (context, progress) {
                       return Center(
-                        child: ProgressBar(
-                          value: progress.progressPercentage.value,
+                        child: PlatformBuilder(
+                          macOSBuilder: (context) => ProgressRing(
+                            value: progress.progressPercentage.value,
+                          ),
+                          windowsBuilder: (context) => ProgressRing(
+                            value: progress.progressPercentage.value,
+                          ),
+                          iOSBuilder: (context) => ProgressBar(
+                            value: progress.progressPercentage.value,
+                          ),
                         ),
                       );
                     },
@@ -78,7 +88,7 @@ class _M3uListItemState extends State<M3uListItem> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     widget.channelViewModel.title,
-                    style: MacosTheme.of(context).typography.body,
+                    style: ThemeService().textStyleBody(context),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
@@ -92,7 +102,7 @@ class _M3uListItemState extends State<M3uListItem> {
                   ),
                   child: Text(
                     widget.channelViewModel.currentEpgItem?.title ?? '',
-                    style: MacosTheme.of(context).typography.caption1,
+                    style: ThemeService().textStyleCaption(context),
                     maxLines: 2,
                   ),
                 ),

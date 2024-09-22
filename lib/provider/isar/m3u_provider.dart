@@ -30,6 +30,7 @@ Future<bool> clearDownloadAndPersistActivePlaylistItems(
 }) async {
   final iptvService = ref.watch(iptvServerServiceProvider);
   await iptvService.refreshServerItems(forced: forced);
+  ref.notifyListeners();
   return true;
 }
 

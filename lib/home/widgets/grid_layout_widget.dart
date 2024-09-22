@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart' hide OverlayVisibilityMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:iptv_player/home/widgets/grid_layout_windows_widget.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
 import 'package:iptv_player/theme.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:platform_builder/platform.dart';
+import 'package:platform_builder/platform_builder.dart';
 
-class GridLayoutWidget extends ConsumerStatefulWidget {
+class GridLayoutWidget extends StatelessWidget {
   final String title;
   final AsyncValue<List> channelProvider;
   final AsyncValue<List<ItemCategory>> categories;
@@ -35,10 +37,78 @@ class GridLayoutWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<GridLayoutWidget> createState() => _GridLayoutWidgetState();
+  Widget build(BuildContext context) {
+    return PlatformBuilder(
+      macOSBuilder: (context) => GridLayoutWindowsWidget(
+          title: title,
+          channelProvider: channelProvider,
+          categories: categories,
+          placeHolderForSearchField: placeHolderForSearchField,
+          height: height,
+          width: width,
+          searchController: searchController,
+          itemBuilder: itemBuilder,
+          errorText: errorText,
+          onCategoryChanged: onCategoryChanged),
+      windowsBuilder: (context) => GridLayoutWindowsWidget(
+          title: title,
+          channelProvider: channelProvider,
+          categories: categories,
+          placeHolderForSearchField: placeHolderForSearchField,
+          height: height,
+          width: width,
+          searchController: searchController,
+          itemBuilder: itemBuilder,
+          errorText: errorText,
+          onCategoryChanged: onCategoryChanged),
+      iOSBuilder: (context) => GridLayoutMacOSWidget(
+          title: title,
+          channelProvider: channelProvider,
+          categories: categories,
+          placeHolderForSearchField: placeHolderForSearchField,
+          height: height,
+          width: width,
+          searchController: searchController,
+          itemBuilder: itemBuilder,
+          errorText: errorText,
+          onCategoryChanged: onCategoryChanged),
+    );
+  }
 }
 
-class _GridLayoutWidgetState extends ConsumerState<GridLayoutWidget> {
+class GridLayoutMacOSWidget extends ConsumerStatefulWidget {
+  final String title;
+  final AsyncValue<List> channelProvider;
+  final AsyncValue<List<ItemCategory>> categories;
+  final String placeHolderForSearchField;
+  final double height;
+  final double width;
+  final TextEditingController searchController;
+  final Widget Function(BuildContext, double, dynamic) itemBuilder;
+
+  final String errorText;
+  final Function(ItemCategory?) onCategoryChanged;
+
+  const GridLayoutMacOSWidget({
+    super.key,
+    required this.title,
+    required this.channelProvider,
+    required this.categories,
+    required this.placeHolderForSearchField,
+    required this.height,
+    required this.width,
+    required this.errorText,
+    required this.onCategoryChanged,
+    required this.searchController,
+    required this.itemBuilder,
+  });
+
+  @override
+  ConsumerState<GridLayoutMacOSWidget> createState() =>
+      _GridLayoutMacOSWidgetState();
+}
+
+class _GridLayoutMacOSWidgetState extends ConsumerState<GridLayoutMacOSWidget> {
   late TextEditingController searchController;
   int _pageIndex = 0;
 
@@ -65,7 +135,9 @@ class _GridLayoutWidgetState extends ConsumerState<GridLayoutWidget> {
     final currentTheme = ref.watch(appThemeProvider);
     return MacosScaffold(
       toolBar: ToolBar(
-        decoration: BoxDecoration(color: MacosTheme.of(context).canvasColor),
+        decoration: BoxDecoration(
+          color: MacosTheme.of(context).canvasColor,
+        ),
         leading: MacosIconButton(
           icon: const MacosIcon(
             CupertinoIcons.sidebar_left,

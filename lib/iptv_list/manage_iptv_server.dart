@@ -4,7 +4,10 @@ import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iptv_player/iptv_list/form/port_input.dart';
 import 'package:iptv_player/iptv_list/macOS/macos_mange_iptv_server_widget.dart';
+import 'package:iptv_player/iptv_list/windows/windows_manage_iptv_server_widget.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
+import 'package:macos_ui/macos_ui.dart';
+import 'package:platform_builder/platform_builder.dart';
 
 import '../service/collections/iptv_server/iptv_server.dart';
 import 'form/manage_iptv_server_form_state.dart';
@@ -25,7 +28,7 @@ class ManageIptvServerItem extends ConsumerStatefulWidget {
 
 class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
   final _formKey = GlobalKey<FormState>();
-  
+
   final ValueNotifier<ManageIptvServerFormState> _stateNotifier =
       ValueNotifier(ManageIptvServerFormState());
 
@@ -164,15 +167,38 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
     return ValueListenableBuilder<ManageIptvServerFormState>(
       valueListenable: _stateNotifier,
       builder: (context, state, child) {
-        return MacOSMangeIptvServerWidget(
-          formKey: _formKey,
-          formState: state,
-          nameController: _nameController,
-          urlController: _urlController,
-          portController: _portController,
-          userController: _userController,
-          passwordController: _passwordController,
-          onSubmit: _onSubmit,
+        return PlatformBuilder(
+          macOSBuilder: (context) => WindowsManageIptvServerWidget(
+            formKey: _formKey,
+            formState: state,
+            nameController: _nameController,
+            urlController: _urlController,
+            portController: _portController,
+            userController: _userController,
+            passwordController: _passwordController,
+            onSubmit: _onSubmit,
+          ),
+          windowsBuilder: (context) => WindowsManageIptvServerWidget(
+            formKey: _formKey,
+            formState: state,
+            nameController: _nameController,
+            urlController: _urlController,
+            portController: _portController,
+            userController: _userController,
+            passwordController: _passwordController,
+            onSubmit: _onSubmit,
+          ),
+          iOSBuilder: (context) => MacosApp(
+              home: MacOSMangeIptvServerWidget(
+            formKey: _formKey,
+            formState: state,
+            nameController: _nameController,
+            urlController: _urlController,
+            portController: _portController,
+            userController: _userController,
+            passwordController: _passwordController,
+            onSubmit: _onSubmit,
+          )),
         );
       },
     );

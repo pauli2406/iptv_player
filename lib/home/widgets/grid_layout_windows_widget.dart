@@ -131,6 +131,7 @@ class _GridLayoutWindowsWidgetState
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text("Downloading and reading playlist..."),
+                SizedBox(height: 20),
                 ProgressRing(),
               ],
             ),

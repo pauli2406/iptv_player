@@ -4,13 +4,10 @@ import 'package:platform_builder/platform.dart';
 
 class ThemeService {
   // Load hoverColor from MacosTheme if mac or from FluentTheme if windows. to check if max use Platform.instance.isMacOS
-  Color hoverColor(BuildContext context) => Platform.instance.isMacOS
-      ? FluentTheme.of(context).cardColor
-      : FluentTheme.of(context).cardColor;
 
   Color defaultBackground(BuildContext context) => Platform.instance.isMacOS
       ? MacosTheme.of(context).canvasColor
-      : FluentTheme.of(context).accentColor;
+      : FluentTheme.of(context).scaffoldBackgroundColor;
 
   TextStyle? textStyleCaption(BuildContext context) => Platform.instance.isMacOS
       ? MacosTheme.of(context).typography.caption1

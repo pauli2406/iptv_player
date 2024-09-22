@@ -30,8 +30,8 @@ class _HomeViewState extends ConsumerState<HomeView> {
   @override
   Widget build(BuildContext context) {
     return PlatformBuilder(
-      macOSBuilder: (context) => WindowsHomeView(),
-      windowsBuilder: (context) => WindowsHomeView(),
+      macOSBuilder: (context) => macOSHomeView(),
+      windowsBuilder: (context) => const WindowsHomeView(),
       iOSBuilder: (context) => macOSHomeView(),
     );
   }

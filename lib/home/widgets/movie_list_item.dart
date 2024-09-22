@@ -46,7 +46,7 @@ class _M3uListItemState extends State<M3uListItem> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: isHovering
-                ? ThemeService().hoverColor(context)
+                ? const Color.fromARGB(255, 133, 133, 133)
                 : ThemeService().defaultBackground(context),
           ),
           child: Column(
@@ -63,7 +63,7 @@ class _M3uListItemState extends State<M3uListItem> {
                     loadingBuilder: (context, progress) {
                       return Center(
                         child: PlatformBuilder(
-                          macOSBuilder: (context) => ProgressRing(
+                          macOSBuilder: (context) => ProgressCircle(
                             value: progress.progressPercentage.value,
                           ),
                           windowsBuilder: (context) => ProgressRing(

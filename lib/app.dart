@@ -30,7 +30,7 @@ class _AppState extends ConsumerState<App> {
   @override
   Widget build(BuildContext context) {
     return PlatformBuilder(
-      macOSBuilder: (context) => _buildWindowsApp(),
+      macOSBuilder: (context) => _buildMacApp(),
       windowsBuilder: (context) => _buildWindowsApp(),
       iOSBuilder: (context) => SafeArea(child: _buildMacApp()),
     );

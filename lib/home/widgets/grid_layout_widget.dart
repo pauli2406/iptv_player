@@ -6,7 +6,6 @@ import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
 import 'package:iptv_player/theme.dart';
 import 'package:macos_ui/macos_ui.dart';
-import 'package:platform_builder/platform.dart';
 import 'package:platform_builder/platform_builder.dart';
 
 class GridLayoutWidget extends StatelessWidget {
@@ -39,7 +38,7 @@ class GridLayoutWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlatformBuilder(
-      macOSBuilder: (context) => GridLayoutWindowsWidget(
+      macOSBuilder: (context) => GridLayoutMacOSWidget(
           title: title,
           channelProvider: channelProvider,
           categories: categories,
@@ -170,7 +169,6 @@ class _GridLayoutMacOSWidgetState extends ConsumerState<GridLayoutMacOSWidget> {
         ContentArea(
           builder: (context, scrollController) {
             final isUpdating = ref.watch(isUpdatingActiveIptvServerProvider);
-
             if (!isUpdating) {
               return MacosWindow(
                 sidebar: Sidebar(

@@ -12,7 +12,7 @@ class IptvServerList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return PlatformBuilder(
-      macOSBuilder: (context) => const WindowsIptvServerList(),
+      macOSBuilder: (context) => const MacOSIptvServerList(),
       windowsBuilder: (context) => const WindowsIptvServerList(),
       iOSBuilder: (context) => const MacosApp(home: MacOSIptvServerList()),
     );

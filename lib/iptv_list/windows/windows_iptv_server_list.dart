@@ -20,7 +20,7 @@ class WindowsIptvServerList extends ConsumerWidget {
     final serverItems$ = ref.watch(iptvServerItemsProvider);
     return NavigationView(
       appBar: const NavigationAppBar(
-        title: Text('IPTV Server List'),
+        automaticallyImplyLeading: false,
       ),
       content: _buildContentArea(context, ref, serverItems$),
     );
@@ -40,7 +40,7 @@ class WindowsIptvServerList extends ConsumerWidget {
                 "Playlists (${serverItems.length})",
                 style: FluentTheme.of(context).typography.title,
               ),
-              const Divider(),
+              const SizedBox(height: 20),
               Expanded(
                 child: _buildServerList(context, ref, serverItems),
               ),

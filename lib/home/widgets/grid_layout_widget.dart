@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart' hide OverlayVisibilityMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iptv_player/home/widgets/grid_layout_windows_widget.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
@@ -21,6 +22,8 @@ class GridLayoutWidget extends StatelessWidget {
   final String errorText;
   final Function(ItemCategory?) onCategoryChanged;
 
+  final bool showBackButton;
+
   const GridLayoutWidget({
     super.key,
     required this.title,
@@ -33,22 +36,25 @@ class GridLayoutWidget extends StatelessWidget {
     required this.onCategoryChanged,
     required this.searchController,
     required this.itemBuilder,
+    this.showBackButton = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return PlatformBuilder(
       macOSBuilder: (context) => GridLayoutMacOSWidget(
-          title: title,
-          channelProvider: channelProvider,
-          categories: categories,
-          placeHolderForSearchField: placeHolderForSearchField,
-          height: height,
-          width: width,
-          searchController: searchController,
-          itemBuilder: itemBuilder,
-          errorText: errorText,
-          onCategoryChanged: onCategoryChanged),
+        title: title,
+        channelProvider: channelProvider,
+        categories: categories,
+        placeHolderForSearchField: placeHolderForSearchField,
+        height: height,
+        width: width,
+        searchController: searchController,
+        itemBuilder: itemBuilder,
+        errorText: errorText,
+        onCategoryChanged: onCategoryChanged,
+        showBackButton: showBackButton,
+      ),
       windowsBuilder: (context) => GridLayoutWindowsWidget(
           title: title,
           channelProvider: channelProvider,
@@ -61,16 +67,18 @@ class GridLayoutWidget extends StatelessWidget {
           errorText: errorText,
           onCategoryChanged: onCategoryChanged),
       iOSBuilder: (context) => GridLayoutMacOSWidget(
-          title: title,
-          channelProvider: channelProvider,
-          categories: categories,
-          placeHolderForSearchField: placeHolderForSearchField,
-          height: height,
-          width: width,
-          searchController: searchController,
-          itemBuilder: itemBuilder,
-          errorText: errorText,
-          onCategoryChanged: onCategoryChanged),
+        title: title,
+        channelProvider: channelProvider,
+        categories: categories,
+        placeHolderForSearchField: placeHolderForSearchField,
+        height: height,
+        width: width,
+        searchController: searchController,
+        itemBuilder: itemBuilder,
+        errorText: errorText,
+        onCategoryChanged: onCategoryChanged,
+        showBackButton: showBackButton,
+      ),
     );
   }
 }
@@ -87,6 +95,7 @@ class GridLayoutMacOSWidget extends ConsumerStatefulWidget {
 
   final String errorText;
   final Function(ItemCategory?) onCategoryChanged;
+  final bool showBackButton;
 
   const GridLayoutMacOSWidget({
     super.key,
@@ -100,6 +109,7 @@ class GridLayoutMacOSWidget extends ConsumerStatefulWidget {
     required this.onCategoryChanged,
     required this.searchController,
     required this.itemBuilder,
+    required this.showBackButton,
   });
 
   @override
@@ -176,9 +186,33 @@ class _GridLayoutMacOSWidgetState extends ConsumerState<GridLayoutMacOSWidget> {
                   minWidth: 200,
                   maxWidth: 200,
                   topOffset: 0,
-                  top: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text("Categories"),
+                  top: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        widget.showBackButton
+                            ? Row(
+                                children: [
+                                  MacosBackButton(
+                                    onPressed: () {
+                                      context.pop();
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "Back",
+                                    style: MacosTheme.of(context)
+                                        .typography
+                                        .headline,
+                                  ),
+                                ],
+                              )
+                            : const SizedBox(),
+                        const Text("Categories"),
+                      ],
+                    ),
                   ),
                   builder: (context, scrollController) {
                     return widget.categories.when(

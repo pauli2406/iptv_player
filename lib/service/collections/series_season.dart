@@ -30,7 +30,7 @@ class SeriesSeason {
   String? coverBig;
 
   SeriesSeason.fromXtreamCodeSeriesSeason(XTremeCodeSeason seriesSeason)
-      : id = Isar.autoIncrement,
+      : id = seriesSeason.id,
         airDate = seriesSeason.airDate,
         episodeCount = seriesSeason.episodeCount,
         seriesId = seriesSeason.id,

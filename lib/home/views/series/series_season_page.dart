@@ -1,69 +1,83 @@
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:iptv_player/home/views/series/series_item_page.dart';
-// import 'package:iptv_player/provider/isar/m3u_provider.dart';
-// import 'package:macos_ui/macos_ui.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:iptv_player/home/provider/search_value_provider.dart';
+import 'package:iptv_player/home/widgets/grid_layout_widget.dart';
+import 'package:iptv_player/home/widgets/movie_list_item.dart';
+import 'package:iptv_player/provider/isar/m3u_provider.dart';
+import 'package:iptv_player/service/collections/item_category.dart';
 
-// class SeriesSeasonPage extends ConsumerStatefulWidget {
-//   const SeriesSeasonPage({required this.series, super.key});
+class SeriesSeasonPage extends ConsumerStatefulWidget {
+  const SeriesSeasonPage({required this.seriesId, super.key});
 
-//   final String series;
+  final int seriesId;
 
-//   @override
-//   ConsumerState<SeriesSeasonPage> createState() => _SeriesSeasonPage();
-// }
+  @override
+  ConsumerState<SeriesSeasonPage> createState() => _SeriesSeasonPage();
+}
 
-// class _SeriesSeasonPage extends ConsumerState<SeriesSeasonPage> {
-//   int _pageIndex = 0;
+class _SeriesSeasonPage extends ConsumerState<SeriesSeasonPage> {
+  ItemCategory? _category;
 
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
+  late TextEditingController searchController;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return ref
-//         .watch(findAllSeasonsOfSeriesProvider(series: widget.series))
-//         .when(
-//           data: (items) {
-//             return MacosWindow(
-//               sidebar: Sidebar(
-//                 decoration:
-//                     BoxDecoration(color: MacosTheme.of(context).canvasColor),
-//                 minWidth: 200,
-//                 builder: (context, scrollController) {
-//                   return SidebarItems(
-//                     scrollController: scrollController,
-//                     currentIndex: _pageIndex,
-//                     onChanged: (index) {
-//                       setState(() => _pageIndex = index);
-//                     },
-//                     items: [
-//                       for (var item in items)
-//                         SidebarItem(
-//                           label: Text("Season ${item.season}"),
-//                         )
-//                     ],
-//                   );
-//                 },
-//               ),
-//               child: IndexedStack(
-//                 index: _pageIndex,
-//                 children: [
-//                   for (var item in items)
-//                     SeriesItemPage(
-//                       series: item.series!,
-//                       season: item.season!,
-//                     )
-//                 ],
-//               ),
-//             );
-//           },
-//           error: (error, _) => Container(),
-//           loading: () => const Center(
-//             child: ProgressCircle(),
-//           ),
-//         );
-//   }
-// }
+  @override
+  void initState() {
+    super.initState();
+    searchController = TextEditingController()
+      ..addListener(
+        () => ref
+            .read(seriesSearchValueProvider.notifier)
+            .setValue(searchController.value.text),
+      );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final seriesProvider =
+        ref.watch(findSeriesProvider(seriesId: widget.seriesId));
+    final seriesInfo =
+        ref.watch(findSeriesInfoProvider(seriesId: widget.seriesId)).value;
+    final seasons = seriesInfo?.seasons?.toList() ?? [];
+    seasons.sort((a, b) => a.seasonNumber!.compareTo(b.seasonNumber!));
+    final categories = AsyncValue.data(
+      seasons
+          .map(
+            (e) => ItemCategory(
+              e.seasonNumber!,
+              e.name,
+              e.seasonNumber,
+              ItemCategoryType.series,
+            ),
+          )
+          .toList(),
+    );
+
+    final seriesItemProvider = ref.watch(
+      findAllSeriesEpisodesProvider(
+          seriesId: widget.seriesId, season: _category),
+    );
+    final series = seriesProvider.value;
+
+    return GridLayoutWidget(
+      title: series?.name ?? 'Series',
+      channelProvider: seriesItemProvider,
+      categories: categories,
+      placeHolderForSearchField: 'Search for an episode',
+      height: 1.5,
+      width: 2,
+      errorText: 'No episode found',
+      onCategoryChanged: (ItemCategory? category) {
+        setState(() {
+          _category = category;
+        });
+      },
+      searchController: searchController,
+      itemBuilder: (context, itemHeight, item) => M3uListItem(
+        channelViewModel: item,
+        height: itemHeight,
+        route: "/main/series/player",
+      ),
+      showBackButton: true,
+    );
+  }
+}

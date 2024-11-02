@@ -79,4 +79,30 @@ class SeriesItem {
         episodeRunTime = seriesItem.episodeRunTime,
         categoryId = seriesItem.categoryId,
         categoryIds = seriesItem.categoryIds ?? [];
+
+   XTremeCodeSeriesItem toXtreamCodeSeriesItem() {
+    return XTremeCodeSeriesItem(
+      seriesId: id,
+      num: num,
+      name: name,
+      title: title,
+      year: year,
+      streamType: streamType,
+      cover: cover,
+      plot: plot,
+      cast: cast,
+      director: director,
+      genre: genre,
+      releaseDate: releaseDate,
+      lastModified: lastModified,
+      rating: rating,
+      rating5based: rating5based,
+      backdropPath: backdropPath,
+      youtubeTrailer: youtubeTrailer,
+      episodeRunTime: episodeRunTime,
+      categoryId: categoryId,
+      categoryIds: categoryIds,
+    );
+  }
 }
+

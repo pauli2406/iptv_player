@@ -6,7 +6,7 @@ part of 'iptv_server_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$iptvServerServiceHash() => r'7a34bec0cf626cedb1b0ecc2d5fd8f5168059e4f';
+String _$iptvServerServiceHash() => r'e56d7ccc98099507e1b5df38926d632e8c4ad9d0';
 
 /// See also [iptvServerService].
 @ProviderFor(iptvServerService)

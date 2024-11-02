@@ -40,6 +40,9 @@ class _M3uListItemState extends State<M3uListItem> {
           context.go(widget.route, extra: {
             'link': widget.channelViewModel.link,
             'streamId': widget.channelViewModel.streamId,
+            'streamUrl': widget.channelViewModel.link,
+            'streamTitle': widget.channelViewModel.title,
+            'streamCover': widget.channelViewModel.logoUrl,
           });
         },
         child: Container(

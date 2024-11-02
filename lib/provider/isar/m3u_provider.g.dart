@@ -20,23 +20,8 @@ final m3uServiceProvider = Provider<M3uService>.internal(
 );
 
 typedef M3uServiceRef = ProviderRef<M3uService>;
-String _$m3uParseServiceHash() => r'17b0748dc4ee40d0acc35c84597af65fe3f2d959';
-
-/// See also [m3uParseService].
-@ProviderFor(m3uParseService)
-final m3uParseServiceProvider = Provider<M3uParseService>.internal(
-  m3uParseService,
-  name: r'm3uParseServiceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$m3uParseServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef M3uParseServiceRef = ProviderRef<M3uParseService>;
 String _$clearDownloadAndPersistActivePlaylistItemsHash() =>
-    r'388618e79dea1ddb8e5807e6857d27a34b1f85e3';
+    r'd5021d948f6ef7acba4cdb77d29d9f6ff95cb088';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -416,6 +401,901 @@ class _FindAllMoviesProviderElement
 
   @override
   ItemCategory? get category => (origin as FindAllMoviesProvider).category;
+}
+
+String _$findSeriesHash() => r'8dcb791af11d9be05cc7a6ce8df422d53d764aad';
+
+/// See also [findSeries].
+@ProviderFor(findSeries)
+const findSeriesProvider = FindSeriesFamily();
+
+/// See also [findSeries].
+class FindSeriesFamily extends Family {
+  /// See also [findSeries].
+  const FindSeriesFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'findSeriesProvider';
+
+  /// See also [findSeries].
+  FindSeriesProvider call({
+    required int seriesId,
+  }) {
+    return FindSeriesProvider(
+      seriesId: seriesId,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  FindSeriesProvider getProviderOverride(
+    covariant FindSeriesProvider provider,
+  ) {
+    return call(
+      seriesId: provider.seriesId,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(Stream<SeriesItem> Function(FindSeriesRef ref) create) {
+    return _$FindSeriesFamilyOverride(this, create);
+  }
+}
+
+class _$FindSeriesFamilyOverride implements FamilyOverride {
+  _$FindSeriesFamilyOverride(this.overriddenFamily, this.create);
+
+  final Stream<SeriesItem> Function(FindSeriesRef ref) create;
+
+  @override
+  final FindSeriesFamily overriddenFamily;
+
+  @override
+  FindSeriesProvider getProviderOverride(
+    covariant FindSeriesProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [findSeries].
+class FindSeriesProvider extends AutoDisposeStreamProvider<SeriesItem> {
+  /// See also [findSeries].
+  FindSeriesProvider({
+    required int seriesId,
+  }) : this._internal(
+          (ref) => findSeries(
+            ref as FindSeriesRef,
+            seriesId: seriesId,
+          ),
+          from: findSeriesProvider,
+          name: r'findSeriesProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$findSeriesHash,
+          dependencies: FindSeriesFamily._dependencies,
+          allTransitiveDependencies:
+              FindSeriesFamily._allTransitiveDependencies,
+          seriesId: seriesId,
+        );
+
+  FindSeriesProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.seriesId,
+  }) : super.internal();
+
+  final int seriesId;
+
+  @override
+  Override overrideWith(
+    Stream<SeriesItem> Function(FindSeriesRef ref) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindSeriesProvider._internal(
+        (ref) => create(ref as FindSeriesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        seriesId: seriesId,
+      ),
+    );
+  }
+
+  @override
+  ({
+    int seriesId,
+  }) get argument {
+    return (seriesId: seriesId,);
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<SeriesItem> createElement() {
+    return _FindSeriesProviderElement(this);
+  }
+
+  FindSeriesProvider _copyWith(
+    Stream<SeriesItem> Function(FindSeriesRef ref) create,
+  ) {
+    return FindSeriesProvider._internal(
+      (ref) => create(ref as FindSeriesRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      seriesId: seriesId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FindSeriesProvider && other.seriesId == seriesId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, seriesId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FindSeriesRef on AutoDisposeStreamProviderRef<SeriesItem> {
+  /// The parameter `seriesId` of this provider.
+  int get seriesId;
+}
+
+class _FindSeriesProviderElement
+    extends AutoDisposeStreamProviderElement<SeriesItem> with FindSeriesRef {
+  _FindSeriesProviderElement(super.provider);
+
+  @override
+  int get seriesId => (origin as FindSeriesProvider).seriesId;
+}
+
+String _$findSeriesEpisodeHash() => r'1b30ca2356ad2c12664c41cea71e4c9849b00fd3';
+
+/// See also [findSeriesEpisode].
+@ProviderFor(findSeriesEpisode)
+const findSeriesEpisodeProvider = FindSeriesEpisodeFamily();
+
+/// See also [findSeriesEpisode].
+class FindSeriesEpisodeFamily extends Family {
+  /// See also [findSeriesEpisode].
+  const FindSeriesEpisodeFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'findSeriesEpisodeProvider';
+
+  /// See also [findSeriesEpisode].
+  FindSeriesEpisodeProvider call({
+    required int streamId,
+  }) {
+    return FindSeriesEpisodeProvider(
+      streamId: streamId,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  FindSeriesEpisodeProvider getProviderOverride(
+    covariant FindSeriesEpisodeProvider provider,
+  ) {
+    return call(
+      streamId: provider.streamId,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      Stream<SeriesEpisode> Function(FindSeriesEpisodeRef ref) create) {
+    return _$FindSeriesEpisodeFamilyOverride(this, create);
+  }
+}
+
+class _$FindSeriesEpisodeFamilyOverride implements FamilyOverride {
+  _$FindSeriesEpisodeFamilyOverride(this.overriddenFamily, this.create);
+
+  final Stream<SeriesEpisode> Function(FindSeriesEpisodeRef ref) create;
+
+  @override
+  final FindSeriesEpisodeFamily overriddenFamily;
+
+  @override
+  FindSeriesEpisodeProvider getProviderOverride(
+    covariant FindSeriesEpisodeProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [findSeriesEpisode].
+class FindSeriesEpisodeProvider
+    extends AutoDisposeStreamProvider<SeriesEpisode> {
+  /// See also [findSeriesEpisode].
+  FindSeriesEpisodeProvider({
+    required int streamId,
+  }) : this._internal(
+          (ref) => findSeriesEpisode(
+            ref as FindSeriesEpisodeRef,
+            streamId: streamId,
+          ),
+          from: findSeriesEpisodeProvider,
+          name: r'findSeriesEpisodeProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$findSeriesEpisodeHash,
+          dependencies: FindSeriesEpisodeFamily._dependencies,
+          allTransitiveDependencies:
+              FindSeriesEpisodeFamily._allTransitiveDependencies,
+          streamId: streamId,
+        );
+
+  FindSeriesEpisodeProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.streamId,
+  }) : super.internal();
+
+  final int streamId;
+
+  @override
+  Override overrideWith(
+    Stream<SeriesEpisode> Function(FindSeriesEpisodeRef ref) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindSeriesEpisodeProvider._internal(
+        (ref) => create(ref as FindSeriesEpisodeRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        streamId: streamId,
+      ),
+    );
+  }
+
+  @override
+  ({
+    int streamId,
+  }) get argument {
+    return (streamId: streamId,);
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<SeriesEpisode> createElement() {
+    return _FindSeriesEpisodeProviderElement(this);
+  }
+
+  FindSeriesEpisodeProvider _copyWith(
+    Stream<SeriesEpisode> Function(FindSeriesEpisodeRef ref) create,
+  ) {
+    return FindSeriesEpisodeProvider._internal(
+      (ref) => create(ref as FindSeriesEpisodeRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      streamId: streamId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FindSeriesEpisodeProvider && other.streamId == streamId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, streamId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FindSeriesEpisodeRef on AutoDisposeStreamProviderRef<SeriesEpisode> {
+  /// The parameter `streamId` of this provider.
+  int get streamId;
+}
+
+class _FindSeriesEpisodeProviderElement
+    extends AutoDisposeStreamProviderElement<SeriesEpisode>
+    with FindSeriesEpisodeRef {
+  _FindSeriesEpisodeProviderElement(super.provider);
+
+  @override
+  int get streamId => (origin as FindSeriesEpisodeProvider).streamId;
+}
+
+String _$findAllSeriesHash() => r'e0ff29ea7e54e0cbe2e5eeb755e434b7e8dfb952';
+
+/// See also [findAllSeries].
+@ProviderFor(findAllSeries)
+const findAllSeriesProvider = FindAllSeriesFamily();
+
+/// See also [findAllSeries].
+class FindAllSeriesFamily extends Family {
+  /// See also [findAllSeries].
+  const FindAllSeriesFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'findAllSeriesProvider';
+
+  /// See also [findAllSeries].
+  FindAllSeriesProvider call({
+    ItemCategory? category,
+  }) {
+    return FindAllSeriesProvider(
+      category: category,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  FindAllSeriesProvider getProviderOverride(
+    covariant FindAllSeriesProvider provider,
+  ) {
+    return call(
+      category: provider.category,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      Stream<List<SeriesItem>> Function(FindAllSeriesRef ref) create) {
+    return _$FindAllSeriesFamilyOverride(this, create);
+  }
+}
+
+class _$FindAllSeriesFamilyOverride implements FamilyOverride {
+  _$FindAllSeriesFamilyOverride(this.overriddenFamily, this.create);
+
+  final Stream<List<SeriesItem>> Function(FindAllSeriesRef ref) create;
+
+  @override
+  final FindAllSeriesFamily overriddenFamily;
+
+  @override
+  FindAllSeriesProvider getProviderOverride(
+    covariant FindAllSeriesProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [findAllSeries].
+class FindAllSeriesProvider
+    extends AutoDisposeStreamProvider<List<SeriesItem>> {
+  /// See also [findAllSeries].
+  FindAllSeriesProvider({
+    ItemCategory? category,
+  }) : this._internal(
+          (ref) => findAllSeries(
+            ref as FindAllSeriesRef,
+            category: category,
+          ),
+          from: findAllSeriesProvider,
+          name: r'findAllSeriesProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$findAllSeriesHash,
+          dependencies: FindAllSeriesFamily._dependencies,
+          allTransitiveDependencies:
+              FindAllSeriesFamily._allTransitiveDependencies,
+          category: category,
+        );
+
+  FindAllSeriesProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.category,
+  }) : super.internal();
+
+  final ItemCategory? category;
+
+  @override
+  Override overrideWith(
+    Stream<List<SeriesItem>> Function(FindAllSeriesRef ref) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindAllSeriesProvider._internal(
+        (ref) => create(ref as FindAllSeriesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        category: category,
+      ),
+    );
+  }
+
+  @override
+  ({
+    ItemCategory? category,
+  }) get argument {
+    return (category: category,);
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<List<SeriesItem>> createElement() {
+    return _FindAllSeriesProviderElement(this);
+  }
+
+  FindAllSeriesProvider _copyWith(
+    Stream<List<SeriesItem>> Function(FindAllSeriesRef ref) create,
+  ) {
+    return FindAllSeriesProvider._internal(
+      (ref) => create(ref as FindAllSeriesRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      category: category,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FindAllSeriesProvider && other.category == category;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, category.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FindAllSeriesRef on AutoDisposeStreamProviderRef<List<SeriesItem>> {
+  /// The parameter `category` of this provider.
+  ItemCategory? get category;
+}
+
+class _FindAllSeriesProviderElement
+    extends AutoDisposeStreamProviderElement<List<SeriesItem>>
+    with FindAllSeriesRef {
+  _FindAllSeriesProviderElement(super.provider);
+
+  @override
+  ItemCategory? get category => (origin as FindAllSeriesProvider).category;
+}
+
+String _$findSeriesInfoHash() => r'b19239816802e6f79a85ea38df190f9e0471afbf';
+
+/// See also [findSeriesInfo].
+@ProviderFor(findSeriesInfo)
+const findSeriesInfoProvider = FindSeriesInfoFamily();
+
+/// See also [findSeriesInfo].
+class FindSeriesInfoFamily extends Family {
+  /// See also [findSeriesInfo].
+  const FindSeriesInfoFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'findSeriesInfoProvider';
+
+  /// See also [findSeriesInfo].
+  FindSeriesInfoProvider call({
+    required int seriesId,
+  }) {
+    return FindSeriesInfoProvider(
+      seriesId: seriesId,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  FindSeriesInfoProvider getProviderOverride(
+    covariant FindSeriesInfoProvider provider,
+  ) {
+    return call(
+      seriesId: provider.seriesId,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      FutureOr<XTremeCodeSeriesInfo?> Function(FindSeriesInfoRef ref) create) {
+    return _$FindSeriesInfoFamilyOverride(this, create);
+  }
+}
+
+class _$FindSeriesInfoFamilyOverride implements FamilyOverride {
+  _$FindSeriesInfoFamilyOverride(this.overriddenFamily, this.create);
+
+  final FutureOr<XTremeCodeSeriesInfo?> Function(FindSeriesInfoRef ref) create;
+
+  @override
+  final FindSeriesInfoFamily overriddenFamily;
+
+  @override
+  FindSeriesInfoProvider getProviderOverride(
+    covariant FindSeriesInfoProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [findSeriesInfo].
+class FindSeriesInfoProvider
+    extends AutoDisposeFutureProvider<XTremeCodeSeriesInfo?> {
+  /// See also [findSeriesInfo].
+  FindSeriesInfoProvider({
+    required int seriesId,
+  }) : this._internal(
+          (ref) => findSeriesInfo(
+            ref as FindSeriesInfoRef,
+            seriesId: seriesId,
+          ),
+          from: findSeriesInfoProvider,
+          name: r'findSeriesInfoProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$findSeriesInfoHash,
+          dependencies: FindSeriesInfoFamily._dependencies,
+          allTransitiveDependencies:
+              FindSeriesInfoFamily._allTransitiveDependencies,
+          seriesId: seriesId,
+        );
+
+  FindSeriesInfoProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.seriesId,
+  }) : super.internal();
+
+  final int seriesId;
+
+  @override
+  Override overrideWith(
+    FutureOr<XTremeCodeSeriesInfo?> Function(FindSeriesInfoRef ref) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindSeriesInfoProvider._internal(
+        (ref) => create(ref as FindSeriesInfoRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        seriesId: seriesId,
+      ),
+    );
+  }
+
+  @override
+  ({
+    int seriesId,
+  }) get argument {
+    return (seriesId: seriesId,);
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<XTremeCodeSeriesInfo?> createElement() {
+    return _FindSeriesInfoProviderElement(this);
+  }
+
+  FindSeriesInfoProvider _copyWith(
+    FutureOr<XTremeCodeSeriesInfo?> Function(FindSeriesInfoRef ref) create,
+  ) {
+    return FindSeriesInfoProvider._internal(
+      (ref) => create(ref as FindSeriesInfoRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      seriesId: seriesId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FindSeriesInfoProvider && other.seriesId == seriesId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, seriesId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FindSeriesInfoRef on AutoDisposeFutureProviderRef<XTremeCodeSeriesInfo?> {
+  /// The parameter `seriesId` of this provider.
+  int get seriesId;
+}
+
+class _FindSeriesInfoProviderElement
+    extends AutoDisposeFutureProviderElement<XTremeCodeSeriesInfo?>
+    with FindSeriesInfoRef {
+  _FindSeriesInfoProviderElement(super.provider);
+
+  @override
+  int get seriesId => (origin as FindSeriesInfoProvider).seriesId;
+}
+
+String _$findAllSeriesEpisodesHash() =>
+    r'2fe79fb951c39167d8f9217df6c9c7fabb0ebbc4';
+
+/// See also [findAllSeriesEpisodes].
+@ProviderFor(findAllSeriesEpisodes)
+const findAllSeriesEpisodesProvider = FindAllSeriesEpisodesFamily();
+
+/// See also [findAllSeriesEpisodes].
+class FindAllSeriesEpisodesFamily extends Family {
+  /// See also [findAllSeriesEpisodes].
+  const FindAllSeriesEpisodesFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'findAllSeriesEpisodesProvider';
+
+  /// See also [findAllSeriesEpisodes].
+  FindAllSeriesEpisodesProvider call({
+    required int seriesId,
+    ItemCategory? season,
+  }) {
+    return FindAllSeriesEpisodesProvider(
+      seriesId: seriesId,
+      season: season,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  FindAllSeriesEpisodesProvider getProviderOverride(
+    covariant FindAllSeriesEpisodesProvider provider,
+  ) {
+    return call(
+      seriesId: provider.seriesId,
+      season: provider.season,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      FutureOr<List<ChannelViewModel>> Function(FindAllSeriesEpisodesRef ref)
+          create) {
+    return _$FindAllSeriesEpisodesFamilyOverride(this, create);
+  }
+}
+
+class _$FindAllSeriesEpisodesFamilyOverride implements FamilyOverride {
+  _$FindAllSeriesEpisodesFamilyOverride(this.overriddenFamily, this.create);
+
+  final FutureOr<List<ChannelViewModel>> Function(FindAllSeriesEpisodesRef ref)
+      create;
+
+  @override
+  final FindAllSeriesEpisodesFamily overriddenFamily;
+
+  @override
+  FindAllSeriesEpisodesProvider getProviderOverride(
+    covariant FindAllSeriesEpisodesProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [findAllSeriesEpisodes].
+class FindAllSeriesEpisodesProvider
+    extends AutoDisposeFutureProvider<List<ChannelViewModel>> {
+  /// See also [findAllSeriesEpisodes].
+  FindAllSeriesEpisodesProvider({
+    required int seriesId,
+    ItemCategory? season,
+  }) : this._internal(
+          (ref) => findAllSeriesEpisodes(
+            ref as FindAllSeriesEpisodesRef,
+            seriesId: seriesId,
+            season: season,
+          ),
+          from: findAllSeriesEpisodesProvider,
+          name: r'findAllSeriesEpisodesProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$findAllSeriesEpisodesHash,
+          dependencies: FindAllSeriesEpisodesFamily._dependencies,
+          allTransitiveDependencies:
+              FindAllSeriesEpisodesFamily._allTransitiveDependencies,
+          seriesId: seriesId,
+          season: season,
+        );
+
+  FindAllSeriesEpisodesProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.seriesId,
+    required this.season,
+  }) : super.internal();
+
+  final int seriesId;
+  final ItemCategory? season;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<ChannelViewModel>> Function(FindAllSeriesEpisodesRef ref)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindAllSeriesEpisodesProvider._internal(
+        (ref) => create(ref as FindAllSeriesEpisodesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        seriesId: seriesId,
+        season: season,
+      ),
+    );
+  }
+
+  @override
+  ({
+    int seriesId,
+    ItemCategory? season,
+  }) get argument {
+    return (
+      seriesId: seriesId,
+      season: season,
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<ChannelViewModel>> createElement() {
+    return _FindAllSeriesEpisodesProviderElement(this);
+  }
+
+  FindAllSeriesEpisodesProvider _copyWith(
+    FutureOr<List<ChannelViewModel>> Function(FindAllSeriesEpisodesRef ref)
+        create,
+  ) {
+    return FindAllSeriesEpisodesProvider._internal(
+      (ref) => create(ref as FindAllSeriesEpisodesRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      seriesId: seriesId,
+      season: season,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FindAllSeriesEpisodesProvider &&
+        other.seriesId == seriesId &&
+        other.season == season;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, seriesId.hashCode);
+    hash = _SystemHash.combine(hash, season.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FindAllSeriesEpisodesRef
+    on AutoDisposeFutureProviderRef<List<ChannelViewModel>> {
+  /// The parameter `seriesId` of this provider.
+  int get seriesId;
+
+  /// The parameter `season` of this provider.
+  ItemCategory? get season;
+}
+
+class _FindAllSeriesEpisodesProviderElement
+    extends AutoDisposeFutureProviderElement<List<ChannelViewModel>>
+    with FindAllSeriesEpisodesRef {
+  _FindAllSeriesEpisodesProviderElement(super.provider);
+
+  @override
+  int get seriesId => (origin as FindAllSeriesEpisodesProvider).seriesId;
+  @override
+  ItemCategory? get season => (origin as FindAllSeriesEpisodesProvider).season;
 }
 
 String _$findMovieHash() => r'e7f4e822850c7cc43b92f0fa2a4a48d3dde9d57a';
@@ -952,181 +1832,6 @@ final findAllSeriesGroupsProvider =
 
 typedef FindAllSeriesGroupsRef
     = AutoDisposeStreamProviderRef<List<ItemCategory>>;
-String _$findAllSeasonsOfSeriesHash() =>
-    r'721224f4b3910e7bfec7f1e452ae4b8b6a31cc03';
-
-/// See also [findAllSeasonsOfSeries].
-@ProviderFor(findAllSeasonsOfSeries)
-const findAllSeasonsOfSeriesProvider = FindAllSeasonsOfSeriesFamily();
-
-/// See also [findAllSeasonsOfSeries].
-class FindAllSeasonsOfSeriesFamily extends Family {
-  /// See also [findAllSeasonsOfSeries].
-  const FindAllSeasonsOfSeriesFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'findAllSeasonsOfSeriesProvider';
-
-  /// See also [findAllSeasonsOfSeries].
-  FindAllSeasonsOfSeriesProvider call({
-    required String series,
-  }) {
-    return FindAllSeasonsOfSeriesProvider(
-      series: series,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  FindAllSeasonsOfSeriesProvider getProviderOverride(
-    covariant FindAllSeasonsOfSeriesProvider provider,
-  ) {
-    return call(
-      series: provider.series,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(
-      Stream<List<M3UItem>> Function(FindAllSeasonsOfSeriesRef ref) create) {
-    return _$FindAllSeasonsOfSeriesFamilyOverride(this, create);
-  }
-}
-
-class _$FindAllSeasonsOfSeriesFamilyOverride implements FamilyOverride {
-  _$FindAllSeasonsOfSeriesFamilyOverride(this.overriddenFamily, this.create);
-
-  final Stream<List<M3UItem>> Function(FindAllSeasonsOfSeriesRef ref) create;
-
-  @override
-  final FindAllSeasonsOfSeriesFamily overriddenFamily;
-
-  @override
-  FindAllSeasonsOfSeriesProvider getProviderOverride(
-    covariant FindAllSeasonsOfSeriesProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [findAllSeasonsOfSeries].
-class FindAllSeasonsOfSeriesProvider
-    extends AutoDisposeStreamProvider<List<M3UItem>> {
-  /// See also [findAllSeasonsOfSeries].
-  FindAllSeasonsOfSeriesProvider({
-    required String series,
-  }) : this._internal(
-          (ref) => findAllSeasonsOfSeries(
-            ref as FindAllSeasonsOfSeriesRef,
-            series: series,
-          ),
-          from: findAllSeasonsOfSeriesProvider,
-          name: r'findAllSeasonsOfSeriesProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$findAllSeasonsOfSeriesHash,
-          dependencies: FindAllSeasonsOfSeriesFamily._dependencies,
-          allTransitiveDependencies:
-              FindAllSeasonsOfSeriesFamily._allTransitiveDependencies,
-          series: series,
-        );
-
-  FindAllSeasonsOfSeriesProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.series,
-  }) : super.internal();
-
-  final String series;
-
-  @override
-  Override overrideWith(
-    Stream<List<M3UItem>> Function(FindAllSeasonsOfSeriesRef ref) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: FindAllSeasonsOfSeriesProvider._internal(
-        (ref) => create(ref as FindAllSeasonsOfSeriesRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        series: series,
-      ),
-    );
-  }
-
-  @override
-  ({
-    String series,
-  }) get argument {
-    return (series: series,);
-  }
-
-  @override
-  AutoDisposeStreamProviderElement<List<M3UItem>> createElement() {
-    return _FindAllSeasonsOfSeriesProviderElement(this);
-  }
-
-  FindAllSeasonsOfSeriesProvider _copyWith(
-    Stream<List<M3UItem>> Function(FindAllSeasonsOfSeriesRef ref) create,
-  ) {
-    return FindAllSeasonsOfSeriesProvider._internal(
-      (ref) => create(ref as FindAllSeasonsOfSeriesRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      series: series,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is FindAllSeasonsOfSeriesProvider && other.series == series;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, series.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-mixin FindAllSeasonsOfSeriesRef on AutoDisposeStreamProviderRef<List<M3UItem>> {
-  /// The parameter `series` of this provider.
-  String get series;
-}
-
-class _FindAllSeasonsOfSeriesProviderElement
-    extends AutoDisposeStreamProviderElement<List<M3UItem>>
-    with FindAllSeasonsOfSeriesRef {
-  _FindAllSeasonsOfSeriesProviderElement(super.provider);
-
-  @override
-  String get series => (origin as FindAllSeasonsOfSeriesProvider).series;
-}
-
 String _$findAllChannelGroupsHash() =>
     r'c6e8fe1df9fe7e5e2896a37bbe95343761bf9abc';
 

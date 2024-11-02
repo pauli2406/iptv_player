@@ -52,7 +52,7 @@ class SeriesEpisode {
   SeriesEpisode.fromXtreamCodeSeriesEpisode(
     XTremeCodeEpisode seriesEpisode,
     this.streamUrl,
-  )   : id = Isar.autoIncrement,
+  )   : id = seriesEpisode.id,
         streamId = seriesEpisode.id,
         episodeNum = seriesEpisode.episodeNum,
         title = seriesEpisode.title,

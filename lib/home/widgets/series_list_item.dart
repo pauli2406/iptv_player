@@ -30,7 +30,7 @@ class _SeriesListItemState extends State<SeriesListItem> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () async {
-          context.go("/main/series", extra: widget.seriesItem);
+          context.go("/main/series", extra: widget.seriesItem.id);
         },
         child: Container(
           decoration: BoxDecoration(

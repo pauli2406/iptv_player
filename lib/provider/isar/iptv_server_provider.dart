@@ -11,8 +11,7 @@ part 'iptv_server_provider.g.dart';
 IptvServerService iptvServerService(IptvServerServiceRef ref) {
   final isar = ref.watch(getIsarProvider);
   final m3uService = ref.watch(m3uServiceProvider);
-  final m3uParseService = ref.watch(m3uParseServiceProvider);
-  return IptvServerService(isar, m3uService, m3uParseService);
+  return IptvServerService(isar, m3uService);
 }
 
 @riverpod

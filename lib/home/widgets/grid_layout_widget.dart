@@ -1,7 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart' hide OverlayVisibilityMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:iptv_player/home/widgets/grid_layout_windows_widget.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
@@ -154,6 +154,7 @@ class _GridLayoutMacOSWidgetState extends ConsumerState<GridLayoutMacOSWidget> {
           onPressed: () => MacosWindowScope.of(context).toggleSidebar(),
         ),
         title: Text(widget.title),
+        titleWidth: 300,
         actions: Platform.instance.isMacOS
             ? [
                 ToolBarIconButton(
@@ -195,7 +196,7 @@ class _GridLayoutMacOSWidgetState extends ConsumerState<GridLayoutMacOSWidget> {
                                 children: [
                                   MacosBackButton(
                                     onPressed: () {
-                                      context.pop();
+                                      context.router.maybePop();
                                     },
                                   ),
                                   const SizedBox(
@@ -210,7 +211,6 @@ class _GridLayoutMacOSWidgetState extends ConsumerState<GridLayoutMacOSWidget> {
                                 ],
                               )
                             : const SizedBox(),
-                        const Text("Categories"),
                       ],
                     ),
                   ),

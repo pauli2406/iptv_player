@@ -1,11 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iptv_player/home/provider/search_value_provider.dart';
 import 'package:iptv_player/home/widgets/grid_layout_widget.dart';
 import 'package:iptv_player/home/widgets/movie_list_item.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
+import 'package:iptv_player/router/app_router.gr.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
 
+@RoutePage()
 class SeriesSeasonPage extends ConsumerStatefulWidget {
   const SeriesSeasonPage({required this.seriesId, super.key});
 
@@ -75,7 +78,12 @@ class _SeriesSeasonPage extends ConsumerState<SeriesSeasonPage> {
       itemBuilder: (context, itemHeight, item) => M3uListItem(
         channelViewModel: item,
         height: itemHeight,
-        route: "/main/series/player",
+        route: SeriesVideoPlayerRoute(
+          streamId: item.streamId,
+          streamUrl: item.link,
+          streamTitle: item.title,
+          streamCover: item.logoUrl,
+        ),
       ),
       showBackButton: true,
     );

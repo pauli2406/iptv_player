@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iptv_player/provider/isar/isar_provider.dart';
-import 'package:iptv_player/router/router.dart';
+import 'package:iptv_player/router/app_router.dart';
 import 'package:iptv_player/service/collections/theme/theme.dart';
 import 'package:iptv_player/theme.dart';
 import 'package:isar/isar.dart';
@@ -37,9 +37,10 @@ class _AppState extends ConsumerState<App> {
   }
 
   MacosApp _buildMacApp() {
+    final appRouter = AppRouter();
     final theme = ref.watch(appThemeProvider);
     return MacosApp.router(
-      routerConfig: router,
+      routerConfig: appRouter.config(),
       title: 'iptv_player',
       themeMode: theme,
       debugShowCheckedModeBanner: false,
@@ -47,9 +48,10 @@ class _AppState extends ConsumerState<App> {
   }
 
   FluentApp _buildWindowsApp() {
+    final appRouter = AppRouter();
     final theme = ref.watch(appThemeProvider);
     return FluentApp.router(
-      routerConfig: router,
+      routerConfig: appRouter.config(),
       title: 'iptv_player',
       themeMode: theme,
       darkTheme: FluentThemeData.dark(),

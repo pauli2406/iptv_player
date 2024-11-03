@@ -1,7 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
-import 'package:go_router/go_router.dart';
+import 'package:iptv_player/router/app_router.gr.dart';
 import 'package:iptv_player/service/collections/series_item.dart';
 import 'package:macos_ui/macos_ui.dart';
 
@@ -30,7 +31,9 @@ class _SeriesListItemState extends State<SeriesListItem> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () async {
-          context.go("/main/series", extra: widget.seriesItem.id);
+          context.router.push(
+            SeriesSeasonPageRoute(seriesId: widget.seriesItem.id),
+          );
         },
         child: Container(
           decoration: BoxDecoration(

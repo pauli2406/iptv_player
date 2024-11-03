@@ -1,7 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide ProgressBar;
 import 'package:flutter/gestures.dart';
-import 'package:go_router/go_router.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
 import 'package:iptv_player/shared/theme_service.dart';
 import 'package:macos_ui/macos_ui.dart';
@@ -14,9 +14,10 @@ class M3uListItem extends StatefulWidget {
     required this.route,
     super.key,
   });
+
   final ChannelViewModel channelViewModel;
   final double height;
-  final String route;
+  final PageRouteInfo route;
 
   @override
   State<M3uListItem> createState() => _M3uListItemState();
@@ -37,13 +38,7 @@ class _M3uListItemState extends State<M3uListItem> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () async {
-          context.go(widget.route, extra: {
-            'link': widget.channelViewModel.link,
-            'streamId': widget.channelViewModel.streamId,
-            'streamUrl': widget.channelViewModel.link,
-            'streamTitle': widget.channelViewModel.title,
-            'streamCover': widget.channelViewModel.logoUrl,
-          });
+          context.navigateTo(widget.route);
         },
         child: Container(
           decoration: BoxDecoration(

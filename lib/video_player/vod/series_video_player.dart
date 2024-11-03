@@ -1,9 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
 import 'package:iptv_player/video_player/video_player.dart';
 
+@RoutePage()
 class SeriesVideoPlayer extends ConsumerWidget {
   const SeriesVideoPlayer(
       {super.key,
@@ -42,7 +43,7 @@ class SeriesVideoPlayer extends ConsumerWidget {
       IconButton(
         icon: const Icon(Icons.arrow_back),
         color: Colors.white,
-        onPressed: context.pop,
+        onPressed: context.router.maybePop,
       ),
       Text(
         channel.title,

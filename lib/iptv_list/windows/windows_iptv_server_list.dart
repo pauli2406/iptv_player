@@ -1,6 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:iptv_player/router/app_router.gr.dart';
 import 'package:iptv_player/service/collections/iptv_server/iptv_server.dart';
 import '../../provider/isar/iptv_server_provider.dart';
 import '../../provider/isar/m3u_provider.dart';
@@ -119,7 +120,7 @@ class WindowsIptvServerList extends ConsumerWidget {
             ),
             onPressed: () {
               ref.read(m3uServiceProvider).activeIptvServer = server;
-              context.go("/main");
+              context.router.push(const HomeViewRoute());
             },
           ),
         );

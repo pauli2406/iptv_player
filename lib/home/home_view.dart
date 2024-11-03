@@ -1,6 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:iptv_player/home/home_view_windows.dart';
 import 'package:iptv_player/home/views/channels/channels_page.dart';
@@ -12,6 +12,7 @@ import 'package:platform_builder/platform_builder.dart';
 
 import '../provider/isar/m3u_provider.dart';
 
+@RoutePage()
 class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
 
@@ -54,7 +55,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                             ref
                                 .read(m3uServiceProvider)
                                 .disposeXtreamCodeClient();
-                            context.pop();
+                            context.router.maybePop();
                           },
                         ),
                         const SizedBox(

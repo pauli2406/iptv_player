@@ -5,6 +5,7 @@ import 'package:iptv_player/home/provider/search_value_provider.dart';
 import 'package:iptv_player/home/widgets/grid_layout_widget.dart';
 import 'package:iptv_player/home/widgets/movie_list_item.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
+import 'package:iptv_player/router/app_router.gr.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
 
 class ChannelsPage extends ConsumerStatefulWidget {
@@ -35,7 +36,6 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
       findAllChannelsProvider(category: _category),
     );
     final categories = ref.watch(findAllChannelGroupsProvider);
-
     return GridLayoutWidget(
       title: 'Channels',
       channelProvider: channelProvider,
@@ -55,7 +55,7 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
         child: M3uListItem(
           channelViewModel: item,
           height: itemHeight,
-          route: '/main/channel/player',
+          route: ChannelVideoPlayerRoute(streamId: item.streamId),
         ),
       ),
     );

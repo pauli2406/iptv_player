@@ -106,7 +106,7 @@ const ChannelItemSchema = CollectionSchema(
   getId: _channelItemGetId,
   getLinks: _channelItemGetLinks,
   attach: _channelItemAttach,
-  version: '3.1.7',
+  version: '3.1.8',
 );
 
 int _channelItemEstimateSize(

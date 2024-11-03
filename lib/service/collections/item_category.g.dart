@@ -52,7 +52,7 @@ const ItemCategorySchema = CollectionSchema(
   getId: _itemCategoryGetId,
   getLinks: _itemCategoryGetLinks,
   attach: _itemCategoryAttach,
-  version: '3.1.7',
+  version: '3.1.8',
 );
 
 int _itemCategoryEstimateSize(

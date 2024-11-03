@@ -922,7 +922,7 @@ class _FindAllSeriesProviderElement
   ItemCategory? get category => (origin as FindAllSeriesProvider).category;
 }
 
-String _$findSeriesInfoHash() => r'b19239816802e6f79a85ea38df190f9e0471afbf';
+String _$findSeriesInfoHash() => r'3478ca839e12537e15a4c78ed2d4e6c238006216';
 
 /// See also [findSeriesInfo].
 @ProviderFor(findSeriesInfo)

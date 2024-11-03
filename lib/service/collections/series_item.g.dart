@@ -149,7 +149,7 @@ const SeriesItemSchema = CollectionSchema(
   getId: _seriesItemGetId,
   getLinks: _seriesItemGetLinks,
   attach: _seriesItemAttach,
-  version: '3.1.7',
+  version: '3.1.8',
 );
 
 int _seriesItemEstimateSize(

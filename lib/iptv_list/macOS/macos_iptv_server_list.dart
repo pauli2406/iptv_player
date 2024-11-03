@@ -1,7 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:iptv_player/router/app_router.gr.dart';
 import 'package:iptv_player/service/collections/iptv_server/iptv_server.dart';
 import 'package:iptv_player/theme.dart';
 import 'package:macos_ui/macos_ui.dart';
@@ -196,7 +197,7 @@ class MacOSIptvServerList extends ConsumerWidget {
               ),
               onClick: () {
                 ref.read(m3uServiceProvider).activeIptvServer = server;
-                context.go('/main');
+                context.router.push(const HomeViewRoute());
               },
             ),
             const Divider(

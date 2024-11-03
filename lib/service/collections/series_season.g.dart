@@ -74,7 +74,7 @@ const SeriesSeasonSchema = CollectionSchema(
   getId: _seriesSeasonGetId,
   getLinks: _seriesSeasonGetLinks,
   attach: _seriesSeasonAttach,
-  version: '3.1.7',
+  version: '3.1.8',
 );
 
 int _seriesSeasonEstimateSize(

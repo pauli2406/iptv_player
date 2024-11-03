@@ -5,6 +5,7 @@ import 'package:iptv_player/home/provider/search_value_provider.dart';
 import 'package:iptv_player/home/widgets/grid_layout_widget.dart';
 import 'package:iptv_player/home/widgets/movie_list_item.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
+import 'package:iptv_player/router/app_router.gr.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
 
 class MoviesPage extends ConsumerStatefulWidget {
@@ -51,7 +52,7 @@ class _MoviesPageState extends ConsumerState<MoviesPage> {
       itemBuilder: (context, itemHeight, item) => M3uListItem(
         channelViewModel: item,
         height: itemHeight,
-        route: "/main/movie/player",
+        route: VodVideoPlayerRoute(streamId: item.streamId),
       ),
     );
   }

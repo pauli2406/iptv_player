@@ -1,7 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
-import 'package:go_router/go_router.dart';
 import 'package:iptv_player/iptv_list/form/port_input.dart';
 import 'package:iptv_player/iptv_list/macOS/macos_mange_iptv_server_widget.dart';
 import 'package:iptv_player/iptv_list/windows/windows_manage_iptv_server_widget.dart';
@@ -119,7 +119,7 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
       ..nextFocus()
       ..unfocus();
 
-    context.pop();
+    context.router.maybePop();
 
     if (_stateNotifier.value.status.isSuccess) _resetForm();
   }

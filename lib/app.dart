@@ -18,6 +18,8 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> {
+  final appRouter = AppRouter();
+
   @override
   void initState() {
     super.initState();
@@ -37,7 +39,6 @@ class _AppState extends ConsumerState<App> {
   }
 
   MacosApp _buildMacApp() {
-    final appRouter = AppRouter();
     final theme = ref.watch(appThemeProvider);
     return MacosApp.router(
       routerConfig: appRouter.config(),
@@ -48,7 +49,6 @@ class _AppState extends ConsumerState<App> {
   }
 
   FluentApp _buildWindowsApp() {
-    final appRouter = AppRouter();
     final theme = ref.watch(appThemeProvider);
     return FluentApp.router(
       routerConfig: appRouter.config(),

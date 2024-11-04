@@ -1,10 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
+import 'package:fluent_ui/fluent_ui.dart' hide ProgressBar;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:iptv_player/router/app_router.gr.dart';
 import 'package:iptv_player/service/collections/series_item.dart';
 import 'package:macos_ui/macos_ui.dart';
+import 'package:platform_builder/platform_builder.dart';
 
 class SeriesListItem extends StatefulWidget {
   const SeriesListItem(this.seriesItem, {required this.height, super.key});
@@ -54,8 +56,16 @@ class _SeriesListItemState extends State<SeriesListItem> {
                       widget.seriesItem.cover ?? "https://placehold.co/600x400",
                   loadingBuilder: (context, progress) {
                     return Center(
-                      child: ProgressBar(
-                        value: progress.progressPercentage.value,
+                      child: PlatformBuilder(
+                        macOSBuilder: (context) => ProgressBar(
+                          value: progress.progressPercentage.value,
+                        ),
+                        windowsBuilder: (context) => ProgressRing(
+                          value: progress.progressPercentage.value,
+                        ),
+                        iOSBuilder: (context) => ProgressBar(
+                          value: progress.progressPercentage.value,
+                        ),
                       ),
                     );
                   },

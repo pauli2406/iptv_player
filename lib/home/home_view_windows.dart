@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:iptv_player/home/views/channels/channels_page.dart';
 import 'package:iptv_player/home/views/movies/movie_page.dart';
+import 'package:iptv_player/home/views/series/series_page.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:fluent_ui/fluent_ui.dart'; // Changed import
 import 'package:iptv_player/theme.dart';
@@ -42,6 +43,14 @@ class _WindowsHomeViewState extends ConsumerState<WindowsHomeView> {
         body: const _NavigationBodyItem(
           header: 'Movies',
           content: MoviesPage(),
+        ),
+      ),
+      PaneItem(
+        icon: const Icon(FluentIcons.bookmarks),
+        title: const Text('Series'),
+        body: const _NavigationBodyItem(
+          header: 'Series',
+          content: SeriesPage(),
         ),
       ),
     ];

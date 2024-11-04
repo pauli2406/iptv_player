@@ -28,15 +28,52 @@ class ManageIptvServerItem extends ConsumerStatefulWidget {
 
 class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
   final _formKey = GlobalKey<FormState>();
-
+  late final TextEditingController _nameController;
+  late final TextEditingController _passwordController;
+  late final TextEditingController _portController;
   final ValueNotifier<ManageIptvServerFormState> _stateNotifier =
       ValueNotifier(ManageIptvServerFormState());
 
-  late final TextEditingController _nameController;
   late final TextEditingController _urlController;
-  late final TextEditingController _portController;
   late final TextEditingController _userController;
-  late final TextEditingController _passwordController;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _urlController.dispose();
+    _portController.dispose();
+    _userController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final iptvServer = widget.iptvServer;
+    _stateNotifier.value = ManageIptvServerFormState(
+      id: iptvServer?.id,
+      name: TextInput.pure(value: iptvServer?.name),
+      url: UrlInput.pure(value: iptvServer?.url),
+      port: PortInput.pure(value: iptvServer?.port),
+      user: TextInput.pure(value: iptvServer?.user),
+      password: TextInput.pure(value: iptvServer?.password),
+    );
+    _nameController =
+        TextEditingController(text: _stateNotifier.value.name.value)
+          ..addListener(_onNameChanged);
+    _urlController = TextEditingController(text: _stateNotifier.value.url.value)
+      ..addListener(_onUrlChanged);
+    _portController =
+        TextEditingController(text: _stateNotifier.value.port.value)
+          ..addListener(_onPortChanged);
+    _userController =
+        TextEditingController(text: _stateNotifier.value.user.value)
+          ..addListener(_onUserChanged);
+    _passwordController =
+        TextEditingController(text: _stateNotifier.value.password.value)
+          ..addListener(_onPasswordChanged);
+  }
 
   void _onNameChanged() {
     setState(() {
@@ -135,34 +172,6 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    final iptvServer = widget.iptvServer;
-    _stateNotifier.value = ManageIptvServerFormState(
-      id: iptvServer?.id,
-      name: TextInput.pure(value: iptvServer?.name),
-      url: UrlInput.pure(value: iptvServer?.url),
-      port: PortInput.pure(value: iptvServer?.port),
-      user: TextInput.pure(value: iptvServer?.user),
-      password: TextInput.pure(value: iptvServer?.password),
-    );
-    _nameController =
-        TextEditingController(text: _stateNotifier.value.name.value)
-          ..addListener(_onNameChanged);
-    _urlController = TextEditingController(text: _stateNotifier.value.url.value)
-      ..addListener(_onUrlChanged);
-    _portController =
-        TextEditingController(text: _stateNotifier.value.port.value)
-          ..addListener(_onPortChanged);
-    _userController =
-        TextEditingController(text: _stateNotifier.value.user.value)
-          ..addListener(_onUserChanged);
-    _passwordController =
-        TextEditingController(text: _stateNotifier.value.password.value)
-          ..addListener(_onPasswordChanged);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ManageIptvServerFormState>(
       valueListenable: _stateNotifier,
@@ -202,15 +211,5 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
         );
       },
     );
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _urlController.dispose();
-    _portController.dispose();
-    _userController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 }

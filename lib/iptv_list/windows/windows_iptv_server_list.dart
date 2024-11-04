@@ -37,9 +37,33 @@ class WindowsIptvServerList extends ConsumerWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Playlists (${serverItems.length})",
-                style: FluentTheme.of(context).typography.title,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Playlists (${serverItems.length})",
+                    style: FluentTheme.of(context).typography.title,
+                  ),
+                  IconButton(
+                    icon: const Icon(FluentIcons.add),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => ContentDialog(
+                          constraints: const BoxConstraints.expand(width: 800),
+                          title: const Text('Add IPTV Server'),
+                          content: const ManageIptvServerItem(),
+                          actions: [
+                            Button(
+                              child: const Text('Close'),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  )
+                ],
               ),
               const SizedBox(height: 20),
               Expanded(

@@ -6,7 +6,7 @@ part of 'iptv_server_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$iptvServerServiceHash() => r'7a34bec0cf626cedb1b0ecc2d5fd8f5168059e4f';
+String _$iptvServerServiceHash() => r'e56d7ccc98099507e1b5df38926d632e8c4ad9d0';
 
 /// See also [iptvServerService].
 @ProviderFor(iptvServerService)
@@ -37,12 +37,12 @@ final iptvServerItemsProvider =
 );
 
 typedef IptvServerItemsRef = AutoDisposeStreamProviderRef<List<IptvServer>>;
-String _$activeIptvServerHash() => r'00eb04d49b21532e71faae8cd5b0fadddc8d3544';
+String _$activeIptvServerHash() => r'0d27fbc9ba287456bd72d1d1f8d21a72e4b73070';
 
 /// See also [activeIptvServer].
 @ProviderFor(activeIptvServer)
 final activeIptvServerProvider =
-    AutoDisposeStreamProvider<IptvServer?>.internal(
+    AutoDisposeFutureProvider<IptvServer?>.internal(
   activeIptvServer,
   name: r'activeIptvServerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -52,7 +52,7 @@ final activeIptvServerProvider =
   allTransitiveDependencies: null,
 );
 
-typedef ActiveIptvServerRef = AutoDisposeStreamProviderRef<IptvServer?>;
+typedef ActiveIptvServerRef = AutoDisposeFutureProviderRef<IptvServer?>;
 String _$isUpdatingActiveIptvServerHash() =>
     r'64d772d0417c2c88b50d65f1623e3869b0443852';
 
@@ -71,4 +71,4 @@ final isUpdatingActiveIptvServerProvider =
 
 typedef _$IsUpdatingActiveIptvServer = AutoDisposeNotifier<bool>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

@@ -1,19 +1,23 @@
-import 'dart:convert';
-
-import 'package:desktop_multi_window/desktop_multi_window.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:fluent_ui/fluent_ui.dart' hide ProgressBar;
 import 'package:flutter/gestures.dart';
-import 'package:go_router/go_router.dart';
-import 'package:iptv_player/service/collections/m3u/m3u_item.dart';
+import 'package:iptv_player/provider/isar/m3u_provider.dart';
+import 'package:iptv_player/shared/theme_service.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:platform_builder/platform_builder.dart';
 
 class M3uListItem extends StatefulWidget {
-  const M3uListItem(this.m3uItem, {required this.height, super.key});
+  const M3uListItem({
+    required this.channelViewModel,
+    required this.height,
+    required this.route,
+    super.key,
+  });
 
-  final M3UItem m3uItem;
+  final ChannelViewModel channelViewModel;
   final double height;
+  final PageRouteInfo route;
 
   @override
   State<M3uListItem> createState() => _M3uListItemState();
@@ -34,72 +38,75 @@ class _M3uListItemState extends State<M3uListItem> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () async {
-          if (Platform.instance.isMacOS || Platform.instance.isWindows) {
-            try {
-                final windowIds = await DesktopMultiWindow.getAllSubWindowIds();
-            if (windowIds.isNotEmpty) {
-              for (var element in windowIds) {
-                await WindowController.fromWindowId(element).close();
-              }
-            }
-            } catch (e) {
-              debugPrint(e.toString());
-            }
-            final window = await DesktopMultiWindow.createWindow(jsonEncode(
-              {
-                'args0': 'player',
-                'link': widget.m3uItem.link,
-                'isLive': widget.m3uItem.name == M3UType.channel,
-              },
-            ));
-            debugPrint('$window');
-            window
-              ..setFrame(const Offset(0, 0) & const Size(960, 540))
-              ..center()
-              ..setTitle(widget.m3uItem.title ?? "Stream")
-              ..show();
-          } else {
-            context.go("/main/player", extra: widget.m3uItem.link);
-          }
+          context.navigateTo(widget.route);
         },
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: isHovering
-                ? MacosTheme.of(context).dividerColor
-                : MacosTheme.of(context).canvasColor,
+                ? const Color.fromARGB(255, 133, 133, 133)
+                : ThemeService().defaultBackground(context),
           ),
-          child: Column(children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(10),
-                ),
-                child: FastCachedImage(
-                  fit: BoxFit.fitHeight,
-                  url: widget.m3uItem.attributes?.tvgLogo ?? "",
-                  loadingBuilder: (context, progress) {
-                    return Center(
-                      child: ProgressBar(
-                        value: progress.progressPercentage.value,
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, exception, stacktrace) => Image.asset(
-                    "assets/images/no_image_available.png",
-                    fit: BoxFit.fitHeight,
+          child: Column(
+            children: [
+              Expanded(
+                flex: 3,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(10),
+                  ),
+                  child: FastCachedImage(
+                    fit: BoxFit.fitWidth,
+                    url: widget.channelViewModel.logoUrl,
+                    loadingBuilder: (context, progress) {
+                      return Center(
+                        child: PlatformBuilder(
+                          macOSBuilder: (context) => ProgressCircle(
+                            value: progress.progressPercentage.value,
+                          ),
+                          windowsBuilder: (context) => ProgressRing(
+                            value: progress.progressPercentage.value,
+                          ),
+                          iOSBuilder: (context) => ProgressBar(
+                            value: progress.progressPercentage.value,
+                          ),
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, exception, stacktrace) =>
+                        Image.asset(
+                      "assets/images/no_image_available.png",
+                      fit: BoxFit.fitHeight,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                widget.m3uItem.title ?? "",
-                style: MacosTheme.of(context).typography.body,
+              SizedBox(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    widget.channelViewModel.title,
+                    style: ThemeService().textStyleBody(context),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ),
               ),
-            )
-          ]),
+              SizedBox(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 48.0,
+                  ),
+                  child: Text(
+                    widget.channelViewModel.currentEpgItem?.title ?? '',
+                    style: ThemeService().textStyleCaption(context),
+                    maxLines: 2,
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

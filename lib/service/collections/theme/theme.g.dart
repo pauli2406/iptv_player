@@ -35,7 +35,7 @@ const ThemeCollectionSchema = CollectionSchema(
   getId: _themeCollectionGetId,
   getLinks: _themeCollectionGetLinks,
   attach: _themeCollectionAttach,
-  version: '3.1.0+1',
+  version: '3.1.8',
 );
 
 int _themeCollectionEstimateSize(

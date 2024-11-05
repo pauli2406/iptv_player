@@ -1,14 +1,17 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
+import 'package:fluent_ui/fluent_ui.dart' hide ProgressBar;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
-import 'package:go_router/go_router.dart';
-import 'package:iptv_player/service/collections/m3u/m3u_item.dart';
+import 'package:iptv_player/router/app_router.gr.dart';
+import 'package:iptv_player/service/collections/series_item.dart';
 import 'package:macos_ui/macos_ui.dart';
+import 'package:platform_builder/platform_builder.dart';
 
 class SeriesListItem extends StatefulWidget {
-  const SeriesListItem(this.m3uItem, {required this.height, super.key});
+  const SeriesListItem(this.seriesItem, {required this.height, super.key});
 
-  final M3UItem m3uItem;
+  final SeriesItem seriesItem;
   final double height;
 
   @override
@@ -30,7 +33,9 @@ class _SeriesListItemState extends State<SeriesListItem> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () async {
-          context.go("/main/series", extra: widget.m3uItem);
+          context.router.push(
+            SeriesSeasonPageRoute(seriesId: widget.seriesItem.id),
+          );
         },
         child: Container(
           decoration: BoxDecoration(
@@ -47,12 +52,20 @@ class _SeriesListItemState extends State<SeriesListItem> {
                 ),
                 child: FastCachedImage(
                   fit: BoxFit.fitHeight,
-                  url: widget.m3uItem.attributes?.tvgLogo ??
-                      "https://placehold.co/600x400",
+                  url:
+                      widget.seriesItem.cover ?? "https://placehold.co/600x400",
                   loadingBuilder: (context, progress) {
                     return Center(
-                      child: ProgressBar(
-                        value: progress.progressPercentage.value,
+                      child: PlatformBuilder(
+                        macOSBuilder: (context) => ProgressBar(
+                          value: progress.progressPercentage.value,
+                        ),
+                        windowsBuilder: (context) => ProgressRing(
+                          value: progress.progressPercentage.value,
+                        ),
+                        iOSBuilder: (context) => ProgressBar(
+                          value: progress.progressPercentage.value,
+                        ),
                       ),
                     );
                   },
@@ -64,7 +77,7 @@ class _SeriesListItemState extends State<SeriesListItem> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "${widget.m3uItem.series}",
+                "${widget.seriesItem.title}",
                 style: MacosTheme.of(context).typography.body,
               ),
             )

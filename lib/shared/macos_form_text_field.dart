@@ -7,12 +7,14 @@ class MacOsFormTextField extends StatelessWidget {
       required this.showError,
       required this.errorText,
       required this.placeholder,
+      this.obscureText = false,
       super.key});
 
   final TextEditingController controller;
   final bool showError;
   final String? errorText;
   final String? placeholder;
+  final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,8 @@ class MacOsFormTextField extends StatelessWidget {
             MacosTextField(
               placeholder: placeholder,
               controller: controller,
+              obscureText: obscureText,
+              
             ),
             Offstage(
               offstage: showError,

@@ -83,24 +83,16 @@ class IptvServerService {
 
   Future<void> _persistSeries(IptvServer activeIptvServer) async {
     final seriesItems = await client.seriesItems();
-    final List<SeriesItem> seriesEntities = [];
-
-    for (final series in seriesItems) {
-      final item = SeriesItem.fromXtreamCodeSeriesItem(series);
-      isarService.isar.writeTxnSync(() {
-        final series = isarService.isar.seriesItems
-            .where()
-            .idEqualTo(item.id)
-            .findFirstSync();
-        series?.episodes.clear();
-        series?.seasons.clear();
-        isarService.isar.seriesItems.putSync(item);
-      });
-
-      item.iptvServer.value = activeIptvServer;
-      seriesEntities.add(item);
-    }
-  } 
+    final liveStreamEntities = seriesItems
+        .map(
+          (channel) => SeriesItem.fromXtreamCodeSeriesItem(channel)
+            ..iptvServer.value = activeIptvServer,
+        )
+        .toList();
+    isarService.isar.writeTxnSync(() async {
+      isarService.isar.seriesItems.putAllSync(liveStreamEntities);
+    });
+  }
 
   Future<XTremeCodeSeriesInfo?> seriesInfo(
       SeriesItem seriesItem, IptvServer activeIptvServer) async {

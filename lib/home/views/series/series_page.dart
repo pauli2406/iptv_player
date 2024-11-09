@@ -34,7 +34,6 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
     final seriesProvider =
         ref.watch(findAllSeriesProvider(category: _category));
     final categories = ref.watch(findAllSeriesGroupsProvider);
-
     return GridLayoutWidget(
       title: 'Series',
       channelProvider: seriesProvider,

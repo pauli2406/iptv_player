@@ -1,43 +1,41 @@
-# IPTV-Player for MacOS :computer:
+# IPTV-Player for Cross-Platform :computer:
 
-This is a highly optimized and efficient IPTV player application, written in Dart and optimized for macOS.
+A highly optimized and efficient IPTV player application, written in Flutter/Dart supporting multiple platforms.
 
-<img src="https://raw.githubusercontent.com/pauli2406/iptv_player/main/assets/logo/iptv_logo_2.png?token=GHSAT0AAAAAACD4GWZ7BRUWGH2FBQH2ZUNCZFEQJDA" width="300">
+<img src="https://raw.githubusercontent.com/pauli2406/iptv_player/main/assets/logo/iptv_logo_2.png" width="300">
 
 ## Features :sparkles:
 
-1. **Connection of multiple IPTV servers**: Manage multiple IPTV servers from one place.
-2. **Dark & Light Mode**: Choose between light and dark mode to suit your UI preference.
-3. **Database Caching with daily sync**: Improving performance and ensuring up-to-date data.
-4. **No advertisements**: Enjoy an uninterrupted viewing experience.
-5. **Super-fast search**: Quickly find movies, series and channels.
-6. **Playback Functionality**: Playback occurs in a separate window.
-
-|                                               Server Overview                                                |                                             Channel Overview                                              |                                                   Dark Mode                                                   |
-|:------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------:|
-| <img src="https://raw.githubusercontent.com/pauli2406/iptv_player/main/assets/images/Multi_server_view.png"> | <img src="https://raw.githubusercontent.com/pauli2406/iptv_player/main/assets/images/Channels_view.png" > | <img src="https://raw.githubusercontent.com/pauli2406/iptv_player/main/assets/images/Channels_dark_mode.png"> |
+1. **Cross-Platform Support**: Available for Windows, macOS, and other platforms
+2. **Multiple IPTV Server Support**: Connect and manage multiple IPTV servers
+3. **Dark & Light Mode**: Customizable UI theme
+4. **Efficient Caching**: Database caching with daily synchronization
+5. **Ad-Free Experience**: No advertisements
+6. **Advanced Search**: Fast search across movies, series, and channels
 
 ## Getting Started :rocket:
 
-1. Download the DMG installer from the release tab
-   here: [Download V1.0.0](https://github.com/pauli2406/iptv_player/releases/tag/v1.0.0)
-2. After downloading, execute the DMG installer file.
-3. After executing the installer, a window will appear. Click `Continue` and follow the onscreen instructions.
-4. After installation, open the application.
-5. Use your own IPTV services by adding m3u or m3u_plus links, as we support additional metadata.
-6. Enjoy your favourite content in a user-friendly UI, filtered by movies, series and videos (if those exist in your
-   playlist).
+1. Download the appropriate installer for your platform from the [releases page](https://github.com/pauli2406/iptv_player/releases)
+2. Install and launch the application
+3. Add your IPTV service using M3U or M3U+ links
+4. Enjoy your content with our modern, user-friendly interface
 
-The application refreshes your playlist data every 24 hours to ensure an efficient startup.
+The application automatically syncs playlist data every 24 hours for optimal performance.
 
-## Feedback :mailbox:
+## Development Dependencies
 
-Your feedback is welcomed! Whether it is a new feature request, a bug report, code-related, or any other form of
-feedback.
+- Flutter SDK
+- Build tools: build_runner
+- Database: isar_generator
+- State management: riverpod
+- Routing: auto_route
+- Media playback: media_kit_libs_video
+- Network handling: http
+- Caching: fast_cached_network_image
 
-## Contribute :hammer_and_wrench:
+## Contributing :hammer_and_wrench:
 
-Contributions are always welcome. Feel free to submit an issue or a pull request.
+Contributions are welcome! Feel free to submit issues or pull requests.
 
 ## Legal Disclaimer :balance_scale:
 
@@ -48,4 +46,4 @@ not encouraged and not condoned by the author.
 
 ## License :page_with_curl:
 
-This project is licensed under the terms of the MIT license.
+This project is licensed under the MIT license.

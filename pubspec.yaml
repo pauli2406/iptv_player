@@ -1,7 +1,7 @@
 name: iptv_player
-description: A iptv player for windows, macos
+description: An iptv player for windows, macos, ipad and iphones
 publish_to: 'none'
-version: 4.0.0+1
+version: 5.0.0+1
 
 environment:
   sdk: ">=3.0.0 <=4.0.0"

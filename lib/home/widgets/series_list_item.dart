@@ -57,7 +57,7 @@ class _SeriesListItemState extends State<SeriesListItem> {
                   loadingBuilder: (context, progress) {
                     return Center(
                       child: PlatformBuilder(
-                        macOSBuilder: (context) => ProgressBar(
+                        macOSBuilder: (context) => ProgressRing(
                           value: progress.progressPercentage.value,
                         ),
                         windowsBuilder: (context) => ProgressRing(

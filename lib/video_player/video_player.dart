@@ -1,15 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:iptv_player/home/provider/volume_value_provider.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
+import 'package:iptv_player/video_player/base_video_player.dart';
 import 'package:iptv_player/video_player/custom_controls/material_desktop_audio_track_button.dart';
-import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:platform_builder/platform.dart';
 
-class VideoPlayer extends ConsumerStatefulWidget {
+class VideoPlayer extends ConsumerWidget {
   const VideoPlayer({
     required this.stream,
     required this.overlay,
@@ -22,98 +19,39 @@ class VideoPlayer extends ConsumerStatefulWidget {
   final List<Widget> topButtonBar;
 
   @override
-  ConsumerState<VideoPlayer> createState() => _VideoPlayerState();
-}
-
-class _VideoPlayerState extends ConsumerState<VideoPlayer> {
-  late int _currentStreamId;
-  final Player player = Player(
-    configuration: const PlayerConfiguration(
-      // Set the video output driver to OpenGL or Vulkan for better performance and quality
-      vo: 'gpu-next',
-      logLevel: MPVLogLevel.info,
-      title: 'IPTV Player',
-      bufferSize: 64 * 1024 * 1024,
-    ),
-  );
-  late VideoController videoController;
-
-  StreamSubscription<double>? subscription;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentStreamId = widget.stream.streamId!;
-    videoController = VideoController(player);
-
-    _setupPlayer();
-  }
-
-  void _setupPlayer() {
-    if (player.platform is NativePlayer) {
-      (player.platform as dynamic)
-        // Based on https://github.com/streamlink/streamlink-twitch-gui/wiki/Recommendations
-        // and https://github.com/classicjazz/mpv-config/blob/master/mpv.conf
-        // Selected API: select either Vulkan (preferred) or OpenGL
-        ..setProperty('gpu-api', 'vulkan')
-        // Adjust cache settings to prevent buffering issues during livestream playback
-        ..setProperty('cache', 'yes')
-        ..setProperty('cache-default', '5000')
-        // This defines how much data MPV will keep in its "back-buffer" for being able to rewind.
-        ..setProperty('demuxer-max-back-bytes', '180M')
-        // enable hardware acceleration for better performance
-        ..setProperty('hwdec', 'auto');
-    }
-    double volume = ref.read(volumeValueProvider);
-    player.setVolume(volume);
-    player.open(
-      Media(widget.stream.link),
-    );
-
-    subscription ??= player.stream.volume.listen((event) {
-      ref.read(volumeValueProvider.notifier).setValue(event);
-    });
-  }
-
-  @override
-  void dispose() {
-    debugPrint('Disposing [Player] and [VideoController]...');
-    subscription?.cancel();
-    player.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: SafeArea(
-        child: (Platform.instance.isMacOS || Platform.instance.isWindows)
-            ? _materialDesktopVideoControlsTheme()
-            : _materialVideoControlsTheme(),
+        child: BaseVideoPlayer(
+          stream: stream,
+          builder: (videoController) => (Platform.instance.isMacOS || Platform.instance.isWindows)
+              ? _materialDesktopVideoControlsTheme(videoController)
+              : _materialVideoControlsTheme(videoController),
+        ),
       ),
     );
   }
 
-  MaterialDesktopVideoControlsTheme _materialDesktopVideoControlsTheme() {
+  MaterialDesktopVideoControlsTheme _materialDesktopVideoControlsTheme(VideoController controller) {
     return MaterialDesktopVideoControlsTheme(
-      key: ValueKey(_currentStreamId),
+      key: ValueKey(stream.streamId),
       normal: _buildMaterialDesktopThemeData(),
       fullscreen: _buildMaterialDesktopThemeData(),
       child: Stack(
         children: [
           Video(
-            controller: videoController,
+            controller: controller,
             controls: MaterialDesktopVideoControls,
           ),
-          widget.overlay,
+          overlay,
         ],
       ),
     );
   }
 
-  MaterialVideoControlsTheme _materialVideoControlsTheme() {
+  MaterialVideoControlsTheme _materialVideoControlsTheme(VideoController controller) {
     return MaterialVideoControlsTheme(
-      key: ValueKey(_currentStreamId),
+      key: ValueKey(stream.streamId),
       normal: _buildMaterialThemeData(),
       fullscreen: const MaterialVideoControlsThemeData(
         displaySeekBar: false,
@@ -123,10 +61,10 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
       child: Stack(
         children: [
           Video(
-            controller: videoController,
+            controller: controller,
             controls: MaterialVideoControls,
           ),
-          widget.overlay,
+          overlay,
         ],
       ),
     );
@@ -137,7 +75,7 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
       buttonBarButtonSize: 24.0,
       buttonBarButtonColor: Colors.white,
       topButtonBarMargin: const EdgeInsets.only(top: 36.0),
-      topButtonBar: widget.topButtonBar,
+      topButtonBar: topButtonBar,
     );
   }
 
@@ -147,7 +85,7 @@ class _VideoPlayerState extends ConsumerState<VideoPlayer> {
       buttonBarButtonSize: 24.0,
       buttonBarButtonColor: Colors.white,
       topButtonBarMargin: const EdgeInsets.only(top: 36.0),
-      topButtonBar: widget.topButtonBar,
+      topButtonBar: topButtonBar,
       bottomButtonBar: const [
         MaterialDesktopSkipPreviousButton(),
         MaterialDesktopPlayOrPauseButton(),

@@ -177,7 +177,7 @@ class _ManageIptvServerItemState extends ConsumerState<ManageIptvServerItem> {
       valueListenable: _stateNotifier,
       builder: (context, state, child) {
         return PlatformBuilder(
-          macOSBuilder: (context) => MacOSMangeIptvServerWidget(
+          macOSBuilder: (context) => WindowsManageIptvServerWidget(
             formKey: _formKey,
             formState: state,
             nameController: _nameController,

@@ -56,7 +56,7 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
         child: M3uListItem(
           channelViewModel: item,
           height: itemHeight,
-          route: ChannelVideoPlayerRoute(streamId: item.streamId),
+          route: ChannelOverviewRoute(streamId: item.streamId),
         ),
       ),
     );

@@ -48,6 +48,7 @@ Stream<List<ChannelViewModel>> findAllMovies(FindAllMoviesRef ref,
         e.streamIcon ?? "",
         e.streamType == "live",
         null,
+        [],
       );
     }).toList();
   });
@@ -137,6 +138,7 @@ Future<List<ChannelViewModel>> findAllSeriesEpisodes(
       e.coverBig ?? "",
       false,
       null,
+      [],
     );
   }).toList();
 }
@@ -146,6 +148,7 @@ class ChannelViewModel {
   String link, title, logoUrl;
   bool isLive;
   EpgItem? currentEpgItem;
+  List<EpgItem> epgItems;
 
   ChannelViewModel(
     this.streamId,
@@ -154,6 +157,7 @@ class ChannelViewModel {
     this.logoUrl,
     this.isLive,
     this.currentEpgItem,
+    this.epgItems,
   );
 }
 
@@ -178,7 +182,7 @@ ChannelViewModel findMovie(FindMovieRef ref, {required int streamId}) {
   final m3uService = ref.watch(m3uServiceProvider);
   final vod = m3uService.findVod(streamId)!;
   return ChannelViewModel(vod.id, vod.streamUrl, vod.name ?? "",
-      vod.streamIcon ?? "", vod.streamType == "live", null);
+      vod.streamIcon ?? "", vod.streamType == "live", null, []);
 }
 
 @riverpod
@@ -187,8 +191,10 @@ ChannelViewModel findChannel(FindChannelRef ref, {required int streamId}) {
   final channel = m3uService.findChannel(streamId)!;
   var now = DateTime.now();
   EpgItem? latestEpgItem;
+  List<EpgItem> epgItems = [];
+
   if (channel.epgChannelId != null) {
-    var epgItems = m3uService.epgOfChannel(channel.epgChannelId!);
+    epgItems = m3uService.epgOfChannel(channel.epgChannelId!);
     if (epgItems.isNotEmpty) {
       latestEpgItem = epgItems.firstWhere(
         (item) =>
@@ -196,6 +202,7 @@ ChannelViewModel findChannel(FindChannelRef ref, {required int streamId}) {
             item.end != null &&
             item.start!.isBefore(now) &&
             item.end!.isAfter(now),
+        orElse: () => epgItems.first,
       );
     }
   }
@@ -207,6 +214,7 @@ ChannelViewModel findChannel(FindChannelRef ref, {required int streamId}) {
     channel.streamIcon ?? "",
     channel.streamType == "live",
     latestEpgItem,
+    epgItems,
   );
 }
 
@@ -237,6 +245,7 @@ Stream<List<ChannelViewModel>> findAllChannels(FindAllChannelsRef ref,
         e.streamIcon ?? "",
         e.streamType == "live",
         epgMap[e.epgChannelId],
+        [],
       );
     }).toList();
   });

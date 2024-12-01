@@ -42,7 +42,7 @@ class GridLayoutWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlatformBuilder(
-      macOSBuilder: (context) => GridLayoutMacOSWidget(
+      macOSBuilder: (context) => GridLayoutWindowsWidget(
         title: title,
         channelProvider: channelProvider,
         categories: categories,
@@ -53,7 +53,7 @@ class GridLayoutWidget extends StatelessWidget {
         itemBuilder: itemBuilder,
         errorText: errorText,
         onCategoryChanged: onCategoryChanged,
-        showBackButton: showBackButton,
+        // showBackButton: showBackButton,
       ),
       windowsBuilder: (context) => GridLayoutWindowsWidget(
           title: title,

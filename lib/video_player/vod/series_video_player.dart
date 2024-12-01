@@ -27,6 +27,7 @@ class SeriesVideoPlayer extends ConsumerWidget {
       streamCover,
       false,
       null,
+      [],
     );
 
     return VideoPlayer(

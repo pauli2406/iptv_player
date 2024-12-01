@@ -229,7 +229,7 @@ class _ClearDownloadAndPersistActivePlaylistItemsProviderElement
       (origin as ClearDownloadAndPersistActivePlaylistItemsProvider).forced;
 }
 
-String _$findAllMoviesHash() => r'ce4d228c497fcfd931b4a983889551f950386d2c';
+String _$findAllMoviesHash() => r'5683786ab9a0b784c0602d11f7f116aea24426ac';
 
 /// See also [findAllMovies].
 @ProviderFor(findAllMovies)
@@ -1097,7 +1097,7 @@ class _FindSeriesInfoProviderElement
 }
 
 String _$findAllSeriesEpisodesHash() =>
-    r'2fe79fb951c39167d8f9217df6c9c7fabb0ebbc4';
+    r'2d78cb4954c84883f31c9a674395dbfd6d89ab45';
 
 /// See also [findAllSeriesEpisodes].
 @ProviderFor(findAllSeriesEpisodes)
@@ -1298,7 +1298,7 @@ class _FindAllSeriesEpisodesProviderElement
   ItemCategory? get season => (origin as FindAllSeriesEpisodesProvider).season;
 }
 
-String _$findMovieHash() => r'e7f4e822850c7cc43b92f0fa2a4a48d3dde9d57a';
+String _$findMovieHash() => r'db6cd4a1168282b993bed3e22d573bc62e7dbec8';
 
 /// See also [findMovie].
 @ProviderFor(findMovie)
@@ -1468,7 +1468,7 @@ class _FindMovieProviderElement
   int get streamId => (origin as FindMovieProvider).streamId;
 }
 
-String _$findChannelHash() => r'4776b5a9ae7897038ceed88ee793da654bb8912c';
+String _$findChannelHash() => r'4469ef468aa79a478d8ce594cddf3394a23472cb';
 
 /// See also [findChannel].
 @ProviderFor(findChannel)
@@ -1639,7 +1639,7 @@ class _FindChannelProviderElement
   int get streamId => (origin as FindChannelProvider).streamId;
 }
 
-String _$findAllChannelsHash() => r'5c2a9c45d332ca8b3aeabad7552322f43503abd1';
+String _$findAllChannelsHash() => r'5b8c6cd21a383d5cb5146555839cff78b4014a11';
 
 /// See also [findAllChannels].
 @ProviderFor(findAllChannels)

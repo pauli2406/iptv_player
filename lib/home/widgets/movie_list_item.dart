@@ -61,7 +61,7 @@ class _M3uListItemState extends State<M3uListItem> {
                     loadingBuilder: (context, progress) {
                       return Center(
                         child: PlatformBuilder(
-                          macOSBuilder: (context) => ProgressCircle(
+                          macOSBuilder: (context) => ProgressRing(
                             value: progress.progressPercentage.value,
                           ),
                           windowsBuilder: (context) => ProgressRing(

@@ -2,9 +2,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:iptv_player/provider/models/channel_view_model.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:iptv_player/provider/isar/m3u_provider.dart';
 import 'package:iptv_player/home/provider/volume_value_provider.dart';
 
 class BaseVideoPlayer extends ConsumerStatefulWidget {

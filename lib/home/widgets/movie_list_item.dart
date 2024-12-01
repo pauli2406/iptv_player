@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:iptv_player/home/widgets/generic_media_list_item.dart';
-import 'package:iptv_player/provider/isar/m3u_provider.dart';
+import 'package:iptv_player/provider/models/channel_view_model.dart';
 import 'package:iptv_player/shared/theme_service.dart';
 
 class M3uListItem extends StatelessWidget {

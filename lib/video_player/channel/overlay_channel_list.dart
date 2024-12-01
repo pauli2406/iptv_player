@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:iptv_player/provider/isar/m3u_provider.dart';
+import 'package:iptv_player/provider/models/channel_view_model.dart';
 
 typedef OnChannelSelectedCallback = void Function(ChannelViewModel channel);
-
+// TODO Maybe remove completely
 class OverlayChannelListWidget extends StatefulWidget {
   final AsyncValue<List<ChannelViewModel>> channels;
   final VoidCallback onClose;

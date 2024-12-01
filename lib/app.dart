@@ -4,9 +4,7 @@ import 'package:iptv_player/router/app_router.dart';
 import 'package:iptv_player/service/collections/theme/theme.dart';
 import 'package:iptv_player/theme.dart';
 import 'package:isar/isar.dart';
-import 'package:macos_ui/macos_ui.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:platform_builder/platform_builder.dart';
 
 class App extends ConsumerStatefulWidget {
   const App({required this.isar, super.key});
@@ -31,24 +29,6 @@ class _AppState extends ConsumerState<App> {
 
   @override
   Widget build(BuildContext context) {
-    return PlatformBuilder(
-      macOSBuilder: (context) => _buildWindowsApp(),
-      windowsBuilder: (context) => _buildWindowsApp(),
-      iOSBuilder: (context) => SafeArea(child: _buildMacApp()),
-    );
-  }
-
-  MacosApp _buildMacApp() {
-    final theme = ref.watch(appThemeProvider);
-    return MacosApp.router(
-      routerConfig: appRouter.config(),
-      title: 'iptv_player',
-      themeMode: theme,
-      debugShowCheckedModeBanner: false,
-    );
-  }
-
-  FluentApp _buildWindowsApp() {
     final theme = ref.watch(appThemeProvider);
     return FluentApp.router(
       routerConfig: appRouter.config(),

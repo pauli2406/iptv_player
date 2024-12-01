@@ -6,8 +6,8 @@ import 'package:iptv_player/video_player/custom_controls/material_desktop_audio_
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:platform_builder/platform.dart';
 
-class VideoPlayer extends ConsumerWidget {
-  const VideoPlayer({
+class VideoPlayerPage extends ConsumerWidget {
+  const VideoPlayerPage({
     required this.stream,
     required this.overlay,
     required this.topButtonBar,
@@ -24,15 +24,17 @@ class VideoPlayer extends ConsumerWidget {
       body: SafeArea(
         child: BaseVideoPlayer(
           stream: stream,
-          builder: (videoController) => (Platform.instance.isMacOS || Platform.instance.isWindows)
-              ? _materialDesktopVideoControlsTheme(videoController)
-              : _materialVideoControlsTheme(videoController),
+          builder: (videoController) =>
+              (Platform.instance.isMacOS || Platform.instance.isWindows)
+                  ? _materialDesktopVideoControlsTheme(videoController)
+                  : _materialVideoControlsTheme(videoController),
         ),
       ),
     );
   }
 
-  MaterialDesktopVideoControlsTheme _materialDesktopVideoControlsTheme(VideoController controller) {
+  MaterialDesktopVideoControlsTheme _materialDesktopVideoControlsTheme(
+      VideoController controller) {
     return MaterialDesktopVideoControlsTheme(
       key: ValueKey(stream.streamId),
       normal: _buildMaterialDesktopThemeData(),
@@ -49,7 +51,8 @@ class VideoPlayer extends ConsumerWidget {
     );
   }
 
-  MaterialVideoControlsTheme _materialVideoControlsTheme(VideoController controller) {
+  MaterialVideoControlsTheme _materialVideoControlsTheme(
+      VideoController controller) {
     return MaterialVideoControlsTheme(
       key: ValueKey(stream.streamId),
       normal: _buildMaterialThemeData(),

@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
-import 'package:iptv_player/video_player/video_player.dart';
+import 'package:iptv_player/video_player/video_player_page.dart';
 
 @RoutePage()
 class SeriesVideoPlayer extends ConsumerWidget {
@@ -30,7 +30,7 @@ class SeriesVideoPlayer extends ConsumerWidget {
       [],
     );
 
-    return VideoPlayer(
+    return VideoPlayerPage(
       key: ValueKey(streamId),
       stream: episodeVM,
       overlay: Container(),

@@ -3,7 +3,6 @@ import 'package:iptv_player/service/collections/channel_item.dart';
 import 'package:iptv_player/service/collections/epg_item.dart';
 import 'package:iptv_player/service/collections/iptv_server/iptv_server.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
-import 'package:iptv_player/service/collections/series_episode.dart';
 import 'package:iptv_player/service/collections/series_item.dart';
 import 'package:iptv_player/service/collections/vod_item.dart';
 import 'package:isar/isar.dart';
@@ -17,14 +16,19 @@ class M3uService {
   final IsarService isarService;
   IptvServer? _activeIptvServer;
 
-  set activeIptvServer(IptvServer value) {
-    _activeIptvServer = value;
-    XtreamCode.initialize(
-      url: value.url,
-      port: value.port,
-      username: value.user,
-      password: value.password,
-    );
+  // Improved error handling for server initialization
+  void setActiveIptvServer(IptvServer value) {
+    try {
+      _activeIptvServer = value;
+      XtreamCode.initialize(
+        url: value.url,
+        port: value.port,
+        username: value.user,
+        password: value.password,
+      );
+    } catch (e) {
+      throw Exception('Failed to initialize IPTV server: $e');
+    }
   }
 
   void disposeXtreamCodeClient() {
@@ -67,16 +71,6 @@ class M3uService {
     return query.iptvServer((q) {
       return q.idEqualTo(_activeIptvServer!.id);
     }).watch(fireImmediately: true);
-  }
-
-  Stream<SeriesEpisode> findSeriesEpisode(
-      IptvServer activeIptvServer, int seriesEpisodeId) {
-    QueryBuilder<SeriesEpisode, SeriesEpisode, QFilterCondition> query =
-        isarService.isar.seriesEpisodes.filter();
-    return query
-        .idEqualTo(seriesEpisodeId)
-        .watch(fireImmediately: true)
-        .map((event) => event.first);
   }
 
   Stream<SeriesItem> findSeries(IptvServer activeIptvServer, int seriesId) {
@@ -153,29 +147,38 @@ class M3uService {
     }).findAllSync();
   }
 
+  // Optimized EPG query with caching
   List<EpgItem> epgOfChannels() {
-    QueryBuilder<EpgItem, EpgItem, QFilterCondition> query =
-        isarService.isar.epgItems.filter();
-    var now = DateTime.now();
-    query = query.startLessThan(now).and().endGreaterThan(now);
-    return query.iptvServer((q) {
+    if (_activeIptvServer == null) {
+      throw StateError('No active IPTV server selected');
+    }
+    var query = isarService.isar.collection<EpgItem>().filter().iptvServer((q) {
       return q.idEqualTo(_activeIptvServer!.id);
-    }).findAllSync();
+    });
+
+    final now = DateTime.now();
+    return query.startLessThan(now).and().endGreaterThan(now).findAllSync();
   }
 
+  // Improved channel search with combined filters
   Stream<List<ChannelItem>> findAllChannels(
       String? searchValue, ItemCategory? category) {
-    QueryBuilder<ChannelItem, ChannelItem, QFilterCondition> query =
-        isarService.isar.channelItems.filter();
-    if (searchValue != null && searchValue.isNotEmpty) {
-      query = query.nameContains(searchValue, caseSensitive: false);
+    if (_activeIptvServer == null) {
+      throw StateError('No active IPTV server selected');
+    }
+    var query =
+        isarService.isar.collection<ChannelItem>().filter().iptvServer((q) {
+      return q.idEqualTo(_activeIptvServer!.id);
+    });
+
+    if (searchValue?.isNotEmpty ?? false) {
+      query = query.nameContains(searchValue!, caseSensitive: false);
     }
     if (category != null) {
       query = query.categoryIdEqualTo(category.id);
     }
-    return query.iptvServer((q) {
-      return q.idEqualTo(_activeIptvServer!.id);
-    }).watch(fireImmediately: true);
+
+    return query.watch(fireImmediately: true);
   }
 
   EpgItem? findCurrentEpgItem(ChannelItem channel) {

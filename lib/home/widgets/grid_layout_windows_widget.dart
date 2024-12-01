@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
 import 'package:iptv_player/service/collections/item_category.dart';
 import 'package:fluent_ui/fluent_ui.dart'; // Updated import
+import 'package:iptv_player/widgets/loading_indicator.dart';
 
 class GridLayoutWindowsWidget extends ConsumerStatefulWidget {
   final String title;
@@ -120,22 +121,14 @@ class _GridLayoutWindowsWidgetState
                     }
                   },
                   error: (error, _) => Container(),
-                  loading: () => const Center(
-                      child: ProgressRing()), // Updated to ProgressRing
+                  loading: () => const LoadingIndicator(
+                    message: 'Loading content...',
+                  ),
                 ),
               ),
             ],
           )
-        : const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Downloading and reading playlist..."),
-                SizedBox(height: 20),
-                ProgressRing(),
-              ],
-            ),
-          );
+        : const LoadingIndicator();
   }
 
   List<NavigationPaneItem> loadCategories() {

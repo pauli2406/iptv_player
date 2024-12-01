@@ -102,13 +102,23 @@ class _ChannelOverviewState extends ConsumerState<ChannelOverview> {
             ),
             // Video player section
             SizedBox(
-              height: 300,
+              height: MediaQuery.of(context).size.height * 0.5,
               child: BaseVideoPlayer(
                 stream: channel,
                 builder: (controller) => Video(
                   controller: controller,
                   controls: MaterialDesktopVideoControls,
                 ),
+              ),
+            ),
+
+            // EPG header
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Program Guide (EPG)',
+                style: FluentTheme.of(context).typography.subtitle,
               ),
             ),
 
@@ -150,8 +160,9 @@ class _ChannelOverviewState extends ConsumerState<ChannelOverview> {
                             final isCurrent =
                                 _isCurrentEpg(epg.start!, epg.end!);
 
-                            if (isPast && !showPastItems)
+                            if (isPast && !showPastItems) {
                               return const SizedBox.shrink();
+                            }
 
                             return Expander(
                               header: Row(

@@ -62,14 +62,6 @@ Stream<SeriesItem> findSeries(FindSeriesRef ref, {required int seriesId}) {
 }
 
 @riverpod
-Stream<SeriesEpisode> findSeriesEpisode(FindSeriesEpisodeRef ref,
-    {required int streamId}) {
-  final m3uService = ref.watch(m3uServiceProvider);
-  final activeIptvServer = m3uService.getActiveIptvServer()!;
-  return m3uService.findSeriesEpisode(activeIptvServer, streamId);
-}
-
-@riverpod
 Stream<List<SeriesItem>> findAllSeries(FindAllSeriesRef ref,
     {ItemCategory? category}) {
   final searchValue = ref.watch(seriesSearchValueProvider);

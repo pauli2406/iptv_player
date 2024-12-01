@@ -143,7 +143,7 @@ class WindowsIptvServerList extends ConsumerWidget {
               ],
             ),
             onPressed: () {
-              ref.read(m3uServiceProvider).activeIptvServer = server;
+              ref.read(m3uServiceProvider).setActiveIptvServer(server);
               context.router.push(const HomeViewRoute());
             },
           ),

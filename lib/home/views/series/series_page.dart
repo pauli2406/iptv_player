@@ -39,7 +39,7 @@ class _SeriesPageState extends ConsumerState<SeriesPage> {
       channelProvider: seriesProvider,
       categories: categories,
       placeHolderForSearchField: 'Search for a series',
-      height: 1.5,
+      height: 1,
       width: 2,
       errorText: 'No series found',
       onCategoryChanged: (ItemCategory? category) {

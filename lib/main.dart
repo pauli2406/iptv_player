@@ -1,11 +1,11 @@
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iptv_player/app.dart';
 import 'package:iptv_player/service/collections/all_schemas.dart';
 import 'package:isar/isar.dart';
-import 'package:macos_ui/macos_ui.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:platform_builder/platform_builder.dart';
@@ -23,8 +23,9 @@ Future<void> main(List<String> args) async {
   );
 
   if (!kIsWeb) {
-    if (Platform.instance.isMacOS) {
-      await _configureMacosWindowUtils();
+    if (Platform.instance.isIOS) {
+      await SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
     }
   }
 
@@ -35,10 +36,4 @@ Future<void> main(List<String> args) async {
       ),
     ),
   );
-}
-
-/// This method initializes macos_window_utils and styles the window.
-Future<void> _configureMacosWindowUtils() async {
-  const config = MacosWindowUtilsConfig();
-  await config.apply();
 }

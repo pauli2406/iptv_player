@@ -229,7 +229,7 @@ class _ClearDownloadAndPersistActivePlaylistItemsProviderElement
       (origin as ClearDownloadAndPersistActivePlaylistItemsProvider).forced;
 }
 
-String _$findAllMoviesHash() => r'ce4d228c497fcfd931b4a983889551f950386d2c';
+String _$findAllMoviesHash() => r'5683786ab9a0b784c0602d11f7f116aea24426ac';
 
 /// See also [findAllMovies].
 @ProviderFor(findAllMovies)
@@ -572,180 +572,6 @@ class _FindSeriesProviderElement
 
   @override
   int get seriesId => (origin as FindSeriesProvider).seriesId;
-}
-
-String _$findSeriesEpisodeHash() => r'1b30ca2356ad2c12664c41cea71e4c9849b00fd3';
-
-/// See also [findSeriesEpisode].
-@ProviderFor(findSeriesEpisode)
-const findSeriesEpisodeProvider = FindSeriesEpisodeFamily();
-
-/// See also [findSeriesEpisode].
-class FindSeriesEpisodeFamily extends Family {
-  /// See also [findSeriesEpisode].
-  const FindSeriesEpisodeFamily();
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'findSeriesEpisodeProvider';
-
-  /// See also [findSeriesEpisode].
-  FindSeriesEpisodeProvider call({
-    required int streamId,
-  }) {
-    return FindSeriesEpisodeProvider(
-      streamId: streamId,
-    );
-  }
-
-  @visibleForOverriding
-  @override
-  FindSeriesEpisodeProvider getProviderOverride(
-    covariant FindSeriesEpisodeProvider provider,
-  ) {
-    return call(
-      streamId: provider.streamId,
-    );
-  }
-
-  /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(
-      Stream<SeriesEpisode> Function(FindSeriesEpisodeRef ref) create) {
-    return _$FindSeriesEpisodeFamilyOverride(this, create);
-  }
-}
-
-class _$FindSeriesEpisodeFamilyOverride implements FamilyOverride {
-  _$FindSeriesEpisodeFamilyOverride(this.overriddenFamily, this.create);
-
-  final Stream<SeriesEpisode> Function(FindSeriesEpisodeRef ref) create;
-
-  @override
-  final FindSeriesEpisodeFamily overriddenFamily;
-
-  @override
-  FindSeriesEpisodeProvider getProviderOverride(
-    covariant FindSeriesEpisodeProvider provider,
-  ) {
-    return provider._copyWith(create);
-  }
-}
-
-/// See also [findSeriesEpisode].
-class FindSeriesEpisodeProvider
-    extends AutoDisposeStreamProvider<SeriesEpisode> {
-  /// See also [findSeriesEpisode].
-  FindSeriesEpisodeProvider({
-    required int streamId,
-  }) : this._internal(
-          (ref) => findSeriesEpisode(
-            ref as FindSeriesEpisodeRef,
-            streamId: streamId,
-          ),
-          from: findSeriesEpisodeProvider,
-          name: r'findSeriesEpisodeProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$findSeriesEpisodeHash,
-          dependencies: FindSeriesEpisodeFamily._dependencies,
-          allTransitiveDependencies:
-              FindSeriesEpisodeFamily._allTransitiveDependencies,
-          streamId: streamId,
-        );
-
-  FindSeriesEpisodeProvider._internal(
-    super.create, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.streamId,
-  }) : super.internal();
-
-  final int streamId;
-
-  @override
-  Override overrideWith(
-    Stream<SeriesEpisode> Function(FindSeriesEpisodeRef ref) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: FindSeriesEpisodeProvider._internal(
-        (ref) => create(ref as FindSeriesEpisodeRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        streamId: streamId,
-      ),
-    );
-  }
-
-  @override
-  ({
-    int streamId,
-  }) get argument {
-    return (streamId: streamId,);
-  }
-
-  @override
-  AutoDisposeStreamProviderElement<SeriesEpisode> createElement() {
-    return _FindSeriesEpisodeProviderElement(this);
-  }
-
-  FindSeriesEpisodeProvider _copyWith(
-    Stream<SeriesEpisode> Function(FindSeriesEpisodeRef ref) create,
-  ) {
-    return FindSeriesEpisodeProvider._internal(
-      (ref) => create(ref as FindSeriesEpisodeRef),
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      debugGetCreateSourceHash: debugGetCreateSourceHash,
-      from: from,
-      streamId: streamId,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is FindSeriesEpisodeProvider && other.streamId == streamId;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, streamId.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-mixin FindSeriesEpisodeRef on AutoDisposeStreamProviderRef<SeriesEpisode> {
-  /// The parameter `streamId` of this provider.
-  int get streamId;
-}
-
-class _FindSeriesEpisodeProviderElement
-    extends AutoDisposeStreamProviderElement<SeriesEpisode>
-    with FindSeriesEpisodeRef {
-  _FindSeriesEpisodeProviderElement(super.provider);
-
-  @override
-  int get streamId => (origin as FindSeriesEpisodeProvider).streamId;
 }
 
 String _$findAllSeriesHash() => r'e0ff29ea7e54e0cbe2e5eeb755e434b7e8dfb952';
@@ -1097,7 +923,7 @@ class _FindSeriesInfoProviderElement
 }
 
 String _$findAllSeriesEpisodesHash() =>
-    r'2fe79fb951c39167d8f9217df6c9c7fabb0ebbc4';
+    r'2d78cb4954c84883f31c9a674395dbfd6d89ab45';
 
 /// See also [findAllSeriesEpisodes].
 @ProviderFor(findAllSeriesEpisodes)
@@ -1298,7 +1124,7 @@ class _FindAllSeriesEpisodesProviderElement
   ItemCategory? get season => (origin as FindAllSeriesEpisodesProvider).season;
 }
 
-String _$findMovieHash() => r'e7f4e822850c7cc43b92f0fa2a4a48d3dde9d57a';
+String _$findMovieHash() => r'db6cd4a1168282b993bed3e22d573bc62e7dbec8';
 
 /// See also [findMovie].
 @ProviderFor(findMovie)
@@ -1468,7 +1294,7 @@ class _FindMovieProviderElement
   int get streamId => (origin as FindMovieProvider).streamId;
 }
 
-String _$findChannelHash() => r'4776b5a9ae7897038ceed88ee793da654bb8912c';
+String _$findChannelHash() => r'4469ef468aa79a478d8ce594cddf3394a23472cb';
 
 /// See also [findChannel].
 @ProviderFor(findChannel)
@@ -1639,7 +1465,7 @@ class _FindChannelProviderElement
   int get streamId => (origin as FindChannelProvider).streamId;
 }
 
-String _$findAllChannelsHash() => r'5c2a9c45d332ca8b3aeabad7552322f43503abd1';
+String _$findAllChannelsHash() => r'5b8c6cd21a383d5cb5146555839cff78b4014a11';
 
 /// See also [findAllChannels].
 @ProviderFor(findAllChannels)

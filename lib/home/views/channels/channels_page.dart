@@ -36,13 +36,13 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
       findAllChannelsProvider(category: _category),
     );
     final categories = ref.watch(findAllChannelGroupsProvider);
-    
+
     return GridLayoutWidget(
       title: 'Channels',
       channelProvider: channelProvider,
       categories: categories,
       placeHolderForSearchField: 'Search for a channel',
-      height: 1.65,
+      height: 1.4,
       width: 2,
       errorText: 'No channels found',
       onCategoryChanged: (ItemCategory? category) {
@@ -56,7 +56,8 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
         child: M3uListItem(
           channelViewModel: item,
           height: itemHeight,
-          route: ChannelVideoPlayerRoute(streamId: item.streamId),
+          route: ChannelOverviewRoute(streamId: item.streamId),
+          titleMaxLines: 1,
         ),
       ),
     );

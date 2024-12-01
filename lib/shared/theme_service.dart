@@ -1,19 +1,29 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:macos_ui/macos_ui.dart';
-import 'package:platform_builder/platform.dart';
 
 class ThemeService {
-  // Load hoverColor from MacosTheme if mac or from FluentTheme if windows. to check if max use Platform.instance.isMacOS
+  Color hoverBackgroundColor(BuildContext context) =>
+      FluentTheme.of(context).resources.cardBackgroundFillColorSecondary;
 
-  Color defaultBackground(BuildContext context) => Platform.instance.isMacOS
-      ? MacosTheme.of(context).canvasColor
-      : FluentTheme.of(context).scaffoldBackgroundColor;
+  Color defaultBackground(BuildContext context) =>
+      FluentTheme.of(context).resources.cardBackgroundFillColorDefault;
 
-  TextStyle? textStyleCaption(BuildContext context) => Platform.instance.isMacOS
-      ? MacosTheme.of(context).typography.caption1
-      : FluentTheme.of(context).typography.caption;
+  TextStyle? textStyleCaption(BuildContext context) =>
+      FluentTheme.of(context).typography.caption?.copyWith(
+            color: FluentTheme.of(context).resources.textFillColorPrimary,
+          );
 
-  TextStyle? textStyleBody(BuildContext context) => Platform.instance.isMacOS
-      ? MacosTheme.of(context).typography.body
-      : FluentTheme.of(context).typography.body;
+  TextStyle? textStyleBody(BuildContext context) =>
+      FluentTheme.of(context).typography.body?.copyWith(
+            color: FluentTheme.of(context).resources.textFillColorPrimary,
+          );
+
+  TextStyle? textStyleEpg(BuildContext context) =>
+      FluentTheme.of(context).typography.caption?.copyWith(
+            color: FluentTheme.of(context).resources.textFillColorSecondary,
+            fontSize: 11,
+          );
+
+  bool isDarkMode(BuildContext context) {
+    return FluentTheme.of(context).brightness == Brightness.dark;
+  }
 }

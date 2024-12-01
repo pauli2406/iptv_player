@@ -2,11 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iptv_player/provider/isar/m3u_provider.dart';
+import 'package:iptv_player/provider/models/channel_view_model.dart';
 import 'package:iptv_player/video_player/channel/overlay_channel_list.dart';
-import 'package:iptv_player/video_player/video_player.dart';
+import 'package:iptv_player/video_player/video_player_page.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
-@RoutePage()
+// Maybe remove completely
+// @RoutePage()
 class ChannelVideoPlayer extends ConsumerStatefulWidget {
   const ChannelVideoPlayer({super.key, required this.streamId});
   final int streamId;
@@ -30,7 +32,7 @@ class _ChannelVideoPlayerState extends ConsumerState<ChannelVideoPlayer> {
     final channels = ref.watch(findAllChannelsProvider());
     final channel = ref.watch(findChannelProvider(streamId: _currentStreamId));
 
-    return VideoPlayer(
+    return VideoPlayerPage(
       key: ValueKey(_currentStreamId),
       stream: channel,
       overlay: _buildOverlayChannelList(channels),

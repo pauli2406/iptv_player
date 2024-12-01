@@ -125,24 +125,6 @@ const SeriesItemSchema = CollectionSchema(
       name: r'iptvServer',
       target: r'IptvServer',
       single: true,
-    ),
-    r'seasons': LinkSchema(
-      id: 8539031356674310998,
-      name: r'seasons',
-      target: r'SeriesSeason',
-      single: false,
-    ),
-    r'info': LinkSchema(
-      id: -1924974495469814121,
-      name: r'info',
-      target: r'SeriesInfo',
-      single: true,
-    ),
-    r'episodes': LinkSchema(
-      id: 4010984800070256454,
-      name: r'episodes',
-      target: r'SeriesEpisode',
-      single: false,
     )
   },
   embeddedSchemas: {},
@@ -348,18 +330,13 @@ Id _seriesItemGetId(SeriesItem object) {
 }
 
 List<IsarLinkBase<dynamic>> _seriesItemGetLinks(SeriesItem object) {
-  return [object.iptvServer, object.seasons, object.info, object.episodes];
+  return [object.iptvServer];
 }
 
 void _seriesItemAttach(IsarCollection<dynamic> col, Id id, SeriesItem object) {
   object.id = id;
   object.iptvServer
       .attach(col, col.isar.collection<IptvServer>(), r'iptvServer', id);
-  object.seasons
-      .attach(col, col.isar.collection<SeriesSeason>(), r'seasons', id);
-  object.info.attach(col, col.isar.collection<SeriesInfo>(), r'info', id);
-  object.episodes
-      .attach(col, col.isar.collection<SeriesEpisode>(), r'episodes', id);
 }
 
 extension SeriesItemQueryWhereSort
@@ -2971,140 +2948,6 @@ extension SeriesItemQueryLinks
       iptvServerIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'iptvServer', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition> seasons(
-      FilterQuery<SeriesSeason> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'seasons');
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      seasonsLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'seasons', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition> seasonsIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'seasons', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      seasonsIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'seasons', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      seasonsLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'seasons', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      seasonsLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'seasons', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      seasonsLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'seasons', lower, includeLower, upper, includeUpper);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition> info(
-      FilterQuery<SeriesInfo> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'info');
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition> infoIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'info', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition> episodes(
-      FilterQuery<SeriesEpisode> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'episodes');
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      episodesLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'episodes', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      episodesIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'episodes', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      episodesIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'episodes', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      episodesLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'episodes', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      episodesLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'episodes', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      episodesLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'episodes', lower, includeLower, upper, includeUpper);
     });
   }
 }

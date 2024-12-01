@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:iptv_player/provider/isar/isar_provider.dart';
 import 'package:iptv_player/service/collections/epg_item.dart';
@@ -14,10 +15,15 @@ class IptvServerService {
   IptvServerService(
     this.isarService,
     this.m3uService,
-  );
+  ) {
+    _progressController = StreamController<String>.broadcast();
+  }
 
   final IsarService isarService;
   final M3uService m3uService;
+  late final StreamController<String> _progressController;
+
+  Stream<String> get progressStream => _progressController.stream;
 
   Future<List<IptvServer>> findAll() async {
     var items = await isarService.isar.iptvServers.where().findAll();
@@ -36,6 +42,7 @@ class IptvServerService {
     return isarService.isar.iptvServers.watchObject(id, fireImmediately: true);
   }
 
+  /// Persists a server instance and returns its ID
   Future<Id> put(IptvServer server) async {
     return await isarService.isar.writeTxn(() async {
       return await isarService.isar.iptvServers.put(server);
@@ -53,45 +60,114 @@ class IptvServerService {
     return await put(server);
   }
 
+  /// Refreshes server data if forced or last sync was more than 24 hours ago
   Future<void> refreshServerItems({bool? forced}) async {
-    final activeIptvServer = m3uService.getActiveIptvServer()!;
-    final date24HoursAgo = DateTime.now().subtract(
-      const Duration(days: 1),
-    );
-    if (forced == true ||
-        activeIptvServer.lastSync == null ||
-        activeIptvServer.lastSync!.isBefore(date24HoursAgo)) {
-      final serverInformation = await loadServerInformation();
-      activeIptvServer.allowedOutputFormats =
-          serverInformation.userInfo.allowedOutputFormats ?? [];
-      await put(activeIptvServer);
-      await _persistCategories(activeIptvServer);
-      await _persistItems(activeIptvServer);
-      await setLastSyncDate(activeIptvServer);
+    try {
+      final activeIptvServer = m3uService.getActiveIptvServer()!;
+      final date24HoursAgo = DateTime.now().subtract(const Duration(days: 1));
+
+      if (forced != true &&
+          activeIptvServer.lastSync != null &&
+          !activeIptvServer.lastSync!.isBefore(date24HoursAgo)) {
+        return;
+      }
+
+      _progressController.add('Fetching server information...');
+      final serverInfo = await loadServerInformation();
+
+      _progressController.add('Loading categories...');
+      final categories = await Future.wait([
+        client.liveStreamCategories(),
+        client.vodCategories(),
+        client.seriesCategories(),
+      ]);
+
+      _progressController.add('Loading VOD items...');
+      final vodItems = await client.vodItems();
+
+      _progressController.add('Loading live streams...');
+      final liveStreamItems = await client.livestreamItems();
+
+      _progressController.add('Loading series...');
+      final seriesItems = await client.seriesItems();
+
+      _progressController.add('Loading EPG data...');
+      final epg = await client.epg(useLocalFile: false);
+
+      _progressController.add('Persisting data to database...');
+      await isarService.isar.writeTxnSync(() async {
+        // Update server info
+        activeIptvServer.allowedOutputFormats =
+            serverInfo.userInfo.allowedOutputFormats ?? [];
+        isarService.isar.iptvServers.putSync(activeIptvServer);
+
+        // Persist categories
+        isarService.isar.itemCategorys.putAllSync([
+          ...categories[0].map(
+              (c) => ItemCategory.fromCategory(c, ItemCategoryType.channel)),
+          ...categories[1]
+              .map((c) => ItemCategory.fromCategory(c, ItemCategoryType.vod)),
+          ...categories[2].map(
+              (c) => ItemCategory.fromCategory(c, ItemCategoryType.series)),
+        ].map((cat) => cat..iptvServer.value = activeIptvServer).toList());
+
+        // Persist VODs
+        isarService.isar.vodItems.putAllSync(
+          vodItems
+              .map((vod) => VodItem.fromXtreamCodeVodItem(
+                    vod,
+                    client.movieUrl(vod.streamId!, vod.containerExtension!),
+                  )..iptvServer.value = activeIptvServer)
+              .toList(),
+        );
+
+        // Persist channels
+        final channelEntities = liveStreamItems
+            .map(
+              (channel) => ChannelItem.fromLiveStreamItem(
+                channel,
+                client.streamUrl(
+                    channel.streamId!, activeIptvServer.allowedOutputFormats),
+              )..iptvServer.value = activeIptvServer,
+            )
+            .toList();
+        isarService.isar.channelItems.putAllSync(channelEntities);
+
+        // Persist series
+        isarService.isar.seriesItems.putAllSync(
+          seriesItems
+              .map((series) => SeriesItem.fromXtreamCodeSeriesItem(series)
+                ..iptvServer.value = activeIptvServer)
+              .toList(),
+        );
+
+        // Clear old EPG data
+        final twoDaysAgo = DateTime.now().subtract(const Duration(days: 2));
+
+        isarService.isar.epgItems
+            .filter()
+            .iptvServer((q) => q.idEqualTo(activeIptvServer.id))
+            .endLessThan(twoDaysAgo)
+            .deleteAllSync();
+
+        final epgItems = epg.programmes
+            .map((item) =>
+                EpgItem.fromProgramme(item, item.channel, activeIptvServer)
+                  ..iptvServer.value = activeIptvServer)
+            .toList();
+        isarService.isar.epgItems.putAllSync(epgItems);
+
+        // Update sync date
+        activeIptvServer.lastSync = DateTime.now();
+        isarService.isar.iptvServers.putSync(activeIptvServer);
+      });
+
+      _progressController.add('Refresh completed successfully');
+    } catch (e) {
+      _progressController.add('Error: $e');
+      debugPrint('Error refreshing server items: $e');
+      rethrow;
     }
-  }
-
-  Future<void> _persistItems(IptvServer activeIptvServer) async {
-    debugPrint("Loading VODs...");
-    await _persistVods(activeIptvServer);
-    debugPrint("Loading channels...");
-    final liveStreamEntities = await _persistChannels(activeIptvServer);
-    debugPrint("Loading series...");
-    await _persistSeries(activeIptvServer);
-    _persistEpgForChannels(activeIptvServer, liveStreamEntities);
-  }
-
-  Future<void> _persistSeries(IptvServer activeIptvServer) async {
-    final seriesItems = await client.seriesItems();
-    final liveStreamEntities = seriesItems
-        .map(
-          (channel) => SeriesItem.fromXtreamCodeSeriesItem(channel)
-            ..iptvServer.value = activeIptvServer,
-        )
-        .toList();
-    isarService.isar.writeTxnSync(() async {
-      isarService.isar.seriesItems.putAllSync(liveStreamEntities);
-    });
   }
 
   Future<XTremeCodeSeriesInfo?> seriesInfo(
@@ -101,116 +177,11 @@ class IptvServerService {
     return seriesInfo;
   }
 
-  Future<void> _persistVods(IptvServer activeIptvServer) async {
-    final vodItems = await client.vodItems();
-    isarService.isar.writeTxnSync(() async {
-      isarService.isar.vodItems.putAllSync(
-        vodItems
-            .map(
-              (vod) => VodItem.fromXtreamCodeVodItem(
-                vod,
-                client.movieUrl(vod.streamId!, vod.containerExtension!),
-              )..iptvServer.value = activeIptvServer,
-            )
-            .toList(),
-      );
-    });
-  }
-
-  Future<List<ChannelItem>> _persistChannels(
-      IptvServer activeIptvServer) async {
-    final liveStreamItems = await client.livestreamItems();
-    final liveStreamEntities = liveStreamItems
-        .map(
-          (channel) => ChannelItem.fromLiveStreamItem(
-            channel,
-            client.streamUrl(
-                channel.streamId!, activeIptvServer.allowedOutputFormats),
-          )..iptvServer.value = activeIptvServer,
-        )
-        .toList();
-    isarService.isar.writeTxnSync(() async {
-      isarService.isar.channelItems.putAllSync(liveStreamEntities);
-    });
-    return liveStreamEntities;
-  }
-
-  Future<void> _persistCategories(IptvServer activeIptvServer) async {
-    final liveStreamCategories = await client.liveStreamCategories();
-    isarService.isar.writeTxnSync(() async {
-      isarService.isar.itemCategorys.putAllSync(
-        liveStreamCategories
-            .map(
-              (category) => ItemCategory.fromCategory(
-                category,
-                ItemCategoryType.channel,
-              )..iptvServer.value = activeIptvServer,
-            )
-            .toList(),
-      );
-    });
-    debugPrint("Persisted ${liveStreamCategories.length} categories.");
-    debugPrint("Loading VOD categories...");
-    final vodCategories = await client.vodCategories();
-
-    isarService.isar.writeTxnSync(() async {
-      isarService.isar.itemCategorys.putAllSync(
-        vodCategories
-            .map(
-              (category) => ItemCategory.fromCategory(
-                category,
-                ItemCategoryType.vod,
-              )..iptvServer.value = activeIptvServer,
-            )
-            .toList(),
-      );
-    });
-    debugPrint("Persisted ${vodCategories.length} VOD categories.");
-    debugPrint("Loading Series categories...");
-    final seriesCategories = await client.seriesCategories();
-    isarService.isar.writeTxnSync(() async {
-      isarService.isar.itemCategorys.putAllSync(
-        seriesCategories
-            .map(
-              (category) => ItemCategory.fromCategory(
-                category,
-                ItemCategoryType.series,
-              )..iptvServer.value = activeIptvServer,
-            )
-            .toList(),
-      );
-    });
-  }
-
-  Future<void> _persistEpgForChannels(
-      IptvServer activeIptvServer, List<ChannelItem> channels) async {
-    debugPrint("Start persisting EPG for channels ${channels.length}");
-    try {
-      debugPrint("Download EPG");
-      final epg = await client.epg(useLocalFile: false);
-      debugPrint("Downloaded EPG successfully");
-      isarService.isar.writeTxnSync(() {
-        isarService.isar.epgItems
-            .filter()
-            .iptvServer((q) => q.idEqualTo(activeIptvServer.id))
-            .deleteAllSync();
-        debugPrint("Cleared existing EPG");
-        var items = epg.programmes
-            .map((item) =>
-                EpgItem.fromProgramme(item, item.channel, activeIptvServer)
-                  ..iptvServer.value = activeIptvServer)
-            .toList();
-        isarService.isar.epgItems.putAllSync(items);
-        debugPrint("Finished persisting EPG data");
-      });
-    } catch (e) {
-      debugPrint("Error fetching or processing EPG data: $e");
-    }
-  }
-
   Future<XTremeCodeGeneralInformation> loadServerInformation() async {
     return await client.serverInformation();
   }
-}
 
-//https://github.com/zGrav/xtream-iptv-player/blob/master/src/main/java/Network/XtreamCodesApi.java
+  void dispose() {
+    _progressController.close();
+  }
+}

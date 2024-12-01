@@ -1,7 +1,7 @@
 name: iptv_player
-description: A iptv player for windows, macos
+description: An iptv player for windows, macos, ipad and iphones
 publish_to: 'none'
-version: 4.0.0+1
+version: 5.0.0+1
 
 environment:
   sdk: ">=3.0.0 <=4.0.0"
@@ -19,10 +19,9 @@ dependencies:
   isar_flutter_libs: # contains Isar Core
     version: 3.1.8
     hosted: https://pub.isar-community.dev/
-  macos_ui: ^2.0.9
   media_kit: ^1.1.11                             # Primary package.
   media_kit_video: ^1.2.5                        # For video rendering.
-  media_kit_libs_video: ^1.0.5
+  media_kit_libs_video: ^1.0.5 
   m3u_parser_nullsafe: ^1.0.3
   riverpod_annotation: ^3.0.0-dev.3
   path_provider: ^2.1.5

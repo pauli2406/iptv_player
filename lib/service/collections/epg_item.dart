@@ -15,9 +15,8 @@ class EpgItem {
   late DateTime? start;
   late DateTime? end;
   late String? description;
-  
   final iptvServer = IsarLink<IptvServer>();
-
+  
   EpgItem({
     this.id = Isar.autoIncrement,
     this.title,

@@ -40,7 +40,7 @@ class _MoviesPageState extends ConsumerState<MoviesPage> {
       channelProvider: movieProvider,
       categories: categories,
       placeHolderForSearchField: 'Search for a movie',
-      height: 1.5,
+      height: 1,
       width: 2,
       errorText: 'No movies found',
       onCategoryChanged: (ItemCategory? category) {

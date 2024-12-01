@@ -4,8 +4,7 @@ import 'package:iptv_player/router/app_router.gr.dart';
 @AutoRouterConfig(replaceInRouteName: 'Route')
 class AppRouter extends RootStackRouter {
   @override
-  RouteType get defaultRouteType =>
-      const RouteType.cupertino(); //.cupertino, .adaptive ..etc
+  RouteType get defaultRouteType => const RouteType.cupertino();
 
   @override
   List<AutoRoute> get routes => [
@@ -15,8 +14,9 @@ class AppRouter extends RootStackRouter {
           page: SeriesSeasonPageRoute.page,
           path: '/series',
         ),
+        AutoRoute(page: ChannelOverviewRoute.page, path: '/channel'),
         AutoRoute(page: SeriesVideoPlayerRoute.page, path: '/player/series'),
-        AutoRoute(page: ChannelVideoPlayerRoute.page, path: '/player/channel'),
+        // AutoRoute(page: ChannelVideoPlayerRoute.page, path: '/player/channel'),
         AutoRoute(page: VodVideoPlayerRoute.page, path: '/player/vod'),
       ];
 }

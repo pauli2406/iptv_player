@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:play_shift/provider/isar/m3u_provider.dart';
 import 'package:play_shift/video_player/base_video_player.dart';
+import 'package:platform_builder/platform.dart';
+import 'package:play_shift/video_player/custom_controls/material_desktop_audio_track_button.dart';
 
 @RoutePage()
 class ChannelOverview extends ConsumerStatefulWidget {
@@ -105,10 +107,57 @@ class _ChannelOverviewState extends ConsumerState<ChannelOverview> {
               height: MediaQuery.of(context).size.height * 0.5,
               child: BaseVideoPlayer(
                 stream: channel,
-                builder: (controller) => Video(
-                  controller: controller,
-                  controls: MaterialDesktopVideoControls,
-                ),
+                builder: (controller) => (Platform.instance.isMacOS ||
+                        Platform.instance.isWindows)
+                    ? MaterialDesktopVideoControlsTheme(
+                        normal: MaterialDesktopVideoControlsThemeData(
+                          playAndPauseOnTap: false,
+                          buttonBarButtonSize: 24.0,
+                          buttonBarButtonColor: Colors.white,
+                          hideMouseOnControlsRemoval: true,
+                          bottomButtonBar: const [
+                            MaterialDesktopPlayOrPauseButton(),
+                            MaterialDesktopVolumeButton(),
+                            MaterialDesktopPositionIndicator(),
+                            Spacer(),
+                            MaterialDesktopFullscreenButton(),
+                            MaterialDesktopAudioTrackButton(),
+                          ],
+                        ),
+                        fullscreen: MaterialDesktopVideoControlsThemeData(
+                          playAndPauseOnTap: false,
+                          buttonBarButtonSize: 24.0,
+                          buttonBarButtonColor: Colors.white,
+                          hideMouseOnControlsRemoval: true,
+                          bottomButtonBar: const [
+                            MaterialDesktopPlayOrPauseButton(),
+                            MaterialDesktopVolumeButton(),
+                            MaterialDesktopPositionIndicator(),
+                            Spacer(),
+                            MaterialDesktopFullscreenButton(),
+                            MaterialDesktopAudioTrackButton(),
+                          ],
+                        ),
+                        child: Video(
+                          controller: controller,
+                          controls: MaterialDesktopVideoControls,
+                        ),
+                      )
+                    : MaterialVideoControlsTheme(
+                        normal: MaterialVideoControlsThemeData(
+                          buttonBarButtonSize: 24.0,
+                          buttonBarButtonColor: Colors.white,
+                        ),
+                        fullscreen: const MaterialVideoControlsThemeData(
+                          displaySeekBar: false,
+                          automaticallyImplySkipNextButton: false,
+                          automaticallyImplySkipPreviousButton: false,
+                        ),
+                        child: Video(
+                          controller: controller,
+                          controls: MaterialVideoControls,
+                        ),
+                      ),
               ),
             ),
             // EPG header

@@ -1,14 +1,16 @@
-import 'package:iptv_player/home/provider/search_value_provider.dart';
+import 'dart:async';
+
+import 'package:play_shift/home/provider/search_value_provider.dart';
+import 'package:play_shift/provider/isar/iptv_server_provider.dart';
+import 'package:play_shift/provider/isar/isar_provider.dart';
+import 'package:play_shift/provider/models/channel_view_model.dart';
+import 'package:play_shift/service/collections/epg_item.dart';
+import 'package:play_shift/service/collections/item_category.dart';
+import 'package:play_shift/service/collections/series_episode.dart';
+import 'package:play_shift/service/collections/series_item.dart';
+import 'package:play_shift/service/m3u_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:xtream_code_client/xtream_code_client.dart';
-import 'package:iptv_player/service/m3u_service.dart';
-import 'package:iptv_player/provider/isar/isar_provider.dart';
-import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
-import 'package:iptv_player/provider/models/channel_view_model.dart';
-import 'package:iptv_player/service/collections/epg_item.dart';
-import 'package:iptv_player/service/collections/item_category.dart';
-import 'package:iptv_player/service/collections/series_episode.dart';
-import 'package:iptv_player/service/collections/series_item.dart';
 
 part 'm3u_provider.g.dart';
 
@@ -33,8 +35,8 @@ Future<bool> clearDownloadAndPersistActivePlaylistItems(
 
 /// Channel related providers
 @riverpod
-Stream<List<ChannelViewModel>> findAllChannels(
-    FindAllChannelsRef ref, {ItemCategory? category}) {
+Stream<List<ChannelViewModel>> findAllChannels(FindAllChannelsRef ref,
+    {ItemCategory? category}) {
   final searchValue = ref.watch(channelSearchValueProvider);
   final m3uService = ref.watch(m3uServiceProvider);
 
@@ -107,8 +109,8 @@ Stream<List<ItemCategory>> findAllChannelGroups(FindAllChannelGroupsRef ref) {
 
 /// Movie related providers
 @riverpod
-Stream<List<ChannelViewModel>> findAllMovies(
-    FindAllMoviesRef ref, {ItemCategory? category}) {
+Stream<List<ChannelViewModel>> findAllMovies(FindAllMoviesRef ref,
+    {ItemCategory? category}) {
   final searchValue = ref.watch(movieSearchValueProvider);
   final activeIptvServer = ref.watch(m3uServiceProvider).getActiveIptvServer()!;
 
@@ -148,8 +150,8 @@ Stream<List<ItemCategory>> findAllMovieGroups(FindAllMovieGroupsRef ref) {
 
 /// Series related providers
 @riverpod
-Stream<List<SeriesItem>> findAllSeries(
-    FindAllSeriesRef ref, {ItemCategory? category}) {
+Stream<List<SeriesItem>> findAllSeries(FindAllSeriesRef ref,
+    {ItemCategory? category}) {
   final searchValue = ref.watch(seriesSearchValueProvider);
   final m3uService = ref.watch(m3uServiceProvider);
   final activeIptvServer = m3uService.getActiveIptvServer()!;
@@ -165,8 +167,8 @@ Stream<SeriesItem> findSeries(FindSeriesRef ref, {required int seriesId}) {
 }
 
 @riverpod
-Future<XTremeCodeSeriesInfo?> findSeriesInfo(
-    FindSeriesInfoRef ref, {required int seriesId}) async {
+Future<XTremeCodeSeriesInfo?> findSeriesInfo(FindSeriesInfoRef ref,
+    {required int seriesId}) async {
   final iptvServerService = ref.watch(iptvServerServiceProvider);
   final activeIptvServer = ref.watch(m3uServiceProvider).getActiveIptvServer()!;
   final m3uService = ref.watch(m3uServiceProvider);

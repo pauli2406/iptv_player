@@ -2,9 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
-import 'package:iptv_player/iptv_list/form/port_input.dart';
-import 'package:iptv_player/iptv_list/windows/windows_manage_iptv_server_widget.dart';
-import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
+import 'package:play_shift/iptv_list/form/port_input.dart';
+import 'package:play_shift/iptv_list/windows/windows_manage_iptv_server_widget.dart';
+import 'package:play_shift/provider/isar/iptv_server_provider.dart';
 
 import '../service/collections/iptv_server/iptv_server.dart';
 import 'form/manage_iptv_server_form_state.dart';

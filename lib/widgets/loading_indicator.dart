@@ -1,7 +1,6 @@
-
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
+import 'package:play_shift/provider/isar/iptv_server_provider.dart';
 
 class LoadingIndicator extends ConsumerWidget {
   final String message;

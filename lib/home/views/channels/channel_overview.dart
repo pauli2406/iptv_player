@@ -2,9 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:iptv_player/provider/isar/m3u_provider.dart';
-import 'package:iptv_player/video_player/base_video_player.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:play_shift/provider/isar/m3u_provider.dart';
+import 'package:play_shift/video_player/base_video_player.dart';
 
 @RoutePage()
 class ChannelOverview extends ConsumerStatefulWidget {
@@ -111,7 +111,6 @@ class _ChannelOverviewState extends ConsumerState<ChannelOverview> {
                 ),
               ),
             ),
-
             // EPG header
             Container(
               padding: const EdgeInsets.all(16.0),
@@ -121,7 +120,6 @@ class _ChannelOverviewState extends ConsumerState<ChannelOverview> {
                 style: FluentTheme.of(context).typography.subtitle,
               ),
             ),
-
             // EPG list
             Expanded(
               child: Padding(
@@ -163,7 +161,6 @@ class _ChannelOverviewState extends ConsumerState<ChannelOverview> {
                             if (isPast && !showPastItems) {
                               return const SizedBox.shrink();
                             }
-
                             return Expander(
                               header: Row(
                                 children: [

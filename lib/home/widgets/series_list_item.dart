@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:iptv_player/home/widgets/generic_media_list_item.dart';
-import 'package:iptv_player/router/app_router.gr.dart';
-import 'package:iptv_player/service/collections/series_item.dart';
-import 'package:iptv_player/shared/theme_service.dart';
+import 'package:play_shift/home/widgets/generic_media_list_item.dart';
+import 'package:play_shift/router/app_router.gr.dart';
+import 'package:play_shift/service/collections/series_item.dart';
+import 'package:play_shift/shared/theme_service.dart';
 
 class SeriesListItem extends StatelessWidget {
   const SeriesListItem(this.seriesItem, {required this.height, super.key});

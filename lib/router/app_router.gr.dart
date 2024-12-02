@@ -11,12 +11,12 @@
 import 'package:auto_route/auto_route.dart' as _i7;
 import 'package:fluent_ui/fluent_ui.dart' as _i8;
 import 'package:flutter/material.dart' as _i9;
-import 'package:iptv_player/home/home_view.dart' as _i2;
-import 'package:iptv_player/home/views/channels/channel_overview.dart' as _i1;
-import 'package:iptv_player/home/views/series/series_season_page.dart' as _i4;
-import 'package:iptv_player/iptv_list/iptv_server_list.dart' as _i3;
-import 'package:iptv_player/video_player/vod/series_video_player.dart' as _i5;
-import 'package:iptv_player/video_player/vod/vod_video_player.dart' as _i6;
+import 'package:play_shift/home/home_view.dart' as _i2;
+import 'package:play_shift/home/views/channels/channel_overview.dart' as _i1;
+import 'package:play_shift/home/views/series/series_season_page.dart' as _i4;
+import 'package:play_shift/iptv_list/iptv_server_list.dart' as _i3;
+import 'package:play_shift/video_player/vod/series_video_player.dart' as _i5;
+import 'package:play_shift/video_player/vod/vod_video_player.dart' as _i6;
 
 /// generated route for
 /// [_i1.ChannelOverview]

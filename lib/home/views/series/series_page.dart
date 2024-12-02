@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart' hide OverlayVisibilityMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:iptv_player/home/provider/search_value_provider.dart';
-import 'package:iptv_player/home/widgets/grid_layout_widget.dart';
-import 'package:iptv_player/home/widgets/series_list_item.dart';
-import 'package:iptv_player/provider/isar/m3u_provider.dart';
-import 'package:iptv_player/service/collections/item_category.dart';
+import 'package:play_shift/home/provider/search_value_provider.dart';
+import 'package:play_shift/home/widgets/grid_layout_widget.dart';
+import 'package:play_shift/home/widgets/series_list_item.dart';
+import 'package:play_shift/provider/isar/m3u_provider.dart';
+import 'package:play_shift/service/collections/item_category.dart';
 
 class SeriesPage extends ConsumerStatefulWidget {
   const SeriesPage({super.key});

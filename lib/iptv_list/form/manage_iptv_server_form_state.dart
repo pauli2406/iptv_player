@@ -1,7 +1,7 @@
 import 'package:formz/formz.dart';
-import 'package:iptv_player/iptv_list/form/port_input.dart';
-import 'package:iptv_player/iptv_list/form/text_input.dart';
-import 'package:iptv_player/iptv_list/form/url_input.dart';
+import 'package:play_shift/iptv_list/form/port_input.dart';
+import 'package:play_shift/iptv_list/form/text_input.dart';
+import 'package:play_shift/iptv_list/form/url_input.dart';
 import 'package:isar/isar.dart';
 
 class ManageIptvServerFormState with FormzMixin {

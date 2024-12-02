@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:iptv_player/provider/isar/isar_provider.dart';
-import 'package:iptv_player/service/collections/theme/theme.dart';
+import 'package:play_shift/provider/isar/isar_provider.dart';
+import 'package:play_shift/service/collections/theme/theme.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'theme.g.dart';

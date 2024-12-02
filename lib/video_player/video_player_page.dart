@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:iptv_player/provider/models/channel_view_model.dart';
-import 'package:iptv_player/video_player/base_video_player.dart';
-import 'package:iptv_player/video_player/custom_controls/material_desktop_audio_track_button.dart';
+import 'package:play_shift/provider/models/channel_view_model.dart';
+import 'package:play_shift/video_player/base_video_player.dart';
+import 'package:play_shift/video_player/custom_controls/material_desktop_audio_track_button.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:platform_builder/platform.dart';
 

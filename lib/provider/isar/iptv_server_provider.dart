@@ -1,6 +1,8 @@
-import 'package:iptv_player/provider/isar/m3u_provider.dart';
-import 'package:iptv_player/service/collections/iptv_server/iptv_server.dart';
-import 'package:iptv_player/service/iptv_server_service.dart';
+import 'dart:async';
+
+import 'package:play_shift/provider/isar/m3u_provider.dart';
+import 'package:play_shift/service/collections/iptv_server/iptv_server.dart';
+import 'package:play_shift/service/iptv_server_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'isar_provider.dart';

@@ -1,11 +1,11 @@
-
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:iptv_player/provider/models/channel_view_model.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:iptv_player/home/provider/volume_value_provider.dart';
+import 'package:play_shift/home/provider/volume_value_provider.dart';
+import 'package:play_shift/provider/models/channel_view_model.dart';
 
 class BaseVideoPlayer extends ConsumerStatefulWidget {
   final ChannelViewModel stream;
@@ -50,7 +50,7 @@ class _BaseVideoPlayerState extends ConsumerState<BaseVideoPlayer> {
         ..setProperty('demuxer-max-back-bytes', '180M')
         ..setProperty('hwdec', 'auto');
     }
-    
+
     player.setVolume(ref.read(volumeValueProvider));
     player.open(Media(widget.stream.link));
 

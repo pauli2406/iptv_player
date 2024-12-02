@@ -1,4 +1,4 @@
-import 'package:iptv_player/service/collections/iptv_server/iptv_server.dart';
+import 'package:play_shift/service/collections/iptv_server/iptv_server.dart';
 import 'package:isar/isar.dart';
 import 'package:xtream_code_client/xtream_code_client.dart';
 

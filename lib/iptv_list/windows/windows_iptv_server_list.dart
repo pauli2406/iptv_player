@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:iptv_player/router/app_router.gr.dart';
-import 'package:iptv_player/service/collections/iptv_server/iptv_server.dart';
+import 'package:play_shift/router/app_router.gr.dart';
+import 'package:play_shift/service/collections/iptv_server/iptv_server.dart';
 import '../../provider/isar/iptv_server_provider.dart';
 import '../../provider/isar/m3u_provider.dart';
 import '../manage_iptv_server.dart';
@@ -22,6 +22,7 @@ class WindowsIptvServerList extends ConsumerWidget {
     return NavigationView(
       appBar: const NavigationAppBar(
         automaticallyImplyLeading: false,
+        height: 0,
       ),
       content: _buildContentArea(context, ref, serverItems$),
     );
@@ -41,7 +42,7 @@ class WindowsIptvServerList extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Playlists (${serverItems.length})",
+                    "Playlists",
                     style: FluentTheme.of(context).typography.title,
                   ),
                   IconButton(

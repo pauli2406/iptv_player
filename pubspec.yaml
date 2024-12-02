@@ -1,5 +1,5 @@
-name: iptv_player
-description: An iptv player for windows, macos, ipad and iphones
+name: play_shift
+description: Play Shift is an modern and efficient iptv player for Windows, MacOs, iOS
 publish_to: 'none'
 version: 5.0.0+1
 
@@ -45,79 +45,21 @@ dev_dependencies:
   riverpod_lint: ^3.0.0-dev.4
   riverpod_generator: ^3.0.0-dev.11
   auto_route_generator: ^9.0.0
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by  the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^5.0.0
   msix: ^3.16.8
   mockito: ^5.4.4
 
-# dependency_overrides:
-#   analyzer: ^4.6.0
-
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
 flutter:
-
-  # The following line ensures that the Materi al Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
-
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/no_image_available.png
-    # - assets/iptv_test_epg.xml
-  #   - images/a_dot_ham.jpeg
-
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/assets-and-images/#from-packages
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
-
-flutter_launcher_icons:
-  image_path: "assets/logo/iptv_logo_2.png"
-  windows:
-    generate: true
-    image_path: "assets/logo/iptv_logo_2.png"
-    icon_size: 48
-  macos:
-    generate: true
-    image_path: "assets/logo/iptv_logo_2.png"
 
 msix_config:
-  display_name: IPTV Player
+  display_name: Play Shift
   publisher_display_name: Marcel Pochert
-  identity_name: iptvplayer
+  identity_name: play_shift
   msix_version: 1.0.0.2
-  logo_path: C:\Users\Lukas\DEV\iptv_player\assets\logo\iptv_logo_2.png
+  logo_path: C:\Users\Lukas\DEV\play_shift\assets\logo\play-shift-01.png
   capabilities: internetClient
-  # signtool_options: /fd sha256 /i "Msix Testing" /tr http://timestamp.digicert.com/
   publisher: CN=Bonny, O=Bonny, C=DE
   sign_msix: false

@@ -1,8 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
-import 'package:iptv_player/service/collections/item_category.dart';
-import 'package:iptv_player/widgets/loading_indicator.dart';
+import 'package:play_shift/provider/isar/iptv_server_provider.dart';
+import 'package:play_shift/service/collections/item_category.dart';
+import 'package:play_shift/widgets/loading_indicator.dart';
 
 class GridLayoutWidget extends ConsumerStatefulWidget {
   final String title;

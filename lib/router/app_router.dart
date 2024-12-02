@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:iptv_player/router/app_router.gr.dart';
+import 'package:play_shift/router/app_router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Route')
 class AppRouter extends RootStackRouter {

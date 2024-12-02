@@ -3,13 +3,13 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:iptv_player/home/views/channels/channels_page.dart';
-import 'package:iptv_player/home/views/movies/movie_page.dart';
-import 'package:iptv_player/home/views/series/series_page.dart';
-import 'package:iptv_player/provider/isar/iptv_server_provider.dart';
-import 'package:iptv_player/provider/isar/m3u_provider.dart';
-import 'package:iptv_player/theme.dart';
-import 'package:iptv_player/widgets/loading_indicator.dart';
+import 'package:play_shift/home/views/channels/channels_page.dart';
+import 'package:play_shift/home/views/movies/movie_page.dart';
+import 'package:play_shift/home/views/series/series_page.dart';
+import 'package:play_shift/provider/isar/iptv_server_provider.dart';
+import 'package:play_shift/provider/isar/m3u_provider.dart';
+import 'package:play_shift/theme.dart';
+import 'package:play_shift/widgets/loading_indicator.dart';
 
 @RoutePage()
 class HomeView extends ConsumerStatefulWidget {
@@ -78,7 +78,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
     return ref.watch(clearDownloadAndPersistActivePlaylistItemsProvider()).when(
       data: (reloaded) {
         return NavigationView(
-          appBar: const NavigationAppBar(),
+          appBar: const NavigationAppBar(height: 0),
           pane: NavigationPane(
             displayMode: PaneDisplayMode.top,
             selected: _categoryIndex,
@@ -189,4 +189,3 @@ class _NavigationBodyItem extends ConsumerWidget {
     );
   }
 }
-

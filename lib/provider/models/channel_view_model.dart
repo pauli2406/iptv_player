@@ -1,5 +1,4 @@
-
-import 'package:iptv_player/service/collections/epg_item.dart';
+import 'package:play_shift/service/collections/epg_item.dart';
 
 class ChannelViewModel {
   int? streamId;

@@ -89,6 +89,7 @@ class VideoPlayerPage extends ConsumerWidget {
       buttonBarButtonColor: Colors.white,
       topButtonBarMargin: const EdgeInsets.only(top: 36.0),
       topButtonBar: topButtonBar,
+      hideMouseOnControlsRemoval: true,
       bottomButtonBar: const [
         MaterialDesktopSkipPreviousButton(),
         MaterialDesktopPlayOrPauseButton(),

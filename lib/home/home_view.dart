@@ -33,7 +33,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
       title: const Text('Channels'),
       body: const _NavigationBodyItem(
         header: 'Channels',
-        content: ChannelsPage(),
+        content: KeepAliveWrapper(child: ChannelsPage()),
       ),
     ),
     PaneItem(
@@ -41,7 +41,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
       title: const Text('Movies'),
       body: const _NavigationBodyItem(
         header: 'Movies',
-        content: MoviesPage(),
+        content: KeepAliveWrapper(child: MoviesPage()),
       ),
     ),
     PaneItem(
@@ -49,7 +49,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
       title: const Text('Series'),
       body: const _NavigationBodyItem(
         header: 'Series',
-        content: SeriesPage(),
+        content: KeepAliveWrapper(child: SeriesPage()),
       ),
     ),
   ];
@@ -187,5 +187,29 @@ class _NavigationBodyItem extends ConsumerWidget {
       header: PageHeader(title: Text(header ?? 'This is a header text')),
       content: content ?? const SizedBox.shrink(),
     );
+  }
+}
+
+class KeepAliveWrapper extends StatefulWidget {
+  final Widget child;
+
+  const KeepAliveWrapper({
+    super.key,
+    required this.child,
+  });
+
+  @override
+  State<KeepAliveWrapper> createState() => _KeepAliveWrapperState();
+}
+
+class _KeepAliveWrapperState extends State<KeepAliveWrapper>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
   }
 }

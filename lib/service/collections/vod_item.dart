@@ -61,4 +61,24 @@ class VodItem {
         containerExtension = vodItem.containerExtension,
         customSid = vodItem.customSid,
         directSource = vodItem.directSource;
+
+  XTremeCodeVodItem toXtreamCodeVodItem() {
+    return XTremeCodeVodItem(
+      streamId: id,
+      num: num,
+      name: name,
+      title: title,
+      year: year,
+      streamType: streamType,
+      streamIcon: streamIcon,
+      rating: rating,
+      rating5based: rating5based,
+      added: added,
+      categoryId: categoryId,
+      categoryIds: categoryIds,
+      containerExtension: containerExtension,
+      customSid: customSid,
+      directSource: directSource,
+    );
+  }
 }

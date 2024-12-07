@@ -5,14 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:play_shift/home/provider/volume_value_provider.dart';
-import 'package:play_shift/provider/models/channel_view_model.dart';
 
 class BaseVideoPlayer extends ConsumerStatefulWidget {
-  final ChannelViewModel stream;
+  final String streamLink;
   final Widget Function(VideoController controller) builder;
 
   const BaseVideoPlayer({
-    required this.stream,
+    required this.streamLink,
     required this.builder,
     super.key,
   });
@@ -52,7 +51,7 @@ class _BaseVideoPlayerState extends ConsumerState<BaseVideoPlayer> {
     }
 
     player.setVolume(ref.read(volumeValueProvider));
-    player.open(Media(widget.stream.link));
+    player.open(Media(widget.streamLink));
 
     subscription ??= player.stream.volume.listen((event) {
       ref.read(volumeValueProvider.notifier).setValue(event);

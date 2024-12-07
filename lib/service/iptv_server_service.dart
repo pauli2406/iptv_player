@@ -177,6 +177,13 @@ class IptvServerService {
     return seriesInfo;
   }
 
+    Future<XTremeCodeVodInfo?> vodInfo(
+      VodItem vodItem, IptvServer activeIptvServer) async {
+    final vodInfo =
+        await client.vodInfo(vodItem.toXtreamCodeVodItem());
+    return vodInfo;
+  }
+
   Future<XTremeCodeGeneralInformation> loadServerInformation() async {
     return await client.serverInformation();
   }

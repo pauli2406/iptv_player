@@ -805,7 +805,7 @@ class _FindAllMoviesProviderElement
   ItemCategory? get category => (origin as FindAllMoviesProvider).category;
 }
 
-String _$findMovieHash() => r'db6cd4a1168282b993bed3e22d573bc62e7dbec8';
+String _$findMovieHash() => r'105b99d19f099c5730bd692c913dc6c9aff53b93';
 
 /// See also [findMovie].
 @ProviderFor(findMovie)
@@ -850,7 +850,7 @@ class FindMovieFamily extends Family {
   }
 
   /// Enables overriding the behavior of this provider, no matter the parameters.
-  Override overrideWith(ChannelViewModel Function(FindMovieRef ref) create) {
+  Override overrideWith(MovieViewModel Function(FindMovieRef ref) create) {
     return _$FindMovieFamilyOverride(this, create);
   }
 }
@@ -858,7 +858,7 @@ class FindMovieFamily extends Family {
 class _$FindMovieFamilyOverride implements FamilyOverride {
   _$FindMovieFamilyOverride(this.overriddenFamily, this.create);
 
-  final ChannelViewModel Function(FindMovieRef ref) create;
+  final MovieViewModel Function(FindMovieRef ref) create;
 
   @override
   final FindMovieFamily overriddenFamily;
@@ -872,7 +872,7 @@ class _$FindMovieFamilyOverride implements FamilyOverride {
 }
 
 /// See also [findMovie].
-class FindMovieProvider extends AutoDisposeProvider<ChannelViewModel> {
+class FindMovieProvider extends AutoDisposeProvider<MovieViewModel> {
   /// See also [findMovie].
   FindMovieProvider({
     required int streamId,
@@ -906,7 +906,7 @@ class FindMovieProvider extends AutoDisposeProvider<ChannelViewModel> {
 
   @override
   Override overrideWith(
-    ChannelViewModel Function(FindMovieRef ref) create,
+    MovieViewModel Function(FindMovieRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -930,12 +930,12 @@ class FindMovieProvider extends AutoDisposeProvider<ChannelViewModel> {
   }
 
   @override
-  AutoDisposeProviderElement<ChannelViewModel> createElement() {
+  AutoDisposeProviderElement<MovieViewModel> createElement() {
     return _FindMovieProviderElement(this);
   }
 
   FindMovieProvider _copyWith(
-    ChannelViewModel Function(FindMovieRef ref) create,
+    MovieViewModel Function(FindMovieRef ref) create,
   ) {
     return FindMovieProvider._internal(
       (ref) => create(ref as FindMovieRef),
@@ -962,17 +962,191 @@ class FindMovieProvider extends AutoDisposeProvider<ChannelViewModel> {
   }
 }
 
-mixin FindMovieRef on AutoDisposeProviderRef<ChannelViewModel> {
+mixin FindMovieRef on AutoDisposeProviderRef<MovieViewModel> {
   /// The parameter `streamId` of this provider.
   int get streamId;
 }
 
 class _FindMovieProviderElement
-    extends AutoDisposeProviderElement<ChannelViewModel> with FindMovieRef {
+    extends AutoDisposeProviderElement<MovieViewModel> with FindMovieRef {
   _FindMovieProviderElement(super.provider);
 
   @override
   int get streamId => (origin as FindMovieProvider).streamId;
+}
+
+String _$findMovieDetailHash() => r'115d6c85956fd72b2148e0bcfa75a1f7a9c311f7';
+
+/// See also [findMovieDetail].
+@ProviderFor(findMovieDetail)
+const findMovieDetailProvider = FindMovieDetailFamily();
+
+/// See also [findMovieDetail].
+class FindMovieDetailFamily extends Family {
+  /// See also [findMovieDetail].
+  const FindMovieDetailFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'findMovieDetailProvider';
+
+  /// See also [findMovieDetail].
+  FindMovieDetailProvider call({
+    required int vodId,
+  }) {
+    return FindMovieDetailProvider(
+      vodId: vodId,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  FindMovieDetailProvider getProviderOverride(
+    covariant FindMovieDetailProvider provider,
+  ) {
+    return call(
+      vodId: provider.vodId,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      FutureOr<XTremeCodeVodInfo?> Function(FindMovieDetailRef ref) create) {
+    return _$FindMovieDetailFamilyOverride(this, create);
+  }
+}
+
+class _$FindMovieDetailFamilyOverride implements FamilyOverride {
+  _$FindMovieDetailFamilyOverride(this.overriddenFamily, this.create);
+
+  final FutureOr<XTremeCodeVodInfo?> Function(FindMovieDetailRef ref) create;
+
+  @override
+  final FindMovieDetailFamily overriddenFamily;
+
+  @override
+  FindMovieDetailProvider getProviderOverride(
+    covariant FindMovieDetailProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [findMovieDetail].
+class FindMovieDetailProvider
+    extends AutoDisposeFutureProvider<XTremeCodeVodInfo?> {
+  /// See also [findMovieDetail].
+  FindMovieDetailProvider({
+    required int vodId,
+  }) : this._internal(
+          (ref) => findMovieDetail(
+            ref as FindMovieDetailRef,
+            vodId: vodId,
+          ),
+          from: findMovieDetailProvider,
+          name: r'findMovieDetailProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$findMovieDetailHash,
+          dependencies: FindMovieDetailFamily._dependencies,
+          allTransitiveDependencies:
+              FindMovieDetailFamily._allTransitiveDependencies,
+          vodId: vodId,
+        );
+
+  FindMovieDetailProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.vodId,
+  }) : super.internal();
+
+  final int vodId;
+
+  @override
+  Override overrideWith(
+    FutureOr<XTremeCodeVodInfo?> Function(FindMovieDetailRef ref) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindMovieDetailProvider._internal(
+        (ref) => create(ref as FindMovieDetailRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        vodId: vodId,
+      ),
+    );
+  }
+
+  @override
+  ({
+    int vodId,
+  }) get argument {
+    return (vodId: vodId,);
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<XTremeCodeVodInfo?> createElement() {
+    return _FindMovieDetailProviderElement(this);
+  }
+
+  FindMovieDetailProvider _copyWith(
+    FutureOr<XTremeCodeVodInfo?> Function(FindMovieDetailRef ref) create,
+  ) {
+    return FindMovieDetailProvider._internal(
+      (ref) => create(ref as FindMovieDetailRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      vodId: vodId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FindMovieDetailProvider && other.vodId == vodId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, vodId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FindMovieDetailRef on AutoDisposeFutureProviderRef<XTremeCodeVodInfo?> {
+  /// The parameter `vodId` of this provider.
+  int get vodId;
+}
+
+class _FindMovieDetailProviderElement
+    extends AutoDisposeFutureProviderElement<XTremeCodeVodInfo?>
+    with FindMovieDetailRef {
+  _FindMovieDetailProviderElement(super.provider);
+
+  @override
+  int get vodId => (origin as FindMovieDetailProvider).vodId;
 }
 
 String _$findAllMovieGroupsHash() =>
@@ -993,6 +1167,180 @@ final findAllMovieGroupsProvider =
 
 typedef FindAllMovieGroupsRef
     = AutoDisposeStreamProviderRef<List<ItemCategory>>;
+String _$findRelatedMoviesHash() => r'3634b67065151eb8fe1d2f95daa4d8496c4c8d1b';
+
+/// See also [findRelatedMovies].
+@ProviderFor(findRelatedMovies)
+const findRelatedMoviesProvider = FindRelatedMoviesFamily();
+
+/// See also [findRelatedMovies].
+class FindRelatedMoviesFamily extends Family {
+  /// See also [findRelatedMovies].
+  const FindRelatedMoviesFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'findRelatedMoviesProvider';
+
+  /// See also [findRelatedMovies].
+  FindRelatedMoviesProvider call({
+    required int streamId,
+  }) {
+    return FindRelatedMoviesProvider(
+      streamId: streamId,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  FindRelatedMoviesProvider getProviderOverride(
+    covariant FindRelatedMoviesProvider provider,
+  ) {
+    return call(
+      streamId: provider.streamId,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      List<MovieViewModel> Function(FindRelatedMoviesRef ref) create) {
+    return _$FindRelatedMoviesFamilyOverride(this, create);
+  }
+}
+
+class _$FindRelatedMoviesFamilyOverride implements FamilyOverride {
+  _$FindRelatedMoviesFamilyOverride(this.overriddenFamily, this.create);
+
+  final List<MovieViewModel> Function(FindRelatedMoviesRef ref) create;
+
+  @override
+  final FindRelatedMoviesFamily overriddenFamily;
+
+  @override
+  FindRelatedMoviesProvider getProviderOverride(
+    covariant FindRelatedMoviesProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [findRelatedMovies].
+class FindRelatedMoviesProvider
+    extends AutoDisposeProvider<List<MovieViewModel>> {
+  /// See also [findRelatedMovies].
+  FindRelatedMoviesProvider({
+    required int streamId,
+  }) : this._internal(
+          (ref) => findRelatedMovies(
+            ref as FindRelatedMoviesRef,
+            streamId: streamId,
+          ),
+          from: findRelatedMoviesProvider,
+          name: r'findRelatedMoviesProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$findRelatedMoviesHash,
+          dependencies: FindRelatedMoviesFamily._dependencies,
+          allTransitiveDependencies:
+              FindRelatedMoviesFamily._allTransitiveDependencies,
+          streamId: streamId,
+        );
+
+  FindRelatedMoviesProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.streamId,
+  }) : super.internal();
+
+  final int streamId;
+
+  @override
+  Override overrideWith(
+    List<MovieViewModel> Function(FindRelatedMoviesRef ref) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindRelatedMoviesProvider._internal(
+        (ref) => create(ref as FindRelatedMoviesRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        streamId: streamId,
+      ),
+    );
+  }
+
+  @override
+  ({
+    int streamId,
+  }) get argument {
+    return (streamId: streamId,);
+  }
+
+  @override
+  AutoDisposeProviderElement<List<MovieViewModel>> createElement() {
+    return _FindRelatedMoviesProviderElement(this);
+  }
+
+  FindRelatedMoviesProvider _copyWith(
+    List<MovieViewModel> Function(FindRelatedMoviesRef ref) create,
+  ) {
+    return FindRelatedMoviesProvider._internal(
+      (ref) => create(ref as FindRelatedMoviesRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      streamId: streamId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FindRelatedMoviesProvider && other.streamId == streamId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, streamId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FindRelatedMoviesRef on AutoDisposeProviderRef<List<MovieViewModel>> {
+  /// The parameter `streamId` of this provider.
+  int get streamId;
+}
+
+class _FindRelatedMoviesProviderElement
+    extends AutoDisposeProviderElement<List<MovieViewModel>>
+    with FindRelatedMoviesRef {
+  _FindRelatedMoviesProviderElement(super.provider);
+
+  @override
+  int get streamId => (origin as FindRelatedMoviesProvider).streamId;
+}
+
 String _$findAllSeriesHash() => r'e0ff29ea7e54e0cbe2e5eeb755e434b7e8dfb952';
 
 /// Series related providers

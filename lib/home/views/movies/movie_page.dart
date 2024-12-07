@@ -52,7 +52,7 @@ class _MoviesPageState extends ConsumerState<MoviesPage> {
       itemBuilder: (context, itemHeight, item) => M3uListItem(
         channelViewModel: item,
         height: itemHeight,
-        route: VodVideoPlayerRoute(streamId: item.streamId),
+        route: MovieOverviewRoute(streamId: item.streamId),
       ),
     );
   }

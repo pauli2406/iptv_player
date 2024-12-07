@@ -24,7 +24,7 @@ class VideoPlayerPage extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: BaseVideoPlayer(
-          stream: stream,
+          streamLink: stream.link,
           builder: (videoController) =>
               (Platform.instance.isMacOS || Platform.instance.isWindows)
                   ? _materialDesktopVideoControlsTheme(videoController)

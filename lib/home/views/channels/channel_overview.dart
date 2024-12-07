@@ -123,7 +123,7 @@ class _ChannelOverviewState extends ConsumerState<ChannelOverview> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.5,
               child: BaseVideoPlayer(
-                stream: channel,
+                streamLink: channel.link,
                 builder: (controller) => (Platform.instance.isMacOS ||
                         Platform.instance.isWindows)
                     ? MaterialDesktopVideoControlsTheme(

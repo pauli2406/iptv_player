@@ -4,6 +4,7 @@ import 'package:play_shift/home/provider/search_value_provider.dart';
 import 'package:play_shift/provider/isar/iptv_server_provider.dart';
 import 'package:play_shift/provider/isar/isar_provider.dart';
 import 'package:play_shift/provider/models/channel_view_model.dart';
+import 'package:play_shift/provider/models/movie_view_model.dart';
 import 'package:play_shift/service/collections/epg_item.dart';
 import 'package:play_shift/service/collections/item_category.dart';
 import 'package:play_shift/service/collections/series_episode.dart';
@@ -134,11 +135,31 @@ Stream<List<ChannelViewModel>> findAllMovies(FindAllMoviesRef ref,
 }
 
 @riverpod
-ChannelViewModel findMovie(FindMovieRef ref, {required int streamId}) {
+MovieViewModel findMovie(FindMovieRef ref, {required int streamId}) {
   final m3uService = ref.watch(m3uServiceProvider);
   final vod = m3uService.findVod(streamId)!;
-  return ChannelViewModel(vod.id, vod.streamUrl, vod.name ?? "",
-      vod.streamIcon ?? "", vod.streamType == "live", null, []);
+  return MovieViewModel(
+    streamId: vod.id,
+    streamUrl: vod.streamUrl,
+    title: vod.name ?? "",
+    streamIcon: vod.streamIcon ?? "",
+    year: vod.year,
+    rating: vod.rating,
+    rating5based: vod.rating5based,
+    added: vod.added,
+    containerExtension: vod.containerExtension,
+    directSource: vod.directSource,
+  );
+}
+
+@riverpod
+Future<XTremeCodeVodInfo?> findMovieDetail(FindMovieDetailRef ref,
+    {required int vodId}) async {
+  final iptvServerService = ref.watch(iptvServerServiceProvider);
+  final activeIptvServer = ref.watch(m3uServiceProvider).getActiveIptvServer()!;
+  final m3uService = ref.watch(m3uServiceProvider);
+  final vod = m3uService.findVod(vodId)!;
+  return await iptvServerService.vodInfo(vod, activeIptvServer);
 }
 
 @riverpod
@@ -146,6 +167,29 @@ Stream<List<ItemCategory>> findAllMovieGroups(FindAllMovieGroupsRef ref) {
   final m3uService = ref.watch(m3uServiceProvider);
   final activeIptvServer = m3uService.getActiveIptvServer()!;
   return m3uService.findAllMovieGroups(activeIptvServer);
+}
+
+@riverpod
+List<MovieViewModel> findRelatedMovies(FindRelatedMoviesRef ref, {required int streamId}) {
+  final m3uService = ref.watch(m3uServiceProvider);
+  final vod = m3uService.findVod(streamId);
+  
+  if (vod == null) return [];
+  
+  final relatedMovies = m3uService.findRelatedMovies(vod);
+  
+  return relatedMovies.map((e) => MovieViewModel(
+    streamId: e.id,
+    streamUrl: e.streamUrl,
+    title: e.name ?? "",
+    streamIcon: e.streamIcon ?? "",
+    year: e.year,
+    rating: e.rating,
+    rating5based: e.rating5based,
+    added: e.added,
+    containerExtension: e.containerExtension,
+    directSource: e.directSource,
+  )).toList();
 }
 
 /// Series related providers

@@ -194,4 +194,18 @@ class M3uService {
           .findFirstSync();
     }
   }
+
+  List<VodItem> findRelatedMovies(VodItem movie, {int limit = 6}) {
+    if (_activeIptvServer == null || movie.categoryId == null) {
+      return [];
+    }
+
+    return isarService.isar.vodItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .categoryIdEqualTo(movie.categoryId!)
+        .not().idEqualTo(movie.id)
+        .limit(limit)
+        .findAllSync();
+  }
 }

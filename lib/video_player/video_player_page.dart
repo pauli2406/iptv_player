@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_shift/provider/models/channel_view_model.dart';
 import 'package:play_shift/video_player/base_video_player.dart';
-import 'package:play_shift/video_player/custom_controls/material_desktop_audio_track_button.dart';
+import 'package:play_shift/video_player/custom_controls/desktop_track_settings_button.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:platform_builder/platform.dart';
-import 'package:play_shift/video_player/video_player_config.dart';
+import 'package:play_shift/video_player/base_video_player_config.dart';
 
 class VideoPlayerPage extends ConsumerWidget {
   const VideoPlayerPage({
@@ -36,7 +36,7 @@ class VideoPlayerPage extends ConsumerWidget {
 
   MaterialDesktopVideoControlsTheme _materialDesktopVideoControlsTheme(
       VideoController controller) {
-    final themeData = VideoPlayerConfig.desktopThemeData(
+    final themeData = BaseVideoPlayerConfig.desktopThemeData(
       topButtonBar: topButtonBar,
       bottomButtonBar: const [
         MaterialDesktopSkipPreviousButton(),
@@ -45,7 +45,7 @@ class VideoPlayerPage extends ConsumerWidget {
         MaterialDesktopVolumeButton(),
         MaterialDesktopPositionIndicator(),
         Spacer(),
-        MaterialDesktopAudioTrackButton(),
+        DesktopTrackSetttingsButton(),
         MaterialDesktopFullscreenButton(),
       ],
     );
@@ -54,7 +54,10 @@ class VideoPlayerPage extends ConsumerWidget {
       key: ValueKey(stream.streamId),
       normal: themeData,
       fullscreen: themeData,
-      child: Stack(children: [Video(controller: controller, controls: MaterialDesktopVideoControls), overlay]),
+      child: Stack(children: [
+        Video(controller: controller, controls: MaterialDesktopVideoControls),
+        overlay
+      ]),
     );
   }
 
@@ -62,9 +65,12 @@ class VideoPlayerPage extends ConsumerWidget {
       VideoController controller) {
     return MaterialVideoControlsTheme(
       key: ValueKey(stream.streamId),
-      normal: VideoPlayerConfig.mobileThemeData(topButtonBar: topButtonBar),
-      fullscreen: VideoPlayerConfig.mobileThemeData(),
-      child: Stack(children: [Video(controller: controller, controls: MaterialVideoControls), overlay]),
+      normal: BaseVideoPlayerConfig.mobileThemeData(topButtonBar: topButtonBar),
+      fullscreen: BaseVideoPlayerConfig.mobileThemeData(),
+      child: Stack(children: [
+        Video(controller: controller, controls: MaterialVideoControls),
+        overlay
+      ]),
     );
   }
 }

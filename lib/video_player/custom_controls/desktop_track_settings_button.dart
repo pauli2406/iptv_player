@@ -3,15 +3,15 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 
-class MaterialDesktopAudioTrackButton extends StatefulWidget {
-  const MaterialDesktopAudioTrackButton({super.key});
+class DesktopTrackSetttingsButton extends StatefulWidget {
+  const DesktopTrackSetttingsButton({super.key});
   @override
   MaterialDesktopAudioTrackButtonState createState() =>
       MaterialDesktopAudioTrackButtonState();
 }
 
 class MaterialDesktopAudioTrackButtonState
-    extends State<MaterialDesktopAudioTrackButton> {
+    extends State<DesktopTrackSetttingsButton> {
   late final Player _player = controller(context).player;
 
   @override

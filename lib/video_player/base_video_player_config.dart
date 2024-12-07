@@ -1,8 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:play_shift/video_player/custom_controls/material_desktop_audio_track_button.dart';
+import 'package:play_shift/video_player/custom_controls/desktop_track_settings_button.dart';
 
-class VideoPlayerConfig {
+class BaseVideoPlayerConfig {
   static MaterialDesktopVideoControlsThemeData desktopThemeData({
     List<Widget> topButtonBar = const [],
     List<Widget> bottomButtonBar = const [
@@ -12,7 +12,7 @@ class VideoPlayerConfig {
       MaterialDesktopVolumeButton(),
       MaterialDesktopPositionIndicator(),
       Spacer(),
-      MaterialDesktopAudioTrackButton(),
+      DesktopTrackSetttingsButton(),
       MaterialDesktopFullscreenButton(),
     ],
   }) {

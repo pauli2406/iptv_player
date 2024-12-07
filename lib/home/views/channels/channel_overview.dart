@@ -6,7 +6,8 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:play_shift/provider/isar/m3u_provider.dart';
 import 'package:play_shift/video_player/base_video_player.dart';
 import 'package:platform_builder/platform.dart';
-import 'package:play_shift/video_player/custom_controls/material_desktop_audio_track_button.dart';
+import 'package:play_shift/video_player/video_player_config.dart';
+import 'package:play_shift/theme.dart';
 
 @RoutePage()
 class ChannelOverview extends ConsumerStatefulWidget {
@@ -69,14 +70,15 @@ class _ChannelOverviewState extends ConsumerState<ChannelOverview> {
   @override
   Widget build(BuildContext context) {
     final channel = ref.watch(findChannelProvider(streamId: widget.streamId));
+    final currentTheme = ref.watch(appThemeProvider);
 
     return NavigationView(
       content: ScaffoldPage(
-        padding: EdgeInsets.only(top: 50),
+        padding: EdgeInsets.only(top: 5),
         content: Column(
           children: [
             Container(
-              height: 50,
+              height: 40,
               padding: const EdgeInsets.symmetric(horizontal: 20),
               decoration: BoxDecoration(
                 border: Border(
@@ -97,7 +99,22 @@ class _ChannelOverviewState extends ConsumerState<ChannelOverview> {
                   const SizedBox(width: 12),
                   Text(
                     channel.title,
-                    style: FluentTheme.of(context).typography.subtitle,
+                    style: FluentTheme.of(context)
+                        .navigationPaneTheme
+                        .itemHeaderTextStyle,
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(FluentIcons.color),
+                    onPressed: () {
+                      ref
+                          .read(appThemeProvider.notifier)
+                          .setAndPersistThemeMode(
+                            currentTheme == ThemeMode.light
+                                ? ThemeMode.dark
+                                : ThemeMode.light,
+                          );
+                    },
                   ),
                 ],
               ),
@@ -107,57 +124,24 @@ class _ChannelOverviewState extends ConsumerState<ChannelOverview> {
               height: MediaQuery.of(context).size.height * 0.5,
               child: BaseVideoPlayer(
                 stream: channel,
-                builder: (controller) => (Platform.instance.isMacOS ||
-                        Platform.instance.isWindows)
-                    ? MaterialDesktopVideoControlsTheme(
-                        normal: MaterialDesktopVideoControlsThemeData(
-                          playAndPauseOnTap: false,
-                          buttonBarButtonSize: 24.0,
-                          buttonBarButtonColor: Colors.white,
-                          hideMouseOnControlsRemoval: true,
-                          bottomButtonBar: const [
-                            MaterialDesktopPlayOrPauseButton(),
-                            MaterialDesktopVolumeButton(),
-                            MaterialDesktopPositionIndicator(),
-                            Spacer(),
-                            MaterialDesktopFullscreenButton(),
-                            MaterialDesktopAudioTrackButton(),
-                          ],
-                        ),
-                        fullscreen: MaterialDesktopVideoControlsThemeData(
-                          playAndPauseOnTap: false,
-                          buttonBarButtonSize: 24.0,
-                          buttonBarButtonColor: Colors.white,
-                          hideMouseOnControlsRemoval: true,
-                          bottomButtonBar: const [
-                            MaterialDesktopPlayOrPauseButton(),
-                            MaterialDesktopVolumeButton(),
-                            MaterialDesktopPositionIndicator(),
-                            Spacer(),
-                            MaterialDesktopFullscreenButton(),
-                            MaterialDesktopAudioTrackButton(),
-                          ],
-                        ),
-                        child: Video(
-                          controller: controller,
-                          controls: MaterialDesktopVideoControls,
-                        ),
-                      )
-                    : MaterialVideoControlsTheme(
-                        normal: MaterialVideoControlsThemeData(
-                          buttonBarButtonSize: 24.0,
-                          buttonBarButtonColor: Colors.white,
-                        ),
-                        fullscreen: const MaterialVideoControlsThemeData(
-                          displaySeekBar: false,
-                          automaticallyImplySkipNextButton: false,
-                          automaticallyImplySkipPreviousButton: false,
-                        ),
-                        child: Video(
-                          controller: controller,
-                          controls: MaterialVideoControls,
-                        ),
-                      ),
+                builder: (controller) =>
+                    (Platform.instance.isMacOS || Platform.instance.isWindows)
+                        ? MaterialDesktopVideoControlsTheme(
+                            normal: VideoPlayerConfig.desktopThemeData(),
+                            fullscreen: VideoPlayerConfig.desktopThemeData(),
+                            child: Video(
+                              controller: controller,
+                              controls: MaterialDesktopVideoControls,
+                            ),
+                          )
+                        : MaterialVideoControlsTheme(
+                            normal: VideoPlayerConfig.mobileThemeData(),
+                            fullscreen: VideoPlayerConfig.mobileThemeData(),
+                            child: Video(
+                              controller: controller,
+                              controls: MaterialVideoControls,
+                            ),
+                          ),
               ),
             ),
             // EPG header

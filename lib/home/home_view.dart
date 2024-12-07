@@ -24,7 +24,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   static final List<NavigationPaneItem> _baseItems = [
     PaneItemAction(
-      icon: const Icon(FluentIcons.back),
+      icon: const Icon(FluentIcons.home),
       onTap: () {}, // Will be set in items() method
     ),
     PaneItemSeparator(),
@@ -57,7 +57,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
   List<NavigationPaneItem> items(BuildContext context) {
     // Only modify the back action, reuse other static items
     _baseItems[0] = PaneItemAction(
-      icon: const Icon(FluentIcons.back),
+      icon: const Icon(FluentIcons.home),
       onTap: () {
         ref.read(m3uServiceProvider).disposeXtreamCodeClient();
         Navigator.pop(context);

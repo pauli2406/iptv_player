@@ -1,75 +1,34 @@
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 
 class MaterialDesktopAudioTrackButton extends StatefulWidget {
-  const MaterialDesktopAudioTrackButton({
-    super.key,
-  });
-
+  const MaterialDesktopAudioTrackButton({super.key});
   @override
   MaterialDesktopAudioTrackButtonState createState() =>
       MaterialDesktopAudioTrackButtonState();
 }
 
 class MaterialDesktopAudioTrackButtonState
-    extends State<MaterialDesktopAudioTrackButton>
-    with SingleTickerProviderStateMixin {
-  late AudioTrack audio = controller(context).player.state.track.audio;
-  late VideoTrack video = controller(context).player.state.track.video;
-  late SubtitleTrack subtitle = controller(context).player.state.track.subtitle;
-
-  bool hover = false;
-
-  List<AudioTrack> _audios = [];
-  List<VideoTrack> _videos = [];
-  List<SubtitleTrack> _subtitles = [];
-
-  @override
-  void setState(VoidCallback fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
-
-  @override
-  void didChangeDependencies() {
-    _audios = controller(context).player.state.tracks.audio;
-    audio = controller(context).player.state.track.audio;
-    _videos = controller(context).player.state.tracks.video;
-    video = controller(context).player.state.track.video;
-    _subtitles = controller(context).player.state.tracks.subtitle;
-    subtitle = controller(context).player.state.track.subtitle;
-    super.didChangeDependencies();
-  }
+    extends State<MaterialDesktopAudioTrackButton> {
+  late final Player _player = controller(context).player;
 
   @override
   Widget build(BuildContext context) {
-    final player = controller(context).player;
     return MouseRegion(
-      onEnter: (e) {
-        setState(() {
-          hover = true;
-        });
-      },
-      onExit: (e) {
-        setState(() {
-          hover = false;
-        });
-      },
       child: Row(
         children: [
           const SizedBox(width: 4.0),
           IconButton(
-            onPressed: () async {
-              _showTrackSelectionModal(context, player);
-            },
-            iconSize: _theme(context).buttonBarButtonSize * 0.8,
-            color: _theme(context).buttonBarButtonColor,
-            icon: const Icon(
-              Icons.settings,
-              key: ValueKey(Icons.settings),
+            onPressed: () => _showTrackSelectionModal(context),
+            icon: const Icon(FluentIcons.settings,
+                key: ValueKey(FluentIcons.settings)),
+            style: ButtonStyle(
+              iconSize: WidgetStateProperty.all(
+                  _theme(context).buttonBarButtonSize * 0.8),
+              foregroundColor:
+                  WidgetStateProperty.all(_theme(context).buttonBarButtonColor),
             ),
           ),
         ],
@@ -77,133 +36,156 @@ class MaterialDesktopAudioTrackButtonState
     );
   }
 
-  void _showTrackSelectionModal(BuildContext context, Player player) {
-    showModalBottomSheet(
+  void _showTrackSelectionModal(BuildContext context) {
+    showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return DefaultTabController(
-          length: 3,
-          child: Column(
-            children: [
-              const TabBar(
-                tabs: [
-                  Tab(text: 'Subtitle'),
-                  Tab(text: 'Audio'),
-                  Tab(text: 'Video'),
-                ],
-              ),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    _buildSubtitleTrackSelection(player),
-                    _buildAudioTrackSelection(player),
-                    _buildVideoTrackSelection(player),
-                  ],
+      builder: (context) => ContentDialog(
+        constraints: const BoxConstraints(maxWidth: 450, maxHeight: 600),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  icon: const Icon(FluentIcons.chrome_close),
+                  onPressed: () => Navigator.pop(context),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+            Expanded(child: _TrackSelectionModal(player: _player)),
+          ],
+        ),
+      ),
+      barrierDismissible: true,
+      dismissWithEsc: true,
     );
   }
+}
 
-  Widget _buildAudioTrackSelection(Player player) {
-    return Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text('Select Audio Track', style: TextStyle(fontSize: 20)),
+class _TrackSelectionModal extends StatefulWidget {
+  final Player player;
+  const _TrackSelectionModal({required this.player});
+
+  @override
+  State<_TrackSelectionModal> createState() => _TrackSelectionModalState();
+}
+
+class _TrackSelectionModalState extends State<_TrackSelectionModal> {
+  int currentIndex = 0;
+
+  String _getTrackDisplayName<T>({
+    required String id,
+    required String type,
+    required String Function() defaultFormat,
+  }) =>
+      switch (id) {
+        "auto" => "Auto",
+        "no" => "No $type",
+        _ => defaultFormat(),
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    return TabView(
+      currentIndex: currentIndex,
+      closeButtonVisibility: CloseButtonVisibilityMode.never,
+      onChanged: (index) => setState(() => currentIndex = index),
+      tabs: [
+        Tab(
+          text: const Text('Subtitle'),
+          body: _TrackSelectionList<SubtitleTrack>(
+            title: 'Select Subtitles',
+            tracks: widget.player.state.tracks.subtitle,
+            selectedTrack: widget.player.state.track.subtitle,
+            onTrackSelected: widget.player.setSubtitleTrack,
+            getDisplayName: (track) => _getTrackDisplayName(
+              id: track.id,
+              type: 'Subtitles',
+              defaultFormat: () => track.title ?? track.language ?? 'Unknown',
+            ),
+          ),
         ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: _audios.length,
-            itemBuilder: (context, index) {
-              final audioTrack = _audios[index];
-              final isSelected = audioTrack.id == audio.id;
-              return ListTile(
-                title: Text(audioTrack.id == 'auto'
-                    ? 'Auto'
-                    : audioTrack.id == 'no'
-                        ? 'No Audio'
-                        : '${audioTrack.language ?? ''} ${audioTrack.channels != null ? '(${audioTrack.channels})' : ''} ${audioTrack.audiochannels ?? ''} ${audioTrack.codec ?? ''}'
-                            .trim()),
-                tileColor: isSelected ? Colors.grey[300] : null,
-                onTap: isSelected
-                    ? null
-                    : () {
-                        player.setAudioTrack(audioTrack);
-                        Navigator.of(context).pop();
-                      },
-              );
-            },
+        Tab(
+          text: const Text('Audio'),
+          body: _TrackSelectionList<AudioTrack>(
+            title: 'Select Audio Track',
+            tracks: widget.player.state.tracks.audio,
+            selectedTrack: widget.player.state.track.audio,
+            onTrackSelected: widget.player.setAudioTrack,
+            getDisplayName: (track) => _getTrackDisplayName(
+              id: track.id,
+              type: 'Audio',
+              defaultFormat: () =>
+                  '${track.language ?? ''} ${track.channels != null ? '(${track.channels})' : ''} ${track.audiochannels ?? ''} ${track.codec ?? ''}'
+                      .trim(),
+            ),
+          ),
+        ),
+        Tab(
+          text: const Text('Video'),
+          body: _TrackSelectionList<VideoTrack>(
+            title: 'Select Video Track',
+            tracks: widget.player.state.tracks.video,
+            selectedTrack: widget.player.state.track.video,
+            onTrackSelected: widget.player.setVideoTrack,
+            getDisplayName: (track) => _getTrackDisplayName(
+              id: track.id,
+              type: 'Video',
+              defaultFormat: () => '${track.codec} - FPS ${track.fps}',
+            ),
           ),
         ),
       ],
     );
   }
+}
 
-  Widget _buildVideoTrackSelection(Player player) {
+class _TrackSelectionList<T> extends StatelessWidget {
+  final String title;
+  final List<T> tracks;
+  final T selectedTrack;
+  final Function(T) onTrackSelected;
+  final String Function(T) getDisplayName;
+
+  const _TrackSelectionList({
+    required this.title,
+    required this.tracks,
+    required this.selectedTrack,
+    required this.onTrackSelected,
+    required this.getDisplayName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text('Select Video Track', style: TextStyle(fontSize: 20)),
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: _videos.length,
-            itemBuilder: (context, index) {
-              final videoTrack = _videos[index];
-              final isSelected = video.id == videoTrack.id;
-              return ListTile(
-                title: Text(videoTrack.id == 'auto'
-                    ? 'Auto'
-                    : videoTrack.id == 'no'
-                        ? 'No Video'
-                        : '${videoTrack.codec} - FPS ${videoTrack.fps}'.trim()),
-                tileColor: isSelected ? Colors.grey[300] : null,
-                onTap: isSelected
-                    ? null
-                    : () {
-                        player.setVideoTrack(videoTrack);
-                        Navigator.of(context).pop();
-                      },
-              );
-            },
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            title,
+            style: FluentTheme.of(context).typography.title,
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildSubtitleTrackSelection(Player player) {
-    return Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text('Select Subtitles', style: TextStyle(fontSize: 20)),
-        ),
         Expanded(
           child: ListView.builder(
-            itemCount: _subtitles.length,
+            itemCount: tracks.length,
             itemBuilder: (context, index) {
-              final subtitleTrack = _subtitles[index];
-              final isSelected = subtitleTrack.id == subtitle.id;
-              return ListTile(
-                title: Text(subtitleTrack.id == 'auto'
-                    ? 'Auto'
-                    : subtitleTrack.id == 'no'
-                        ? 'No Subtitles'
-                        : '${subtitleTrack.title ?? subtitleTrack.language}'
-                            .trim()),
-                tileColor: isSelected ? Colors.grey[300] : null,
-                onTap: isSelected
+              final track = tracks[index];
+              final isSelected = track == selectedTrack;
+
+              return ListTile.selectable(
+                selected: isSelected,
+                onPressed: isSelected
                     ? null
                     : () {
-                        player.setSubtitleTrack(subtitleTrack);
-                        Navigator.of(context).pop();
+                        onTrackSelected(track);
+                        Navigator.pop(context);
                       },
+                title: Text(
+                  getDisplayName(track),
+                  style: FluentTheme.of(context).typography.body,
+                ),
               );
             },
           ),

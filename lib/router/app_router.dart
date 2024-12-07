@@ -16,7 +16,6 @@ class AppRouter extends RootStackRouter {
         ),
         AutoRoute(page: ChannelOverviewRoute.page, path: '/channel'),
         AutoRoute(page: SeriesVideoPlayerRoute.page, path: '/player/series'),
-        // AutoRoute(page: ChannelVideoPlayerRoute.page, path: '/player/channel'),
         AutoRoute(page: VodVideoPlayerRoute.page, path: '/player/vod'),
       ];
 }

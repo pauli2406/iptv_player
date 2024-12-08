@@ -22,7 +22,7 @@ class SeriesVideoPlayer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final progress = ref.watch(episodeProgressProvider(episode.id!));
-    
+
     // Mark series as started when episode starts playing
     ref.read(seriesProgressProvider(selectedSeason).notifier).markAsStarted();
 
@@ -31,11 +31,13 @@ class SeriesVideoPlayer extends ConsumerWidget {
       child: BaseVideoPlayer(
         key: ValueKey('${episode.id}_$selectedSeason$selectedEpisodeIndex'),
         streamLink: episode.streamUrl,
-        initialPosition: progress != null ? Duration(seconds: progress.toInt()) : null,
-        onPositionChanged: (position) {
-          ref.read(episodeProgressProvider(episode.id!).notifier)
-              .updateProgress(position.inSeconds.toDouble());
-        },
+        initialPosition:
+            progress != null ? Duration(seconds: progress.toInt()) : null,
+        // TODO FIX THIS
+        // onPositionChanged: (position) {
+        //   ref.read(episodeProgressProvider(episode.id!).notifier)
+        //       .updateProgress(position.inSeconds.toDouble());
+        // },
         builder: (controller) =>
             (Platform.instance.isMacOS || Platform.instance.isWindows)
                 ? MaterialDesktopVideoControlsTheme(

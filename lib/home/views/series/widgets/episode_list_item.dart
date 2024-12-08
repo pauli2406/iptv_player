@@ -24,8 +24,8 @@ class EpisodeListItem extends StatelessWidget {
       margin: const EdgeInsets.only(right: 8),
       child: Button(
         style: ButtonStyle(
-          padding: ButtonState.all(EdgeInsets.zero),
-          backgroundColor: ButtonState.all(
+          padding: WidgetStateProperty.all(EdgeInsets.zero),
+          backgroundColor: WidgetStateProperty.all(
             isPlaying ? FluentTheme.of(context).accentColor : null,
           ),
         ),

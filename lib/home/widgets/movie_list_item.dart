@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart' hide Colors;
 import 'package:play_shift/home/widgets/generic_media_list_item.dart';
 import 'package:play_shift/provider/isar/movie_providers.dart';
 import 'package:play_shift/provider/models/channel_view_model.dart';

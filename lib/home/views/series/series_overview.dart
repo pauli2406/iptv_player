@@ -276,7 +276,7 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
     return SizedBox(
       height: isVideoPlaying ? 75 : 200,
       child: ListView.builder(
-        key: ValueKey('season_${_selectedSeason}'),
+        key: ValueKey('season_$_selectedSeason'),
         scrollDirection: Axis.horizontal,
         itemCount: seasonEpisodes.length,
         itemBuilder: (context, index) => EpisodeListItem(

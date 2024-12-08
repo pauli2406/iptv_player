@@ -20,7 +20,7 @@ class SeriesListItem extends StatelessWidget {
       backgroundColor: ThemeService().defaultBackground(context),
       hoverBackgroundColor: ThemeService().hoverBackgroundColor(context),
       onTap: () => context.router.push(
-        SeriesSeasonPageRoute(seriesId: seriesItem.id),
+        SeriesOverviewRoute(seriesId: seriesItem.id),
       ),
       titleMaxLines: 2,
     );

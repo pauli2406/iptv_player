@@ -136,7 +136,7 @@ class _GridLayoutWidgetState extends ConsumerState<GridLayoutWidget> {
     return widget.categories.when(
       data: (data) => [
         PaneItem(
-          icon: const Icon(FluentIcons.home),
+          icon: Container(),
           title: const Text('All'),
           body: _NavigationBodyItem(
             content: content(),
@@ -149,7 +149,7 @@ class _GridLayoutWidgetState extends ConsumerState<GridLayoutWidget> {
         ),
         for (var category in data)
           PaneItem(
-            icon: const Icon(FluentIcons.home),
+            icon: Container(),
             title: Text("${category.categoryName}"),
             body: _NavigationBodyItem(
               content: content(),

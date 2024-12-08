@@ -601,6 +601,205 @@ class _FindChannelProviderElement
   int get streamId => (origin as FindChannelProvider).streamId;
 }
 
+String _$findAlternativeChannelsHash() =>
+    r'ee796f397fefea7ea741e522aba35b2bb765b6e0';
+
+/// See also [findAlternativeChannels].
+@ProviderFor(findAlternativeChannels)
+const findAlternativeChannelsProvider = FindAlternativeChannelsFamily();
+
+/// See also [findAlternativeChannels].
+class FindAlternativeChannelsFamily extends Family {
+  /// See also [findAlternativeChannels].
+  const FindAlternativeChannelsFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'findAlternativeChannelsProvider';
+
+  /// See also [findAlternativeChannels].
+  FindAlternativeChannelsProvider call(
+    String epgTitle,
+    int currentChannelId,
+  ) {
+    return FindAlternativeChannelsProvider(
+      epgTitle,
+      currentChannelId,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  FindAlternativeChannelsProvider getProviderOverride(
+    covariant FindAlternativeChannelsProvider provider,
+  ) {
+    return call(
+      provider.epgTitle,
+      provider.currentChannelId,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      List<ChannelViewModel> Function(FindAlternativeChannelsRef ref) create) {
+    return _$FindAlternativeChannelsFamilyOverride(this, create);
+  }
+}
+
+class _$FindAlternativeChannelsFamilyOverride implements FamilyOverride {
+  _$FindAlternativeChannelsFamilyOverride(this.overriddenFamily, this.create);
+
+  final List<ChannelViewModel> Function(FindAlternativeChannelsRef ref) create;
+
+  @override
+  final FindAlternativeChannelsFamily overriddenFamily;
+
+  @override
+  FindAlternativeChannelsProvider getProviderOverride(
+    covariant FindAlternativeChannelsProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [findAlternativeChannels].
+class FindAlternativeChannelsProvider
+    extends AutoDisposeProvider<List<ChannelViewModel>> {
+  /// See also [findAlternativeChannels].
+  FindAlternativeChannelsProvider(
+    String epgTitle,
+    int currentChannelId,
+  ) : this._internal(
+          (ref) => findAlternativeChannels(
+            ref as FindAlternativeChannelsRef,
+            epgTitle,
+            currentChannelId,
+          ),
+          from: findAlternativeChannelsProvider,
+          name: r'findAlternativeChannelsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$findAlternativeChannelsHash,
+          dependencies: FindAlternativeChannelsFamily._dependencies,
+          allTransitiveDependencies:
+              FindAlternativeChannelsFamily._allTransitiveDependencies,
+          epgTitle: epgTitle,
+          currentChannelId: currentChannelId,
+        );
+
+  FindAlternativeChannelsProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.epgTitle,
+    required this.currentChannelId,
+  }) : super.internal();
+
+  final String epgTitle;
+  final int currentChannelId;
+
+  @override
+  Override overrideWith(
+    List<ChannelViewModel> Function(FindAlternativeChannelsRef ref) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindAlternativeChannelsProvider._internal(
+        (ref) => create(ref as FindAlternativeChannelsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        epgTitle: epgTitle,
+        currentChannelId: currentChannelId,
+      ),
+    );
+  }
+
+  @override
+  (
+    String,
+    int,
+  ) get argument {
+    return (
+      epgTitle,
+      currentChannelId,
+    );
+  }
+
+  @override
+  AutoDisposeProviderElement<List<ChannelViewModel>> createElement() {
+    return _FindAlternativeChannelsProviderElement(this);
+  }
+
+  FindAlternativeChannelsProvider _copyWith(
+    List<ChannelViewModel> Function(FindAlternativeChannelsRef ref) create,
+  ) {
+    return FindAlternativeChannelsProvider._internal(
+      (ref) => create(ref as FindAlternativeChannelsRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      epgTitle: epgTitle,
+      currentChannelId: currentChannelId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FindAlternativeChannelsProvider &&
+        other.epgTitle == epgTitle &&
+        other.currentChannelId == currentChannelId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, epgTitle.hashCode);
+    hash = _SystemHash.combine(hash, currentChannelId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FindAlternativeChannelsRef
+    on AutoDisposeProviderRef<List<ChannelViewModel>> {
+  /// The parameter `epgTitle` of this provider.
+  String get epgTitle;
+
+  /// The parameter `currentChannelId` of this provider.
+  int get currentChannelId;
+}
+
+class _FindAlternativeChannelsProviderElement
+    extends AutoDisposeProviderElement<List<ChannelViewModel>>
+    with FindAlternativeChannelsRef {
+  _FindAlternativeChannelsProviderElement(super.provider);
+
+  @override
+  String get epgTitle => (origin as FindAlternativeChannelsProvider).epgTitle;
+  @override
+  int get currentChannelId =>
+      (origin as FindAlternativeChannelsProvider).currentChannelId;
+}
+
 String _$findAllChannelGroupsHash() =>
     r'c6e8fe1df9fe7e5e2896a37bbe95343761bf9abc';
 

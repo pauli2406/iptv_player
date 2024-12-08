@@ -24,9 +24,11 @@ class RelatedMoviesGrid extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 for (int col = 0; col < UIConstants.relatedMoviesPerRow; col++)
-                  if ((row * UIConstants.relatedMoviesPerRow + col) < movies.length)
+                  if ((row * UIConstants.relatedMoviesPerRow + col) <
+                      movies.length)
                     _RelatedMovieCard(
-                      movie: movies[row * UIConstants.relatedMoviesPerRow + col],
+                      movie:
+                          movies[row * UIConstants.relatedMoviesPerRow + col],
                     ),
               ],
             ),
@@ -45,43 +47,50 @@ class _RelatedMovieCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: UIConstants.relatedMovieWidth,
-      child: HoverButton(
-        onPressed: () => context.router.replace(
-          MovieOverviewRoute(streamId: movie.streamId),
-        ),
-        builder: (context, states) => Card(
-          padding: const EdgeInsets.all(4),
-          backgroundColor: states.isHovered
-              ? FluentTheme.of(context).resources.cardBackgroundFillColorSecondary
-              : null,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (movie.streamIcon?.isNotEmpty ?? false)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: FastCachedImage(
-                    url: movie.streamIcon!,
-                    width: UIConstants.relatedMovieWidth,
-                    height: UIConstants.relatedMovieHeight,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, progress) => const ProgressRing(),
-                    errorBuilder: (context, error, stack) => const Icon(FluentIcons.error),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: HoverButton(
+          onPressed: () => context.router.replace(
+            MovieOverviewRoute(streamId: movie.streamId),
+          ),
+          builder: (context, states) => Card(
+            padding: const EdgeInsets.all(4),
+            backgroundColor: states.isHovered
+                ? FluentTheme.of(context)
+                    .resources
+                    .cardBackgroundFillColorSecondary
+                : null,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (movie.streamIcon?.isNotEmpty ?? false)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: FastCachedImage(
+                      url: movie.streamIcon!,
+                      width: UIConstants.relatedMovieWidth,
+                      height: UIConstants.relatedMovieHeight,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, progress) =>
+                          const ProgressRing(),
+                      errorBuilder: (context, error, stack) =>
+                          const Icon(FluentIcons.error),
+                    ),
                   ),
-                ),
-              const SizedBox(height: 4),
-              Text(
-                movie.title,
-                style: FluentTheme.of(context).typography.bodyStrong,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (movie.year != null)
+                const SizedBox(height: 4),
                 Text(
-                  movie.year.toString(),
-                  style: FluentTheme.of(context).typography.caption,
+                  movie.title,
+                  style: FluentTheme.of(context).typography.bodyStrong,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-            ],
+                if (movie.year != null)
+                  Text(
+                    movie.year.toString(),
+                    style: FluentTheme.of(context).typography.caption,
+                  ),
+              ],
+            ),
           ),
         ),
       ),

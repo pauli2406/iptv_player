@@ -204,8 +204,30 @@ class M3uService {
         .filter()
         .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
         .categoryIdEqualTo(movie.categoryId!)
-        .not().idEqualTo(movie.id)
+        .not()
+        .idEqualTo(movie.id)
         .limit(limit)
+        .findAllSync();
+  }
+
+  List<ChannelItem> findChannelsByEpgTitle(String epgTitle) {
+    if (_activeIptvServer == null) {
+      return [];
+    }
+
+    var currentEpgItems = isarService.isar.epgItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .titleEqualTo(epgTitle)
+        .findAllSync();
+
+    var channelIds = currentEpgItems.map((e) => e.channelId).toSet();
+
+    return isarService.isar.channelItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .anyOf(channelIds,
+            (q, String channelId) => q.epgChannelIdEqualTo(channelId))
         .findAllSync();
   }
 }

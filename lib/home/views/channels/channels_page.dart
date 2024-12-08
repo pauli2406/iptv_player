@@ -42,7 +42,7 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
       channelProvider: channelProvider,
       categories: categories,
       placeHolderForSearchField: 'Search for a channel',
-      height: 1.4,
+      height: 1.6,
       width: 2,
       errorText: 'No channels found',
       onCategoryChanged: (ItemCategory? category) {

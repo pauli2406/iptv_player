@@ -62,11 +62,7 @@ class _SeriesSeasonPage extends ConsumerState<SeriesSeasonPage> {
     final series = seriesProvider.value;
 
     return NavigationView(
-      appBar: const NavigationAppBar(automaticallyImplyLeading: false),
-      content: ScaffoldPage.withPadding(
-        padding: const EdgeInsets.only(
-          top: 10,
-        ),
+      content: ScaffoldPage(
         header: Row(
           children: [
             Padding(

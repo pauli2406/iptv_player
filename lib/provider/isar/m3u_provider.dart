@@ -102,6 +102,32 @@ ChannelViewModel findChannel(FindChannelRef ref, {required int streamId}) {
 }
 
 @riverpod
+List<ChannelViewModel> findAlternativeChannels(
+  FindAlternativeChannelsRef ref,
+  String epgTitle,
+  int currentChannelId,
+) {
+  final m3uService = ref.watch(m3uServiceProvider);
+  final channels = m3uService.findChannelsByEpgTitle(epgTitle);
+  
+  return channels
+      .where((channel) => channel.id != currentChannelId)
+      .map((channel) {
+        final currentEpg = m3uService.findCurrentEpgItem(channel);
+        return ChannelViewModel(
+          channel.id,
+          channel.streamUrl,
+          channel.name ?? "",
+          channel.streamIcon ?? "",
+          channel.streamType == "live",
+          currentEpg,
+          [],
+        );
+      })
+      .toList();
+}
+
+@riverpod
 Stream<List<ItemCategory>> findAllChannelGroups(FindAllChannelGroupsRef ref) {
   final m3uService = ref.watch(m3uServiceProvider);
   final activeIptvServer = m3uService.getActiveIptvServer()!;

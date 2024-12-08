@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:play_shift/provider/isar/m3u_provider.dart';
+import 'package:play_shift/provider/isar/movie_providers.dart';
 import 'package:play_shift/provider/models/movie_view_model.dart';
 import 'package:play_shift/video_player/base_video_player.dart';
 import 'package:platform_builder/platform.dart';

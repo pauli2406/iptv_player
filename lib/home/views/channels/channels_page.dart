@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_shift/home/provider/search_value_provider.dart';
 import 'package:play_shift/home/widgets/grid_layout_widget.dart';
 import 'package:play_shift/home/widgets/movie_list_item.dart';
-import 'package:play_shift/provider/isar/m3u_provider.dart';
+import 'package:play_shift/provider/isar/channel_providers.dart';
 import 'package:play_shift/router/app_router.gr.dart';
 import 'package:play_shift/service/collections/item_category.dart';
 

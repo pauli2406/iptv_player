@@ -1,6 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:play_shift/constants/ui_constants.dart';
-import 'package:play_shift/provider/isar/m3u_provider.dart';
+import 'package:play_shift/provider/models/provider_models.dart';
 
 class SeriesInfoSection extends StatelessWidget {
   final SeriesWithInfo data;

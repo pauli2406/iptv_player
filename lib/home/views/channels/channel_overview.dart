@@ -3,7 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:play_shift/provider/isar/m3u_provider.dart';
+import 'package:play_shift/provider/isar/channel_providers.dart';
 import 'package:play_shift/router/app_router.gr.dart';
 import 'package:play_shift/video_player/base_video_player.dart';
 import 'package:platform_builder/platform.dart';

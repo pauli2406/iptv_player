@@ -1,7 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:play_shift/provider/isar/m3u_provider.dart';
+import 'package:play_shift/provider/isar/series_providers.dart';
+import 'package:play_shift/provider/models/provider_models.dart';
 import 'package:play_shift/theme.dart';
 import 'package:play_shift/constants/ui_constants.dart';
 import 'package:url_launcher/url_launcher.dart';

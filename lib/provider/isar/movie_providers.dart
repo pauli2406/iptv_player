@@ -1,4 +1,3 @@
-
 import 'package:play_shift/provider/isar/iptv_server_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:play_shift/home/provider/search_value_provider.dart';
@@ -21,7 +20,9 @@ Stream<List<ChannelViewModel>> findAllMovies(
 
   return m3uService
       .findAllMovies(activeServer, searchValue, category)
-      .map((movies) => movies.map(_movieToChannelViewModel).toList());
+      .map((movies) {
+    return movies.map(_movieToChannelViewModel).toList();
+  });
 }
 
 @riverpod
@@ -83,6 +84,19 @@ List<MovieViewModel> findRelatedMovies(FindRelatedMoviesRef ref,
             directSource: e.directSource,
           ))
       .toList();
+}
+
+@riverpod
+class MovieProgress extends _$MovieProgress {
+  @override
+  double? build(int movieId) {
+    return ref.watch(m3uServiceProvider).getMovieProgress(movieId);
+  }
+
+  Future<void> updateProgress(double duration) async {
+    await ref.read(m3uServiceProvider).updateMovieProgress(movieId, duration);
+    ref.invalidateSelf();
+  }
 }
 
 // Helper functions

@@ -95,6 +95,14 @@ class IptvServerService {
       final epg = await client.epg(useLocalFile: false);
 
       _progressController.add('Persisting data to database...');
+
+      // Get existing VOD items to preserve watch metadata
+      final existingVodItems = await isarService.isar.vodItems
+          .filter()
+          .iptvServer((q) => q.idEqualTo(activeIptvServer.id))
+          .findAll();
+      final existingVodMap = {for (var item in existingVodItems) item.id: item};
+
       await isarService.isar.writeTxnSync(() async {
         // Update server info
         activeIptvServer.allowedOutputFormats =
@@ -111,14 +119,17 @@ class IptvServerService {
               (c) => ItemCategory.fromCategory(c, ItemCategoryType.series)),
         ].map((cat) => cat..iptvServer.value = activeIptvServer).toList());
 
-        // Persist VODs
+        // Persist VODs with merged metadata
         isarService.isar.vodItems.putAllSync(
-          vodItems
-              .map((vod) => VodItem.fromXtreamCodeVodItem(
-                    vod,
-                    client.movieUrl(vod.streamId!, vod.containerExtension!),
-                  )..iptvServer.value = activeIptvServer)
-              .toList(),
+          vodItems.map((vod) {
+            final existingVod = existingVodMap[vod.streamId];
+            return VodItem.fromXtreamCodeVodItem(
+              vod,
+              client.movieUrl(vod.streamId!, vod.containerExtension!),
+              watchedDuration: existingVod?.watchedDuration,
+              lastWatched: existingVod?.lastWatched,
+            )..iptvServer.value = activeIptvServer;
+          }).toList(),
         );
 
         // Persist channels
@@ -177,10 +188,9 @@ class IptvServerService {
     return seriesInfo;
   }
 
-    Future<XTremeCodeVodInfo?> vodInfo(
+  Future<XTremeCodeVodInfo?> vodInfo(
       VodItem vodItem, IptvServer activeIptvServer) async {
-    final vodInfo =
-        await client.vodInfo(vodItem.toXtreamCodeVodItem());
+    final vodInfo = await client.vodInfo(vodItem.toXtreamCodeVodItem());
     return vodInfo;
   }
 

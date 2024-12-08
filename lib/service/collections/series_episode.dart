@@ -26,6 +26,8 @@ class SeriesEpisode {
     this.rating,
     this.coverBig,
     required this.streamUrl,
+    this.watchedDuration,
+    this.lastWatched,
   });
 
   Id? id;
@@ -48,6 +50,8 @@ class SeriesEpisode {
   double? rating;
   String? coverBig;
   String streamUrl;
+  double? watchedDuration; // in seconds
+  DateTime? lastWatched;
 
   SeriesEpisode.fromXtreamCodeSeriesEpisode(
     XTremeCodeEpisode seriesEpisode,
@@ -70,5 +74,7 @@ class SeriesEpisode {
         movieImage = seriesEpisode.info.movieImage,
         bitrate = seriesEpisode.info.bitrate,
         rating = seriesEpisode.info.rating,
-        coverBig = seriesEpisode.info.coverBig;
+        coverBig = seriesEpisode.info.coverBig,
+        watchedDuration = null,
+        lastWatched = null;
 }

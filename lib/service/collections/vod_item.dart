@@ -23,6 +23,8 @@ class VodItem {
     this.customSid,
     this.directSource,
     required this.streamUrl,
+    this.watchedDuration,
+    this.lastWatched,
   });
 
   final Id id;
@@ -41,12 +43,16 @@ class VodItem {
   final String? customSid;
   final String? directSource;
   final String streamUrl;
+  final double? watchedDuration; // in seconds
+  final DateTime? lastWatched;
   final iptvServer = IsarLink<IptvServer>();
 
   VodItem.fromXtreamCodeVodItem(
     XTremeCodeVodItem vodItem,
-    this.streamUrl,
-  )   : id = vodItem.streamId!,
+    this.streamUrl, {
+    this.watchedDuration,
+    this.lastWatched,
+  })   : id = vodItem.streamId!,
         num = vodItem.num,
         name = vodItem.name,
         title = vodItem.title,

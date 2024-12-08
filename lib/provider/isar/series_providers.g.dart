@@ -941,5 +941,370 @@ final findAllSeriesGroupsProvider =
 
 typedef FindAllSeriesGroupsRef
     = AutoDisposeStreamProviderRef<List<ItemCategory>>;
+String _$seriesProgressHash() => r'74f8f4dd6c3219336fe10a71460607c175cf62ab';
+
+abstract class _$SeriesProgress extends BuildlessAutoDisposeNotifier<bool> {
+  late final int seriesId;
+
+  bool build(
+    int seriesId,
+  );
+}
+
+/// See also [SeriesProgress].
+@ProviderFor(SeriesProgress)
+const seriesProgressProvider = SeriesProgressFamily();
+
+/// See also [SeriesProgress].
+class SeriesProgressFamily extends Family {
+  /// See also [SeriesProgress].
+  const SeriesProgressFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'seriesProgressProvider';
+
+  /// See also [SeriesProgress].
+  SeriesProgressProvider call(
+    int seriesId,
+  ) {
+    return SeriesProgressProvider(
+      seriesId,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  SeriesProgressProvider getProviderOverride(
+    covariant SeriesProgressProvider provider,
+  ) {
+    return call(
+      provider.seriesId,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(SeriesProgress Function() create) {
+    return _$SeriesProgressFamilyOverride(this, create);
+  }
+}
+
+class _$SeriesProgressFamilyOverride implements FamilyOverride {
+  _$SeriesProgressFamilyOverride(this.overriddenFamily, this.create);
+
+  final SeriesProgress Function() create;
+
+  @override
+  final SeriesProgressFamily overriddenFamily;
+
+  @override
+  SeriesProgressProvider getProviderOverride(
+    covariant SeriesProgressProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [SeriesProgress].
+class SeriesProgressProvider
+    extends AutoDisposeNotifierProviderImpl<SeriesProgress, bool> {
+  /// See also [SeriesProgress].
+  SeriesProgressProvider(
+    int seriesId,
+  ) : this._internal(
+          () => SeriesProgress()..seriesId = seriesId,
+          from: seriesProgressProvider,
+          name: r'seriesProgressProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$seriesProgressHash,
+          dependencies: SeriesProgressFamily._dependencies,
+          allTransitiveDependencies:
+              SeriesProgressFamily._allTransitiveDependencies,
+          seriesId: seriesId,
+        );
+
+  SeriesProgressProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.seriesId,
+  }) : super.internal();
+
+  final int seriesId;
+
+  @override
+  bool runNotifierBuild(
+    covariant SeriesProgress notifier,
+  ) {
+    return notifier.build(
+      seriesId,
+    );
+  }
+
+  @override
+  Override overrideWith(SeriesProgress Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: SeriesProgressProvider._internal(
+        () => create()..seriesId = seriesId,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        seriesId: seriesId,
+      ),
+    );
+  }
+
+  @override
+  (int,) get argument {
+    return (seriesId,);
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<SeriesProgress, bool> createElement() {
+    return _SeriesProgressProviderElement(this);
+  }
+
+  SeriesProgressProvider _copyWith(
+    SeriesProgress Function() create,
+  ) {
+    return SeriesProgressProvider._internal(
+      () => create()..seriesId = seriesId,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      seriesId: seriesId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SeriesProgressProvider && other.seriesId == seriesId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, seriesId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin SeriesProgressRef on AutoDisposeNotifierProviderRef<bool> {
+  /// The parameter `seriesId` of this provider.
+  int get seriesId;
+}
+
+class _SeriesProgressProviderElement
+    extends AutoDisposeNotifierProviderElement<SeriesProgress, bool>
+    with SeriesProgressRef {
+  _SeriesProgressProviderElement(super.provider);
+
+  @override
+  int get seriesId => (origin as SeriesProgressProvider).seriesId;
+}
+
+String _$episodeProgressHash() => r'b8ecf40b987e6211ac53c7d2a246eefea4d2af6f';
+
+abstract class _$EpisodeProgress extends BuildlessAutoDisposeNotifier<double?> {
+  late final int episodeId;
+
+  double? build(
+    int episodeId,
+  );
+}
+
+/// See also [EpisodeProgress].
+@ProviderFor(EpisodeProgress)
+const episodeProgressProvider = EpisodeProgressFamily();
+
+/// See also [EpisodeProgress].
+class EpisodeProgressFamily extends Family {
+  /// See also [EpisodeProgress].
+  const EpisodeProgressFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'episodeProgressProvider';
+
+  /// See also [EpisodeProgress].
+  EpisodeProgressProvider call(
+    int episodeId,
+  ) {
+    return EpisodeProgressProvider(
+      episodeId,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  EpisodeProgressProvider getProviderOverride(
+    covariant EpisodeProgressProvider provider,
+  ) {
+    return call(
+      provider.episodeId,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(EpisodeProgress Function() create) {
+    return _$EpisodeProgressFamilyOverride(this, create);
+  }
+}
+
+class _$EpisodeProgressFamilyOverride implements FamilyOverride {
+  _$EpisodeProgressFamilyOverride(this.overriddenFamily, this.create);
+
+  final EpisodeProgress Function() create;
+
+  @override
+  final EpisodeProgressFamily overriddenFamily;
+
+  @override
+  EpisodeProgressProvider getProviderOverride(
+    covariant EpisodeProgressProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [EpisodeProgress].
+class EpisodeProgressProvider
+    extends AutoDisposeNotifierProviderImpl<EpisodeProgress, double?> {
+  /// See also [EpisodeProgress].
+  EpisodeProgressProvider(
+    int episodeId,
+  ) : this._internal(
+          () => EpisodeProgress()..episodeId = episodeId,
+          from: episodeProgressProvider,
+          name: r'episodeProgressProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$episodeProgressHash,
+          dependencies: EpisodeProgressFamily._dependencies,
+          allTransitiveDependencies:
+              EpisodeProgressFamily._allTransitiveDependencies,
+          episodeId: episodeId,
+        );
+
+  EpisodeProgressProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.episodeId,
+  }) : super.internal();
+
+  final int episodeId;
+
+  @override
+  double? runNotifierBuild(
+    covariant EpisodeProgress notifier,
+  ) {
+    return notifier.build(
+      episodeId,
+    );
+  }
+
+  @override
+  Override overrideWith(EpisodeProgress Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: EpisodeProgressProvider._internal(
+        () => create()..episodeId = episodeId,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        episodeId: episodeId,
+      ),
+    );
+  }
+
+  @override
+  (int,) get argument {
+    return (episodeId,);
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<EpisodeProgress, double?> createElement() {
+    return _EpisodeProgressProviderElement(this);
+  }
+
+  EpisodeProgressProvider _copyWith(
+    EpisodeProgress Function() create,
+  ) {
+    return EpisodeProgressProvider._internal(
+      () => create()..episodeId = episodeId,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      episodeId: episodeId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EpisodeProgressProvider && other.episodeId == episodeId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, episodeId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin EpisodeProgressRef on AutoDisposeNotifierProviderRef<double?> {
+  /// The parameter `episodeId` of this provider.
+  int get episodeId;
+}
+
+class _EpisodeProgressProviderElement
+    extends AutoDisposeNotifierProviderElement<EpisodeProgress, double?>
+    with EpisodeProgressRef {
+  _EpisodeProgressProviderElement(super.provider);
+
+  @override
+  int get episodeId => (origin as EpisodeProgressProvider).episodeId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

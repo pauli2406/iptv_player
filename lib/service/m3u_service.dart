@@ -3,6 +3,7 @@ import 'package:play_shift/service/collections/channel_item.dart';
 import 'package:play_shift/service/collections/epg_item.dart';
 import 'package:play_shift/service/collections/iptv_server/iptv_server.dart';
 import 'package:play_shift/service/collections/item_category.dart';
+import 'package:play_shift/service/collections/series_episode.dart';
 import 'package:play_shift/service/collections/series_item.dart';
 import 'package:play_shift/service/collections/vod_item.dart';
 import 'package:isar/isar.dart';
@@ -16,7 +17,6 @@ class M3uService {
   final IsarService isarService;
   IptvServer? _activeIptvServer;
 
-  // Improved error handling for server initialization
   void setActiveIptvServer(IptvServer value) {
     try {
       _activeIptvServer = value;
@@ -147,7 +147,6 @@ class M3uService {
     }).findAllSync();
   }
 
-  // Optimized EPG query with caching
   List<EpgItem> epgOfChannels() {
     if (_activeIptvServer == null) {
       throw StateError('No active IPTV server selected');
@@ -160,7 +159,6 @@ class M3uService {
     return query.startLessThan(now).and().endGreaterThan(now).findAllSync();
   }
 
-  // Improved channel search with combined filters
   Stream<List<ChannelItem>> findAllChannels(
       String? searchValue, ItemCategory? category) {
     if (_activeIptvServer == null) {
@@ -229,5 +227,67 @@ class M3uService {
         .anyOf(channelIds,
             (q, String channelId) => q.epgChannelIdEqualTo(channelId))
         .findAllSync();
+  }
+
+  Future<void> updateMovieProgress(int movieId, double duration) async {
+    await isarService.isar.writeTxn(() async {
+      var movie = await isarService.isar.vodItems.get(movieId);
+      if (movie != null) {
+        movie = VodItem(
+          id: movie.id,
+          categoryIds: movie.categoryIds,
+          streamUrl: movie.streamUrl,
+          watchedDuration: duration,
+          lastWatched: DateTime.now(),
+          num: movie.num,
+          name: movie.name,
+          title: movie.title,
+          year: movie.year,
+          streamType: movie.streamType,
+          streamIcon: movie.streamIcon,
+          rating: movie.rating,
+          rating5based: movie.rating5based,
+          added: movie.added,
+          categoryId: movie.categoryId,
+          containerExtension: movie.containerExtension,
+          customSid: movie.customSid,
+          directSource: movie.directSource,
+        );
+        await isarService.isar.vodItems.put(movie);
+      }
+    });
+  }
+
+  Future<void> updateSeriesProgress(int seriesId) async {
+    await isarService.isar.writeTxn(() async {
+      var series = await isarService.isar.seriesItems.get(seriesId);
+      if (series != null && series.firstWatched == null) {
+        series.firstWatched = DateTime.now();
+        await isarService.isar.seriesItems.put(series);
+      }
+    });
+  }
+
+  Future<void> updateEpisodeProgress(int episodeId, double duration) async {
+    await isarService.isar.writeTxn(() async {
+      var episode = await isarService.isar.seriesEpisodes.get(episodeId);
+      if (episode != null) {
+        episode.watchedDuration = duration;
+        episode.lastWatched = DateTime.now();
+        await isarService.isar.seriesEpisodes.put(episode);
+      }
+    });
+  }
+
+  double? getMovieProgress(int movieId) {
+    return isarService.isar.vodItems.getSync(movieId)?.watchedDuration;
+  }
+
+  bool isSeriesStarted(int seriesId) {
+    return isarService.isar.seriesItems.getSync(seriesId)?.firstWatched != null;
+  }
+
+  double? getEpisodeProgress(int episodeId) {
+    return isarService.isar.seriesEpisodes.getSync(episodeId)?.watchedDuration;
   }
 }

@@ -1,4 +1,3 @@
-
 import 'package:play_shift/home/provider/search_value_provider.dart';
 import 'package:play_shift/provider/isar/iptv_server_provider.dart';
 import 'package:play_shift/provider/models/channel_view_model.dart';
@@ -109,4 +108,30 @@ Stream<List<ItemCategory>> findAllSeriesGroups(FindAllSeriesGroupsRef ref) {
   final m3uService = ref.watch(m3uServiceProvider);
   final activeIptvServer = m3uService.getActiveIptvServer()!;
   return m3uService.findAllSeriesGroups(activeIptvServer);
+}
+
+@riverpod
+class SeriesProgress extends _$SeriesProgress {
+  @override
+  bool build(int seriesId) {
+    return ref.watch(m3uServiceProvider).isSeriesStarted(seriesId);
+  }
+
+  Future<void> markAsStarted() async {
+    await ref.read(m3uServiceProvider).updateSeriesProgress(seriesId);
+    ref.invalidateSelf();
+  }
+}
+
+@riverpod
+class EpisodeProgress extends _$EpisodeProgress {
+  @override
+  double? build(int episodeId) {
+    return ref.watch(m3uServiceProvider).getEpisodeProgress(episodeId);
+  }
+
+  Future<void> updateProgress(double duration) async {
+    await ref.read(m3uServiceProvider).updateEpisodeProgress(episodeId, duration);
+    ref.invalidateSelf();
+  }
 }

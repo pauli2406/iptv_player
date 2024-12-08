@@ -154,11 +154,18 @@ class _MovieOverviewState extends ConsumerState<MovieOverview> {
   }
 
   Widget _buildVideoPlayer(BuildContext context, MovieViewModel movie) {
+    final progress = ref.watch(movieProgressProvider(movie.streamId));
+    
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
       child: BaseVideoPlayer(
-        key: ValueKey(widget.streamId), // Add this line
+        key: ValueKey(widget.streamId),
         streamLink: movie.streamUrl,
+        initialPosition: progress != null ? Duration(seconds: progress.toInt()) : null,
+        onPositionChanged: (position) {
+          ref.read(movieProgressProvider(movie.streamId).notifier)
+              .updateProgress(position.inSeconds.toDouble());
+        },
         builder: (controller) =>
             (Platform.instance.isMacOS || Platform.instance.isWindows)
                 ? MaterialDesktopVideoControlsTheme(

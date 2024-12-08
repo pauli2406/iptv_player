@@ -6,7 +6,7 @@ part of 'movie_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$findAllMoviesHash() => r'f5658ae13ee4e4fb5f21f91c72989c93b1e3fd32';
+String _$findAllMoviesHash() => r'54d8383f5fa96528eae914e1a6c61402fa2cc844';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -735,6 +735,189 @@ class _FindRelatedMoviesProviderElement
 
   @override
   int get streamId => (origin as FindRelatedMoviesProvider).streamId;
+}
+
+String _$movieProgressHash() => r'9051a1ee90e5378e7915f382fc5fa108fb8cba8a';
+
+abstract class _$MovieProgress extends BuildlessAutoDisposeNotifier<double?> {
+  late final int movieId;
+
+  double? build(
+    int movieId,
+  );
+}
+
+/// See also [MovieProgress].
+@ProviderFor(MovieProgress)
+const movieProgressProvider = MovieProgressFamily();
+
+/// See also [MovieProgress].
+class MovieProgressFamily extends Family {
+  /// See also [MovieProgress].
+  const MovieProgressFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'movieProgressProvider';
+
+  /// See also [MovieProgress].
+  MovieProgressProvider call(
+    int movieId,
+  ) {
+    return MovieProgressProvider(
+      movieId,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  MovieProgressProvider getProviderOverride(
+    covariant MovieProgressProvider provider,
+  ) {
+    return call(
+      provider.movieId,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(MovieProgress Function() create) {
+    return _$MovieProgressFamilyOverride(this, create);
+  }
+}
+
+class _$MovieProgressFamilyOverride implements FamilyOverride {
+  _$MovieProgressFamilyOverride(this.overriddenFamily, this.create);
+
+  final MovieProgress Function() create;
+
+  @override
+  final MovieProgressFamily overriddenFamily;
+
+  @override
+  MovieProgressProvider getProviderOverride(
+    covariant MovieProgressProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [MovieProgress].
+class MovieProgressProvider
+    extends AutoDisposeNotifierProviderImpl<MovieProgress, double?> {
+  /// See also [MovieProgress].
+  MovieProgressProvider(
+    int movieId,
+  ) : this._internal(
+          () => MovieProgress()..movieId = movieId,
+          from: movieProgressProvider,
+          name: r'movieProgressProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$movieProgressHash,
+          dependencies: MovieProgressFamily._dependencies,
+          allTransitiveDependencies:
+              MovieProgressFamily._allTransitiveDependencies,
+          movieId: movieId,
+        );
+
+  MovieProgressProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.movieId,
+  }) : super.internal();
+
+  final int movieId;
+
+  @override
+  double? runNotifierBuild(
+    covariant MovieProgress notifier,
+  ) {
+    return notifier.build(
+      movieId,
+    );
+  }
+
+  @override
+  Override overrideWith(MovieProgress Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: MovieProgressProvider._internal(
+        () => create()..movieId = movieId,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        movieId: movieId,
+      ),
+    );
+  }
+
+  @override
+  (int,) get argument {
+    return (movieId,);
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<MovieProgress, double?> createElement() {
+    return _MovieProgressProviderElement(this);
+  }
+
+  MovieProgressProvider _copyWith(
+    MovieProgress Function() create,
+  ) {
+    return MovieProgressProvider._internal(
+      () => create()..movieId = movieId,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      movieId: movieId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is MovieProgressProvider && other.movieId == movieId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, movieId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin MovieProgressRef on AutoDisposeNotifierProviderRef<double?> {
+  /// The parameter `movieId` of this provider.
+  int get movieId;
+}
+
+class _MovieProgressProviderElement
+    extends AutoDisposeNotifierProviderElement<MovieProgress, double?>
+    with MovieProgressRef {
+  _MovieProgressProviderElement(super.provider);
+
+  @override
+  int get movieId => (origin as MovieProgressProvider).movieId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

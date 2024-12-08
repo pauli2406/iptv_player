@@ -2291,5 +2291,191 @@ final findAllSeriesGroupsProvider =
 
 typedef FindAllSeriesGroupsRef
     = AutoDisposeStreamProviderRef<List<ItemCategory>>;
+String _$findSeriesWithInfoHash() =>
+    r'16b7825ac880b7509875e3165ce2f5ba36a382e6';
+
+/// Combined series provider
+///
+/// Copied from [findSeriesWithInfo].
+@ProviderFor(findSeriesWithInfo)
+const findSeriesWithInfoProvider = FindSeriesWithInfoFamily();
+
+/// Combined series provider
+///
+/// Copied from [findSeriesWithInfo].
+class FindSeriesWithInfoFamily extends Family {
+  /// Combined series provider
+  ///
+  /// Copied from [findSeriesWithInfo].
+  const FindSeriesWithInfoFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'findSeriesWithInfoProvider';
+
+  /// Combined series provider
+  ///
+  /// Copied from [findSeriesWithInfo].
+  FindSeriesWithInfoProvider call({
+    required int seriesId,
+  }) {
+    return FindSeriesWithInfoProvider(
+      seriesId: seriesId,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  FindSeriesWithInfoProvider getProviderOverride(
+    covariant FindSeriesWithInfoProvider provider,
+  ) {
+    return call(
+      seriesId: provider.seriesId,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      Stream<SeriesWithInfo> Function(FindSeriesWithInfoRef ref) create) {
+    return _$FindSeriesWithInfoFamilyOverride(this, create);
+  }
+}
+
+class _$FindSeriesWithInfoFamilyOverride implements FamilyOverride {
+  _$FindSeriesWithInfoFamilyOverride(this.overriddenFamily, this.create);
+
+  final Stream<SeriesWithInfo> Function(FindSeriesWithInfoRef ref) create;
+
+  @override
+  final FindSeriesWithInfoFamily overriddenFamily;
+
+  @override
+  FindSeriesWithInfoProvider getProviderOverride(
+    covariant FindSeriesWithInfoProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// Combined series provider
+///
+/// Copied from [findSeriesWithInfo].
+class FindSeriesWithInfoProvider
+    extends AutoDisposeStreamProvider<SeriesWithInfo> {
+  /// Combined series provider
+  ///
+  /// Copied from [findSeriesWithInfo].
+  FindSeriesWithInfoProvider({
+    required int seriesId,
+  }) : this._internal(
+          (ref) => findSeriesWithInfo(
+            ref as FindSeriesWithInfoRef,
+            seriesId: seriesId,
+          ),
+          from: findSeriesWithInfoProvider,
+          name: r'findSeriesWithInfoProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$findSeriesWithInfoHash,
+          dependencies: FindSeriesWithInfoFamily._dependencies,
+          allTransitiveDependencies:
+              FindSeriesWithInfoFamily._allTransitiveDependencies,
+          seriesId: seriesId,
+        );
+
+  FindSeriesWithInfoProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.seriesId,
+  }) : super.internal();
+
+  final int seriesId;
+
+  @override
+  Override overrideWith(
+    Stream<SeriesWithInfo> Function(FindSeriesWithInfoRef ref) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FindSeriesWithInfoProvider._internal(
+        (ref) => create(ref as FindSeriesWithInfoRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        seriesId: seriesId,
+      ),
+    );
+  }
+
+  @override
+  ({
+    int seriesId,
+  }) get argument {
+    return (seriesId: seriesId,);
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<SeriesWithInfo> createElement() {
+    return _FindSeriesWithInfoProviderElement(this);
+  }
+
+  FindSeriesWithInfoProvider _copyWith(
+    Stream<SeriesWithInfo> Function(FindSeriesWithInfoRef ref) create,
+  ) {
+    return FindSeriesWithInfoProvider._internal(
+      (ref) => create(ref as FindSeriesWithInfoRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      seriesId: seriesId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FindSeriesWithInfoProvider && other.seriesId == seriesId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, seriesId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin FindSeriesWithInfoRef on AutoDisposeStreamProviderRef<SeriesWithInfo> {
+  /// The parameter `seriesId` of this provider.
+  int get seriesId;
+}
+
+class _FindSeriesWithInfoProviderElement
+    extends AutoDisposeStreamProviderElement<SeriesWithInfo>
+    with FindSeriesWithInfoRef {
+  _FindSeriesWithInfoProviderElement(super.provider);
+
+  @override
+  int get seriesId => (origin as FindSeriesWithInfoProvider).seriesId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

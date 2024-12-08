@@ -109,22 +109,21 @@ List<ChannelViewModel> findAlternativeChannels(
 ) {
   final m3uService = ref.watch(m3uServiceProvider);
   final channels = m3uService.findChannelsByEpgTitle(epgTitle);
-  
+
   return channels
       .where((channel) => channel.id != currentChannelId)
       .map((channel) {
-        final currentEpg = m3uService.findCurrentEpgItem(channel);
-        return ChannelViewModel(
-          channel.id,
-          channel.streamUrl,
-          channel.name ?? "",
-          channel.streamIcon ?? "",
-          channel.streamType == "live",
-          currentEpg,
-          [],
-        );
-      })
-      .toList();
+    final currentEpg = m3uService.findCurrentEpgItem(channel);
+    return ChannelViewModel(
+      channel.id,
+      channel.streamUrl,
+      channel.name ?? "",
+      channel.streamIcon ?? "",
+      channel.streamType == "live",
+      currentEpg,
+      [],
+    );
+  }).toList();
 }
 
 @riverpod
@@ -196,26 +195,29 @@ Stream<List<ItemCategory>> findAllMovieGroups(FindAllMovieGroupsRef ref) {
 }
 
 @riverpod
-List<MovieViewModel> findRelatedMovies(FindRelatedMoviesRef ref, {required int streamId}) {
+List<MovieViewModel> findRelatedMovies(FindRelatedMoviesRef ref,
+    {required int streamId}) {
   final m3uService = ref.watch(m3uServiceProvider);
   final vod = m3uService.findVod(streamId);
-  
+
   if (vod == null) return [];
-  
+
   final relatedMovies = m3uService.findRelatedMovies(vod);
-  
-  return relatedMovies.map((e) => MovieViewModel(
-    streamId: e.id,
-    streamUrl: e.streamUrl,
-    title: e.name ?? "",
-    streamIcon: e.streamIcon ?? "",
-    year: e.year,
-    rating: e.rating,
-    rating5based: e.rating5based,
-    added: e.added,
-    containerExtension: e.containerExtension,
-    directSource: e.directSource,
-  )).toList();
+
+  return relatedMovies
+      .map((e) => MovieViewModel(
+            streamId: e.id,
+            streamUrl: e.streamUrl,
+            title: e.name ?? "",
+            streamIcon: e.streamIcon ?? "",
+            year: e.year,
+            rating: e.rating,
+            rating5based: e.rating5based,
+            added: e.added,
+            containerExtension: e.containerExtension,
+            directSource: e.directSource,
+          ))
+      .toList();
 }
 
 /// Series related providers
@@ -305,4 +307,47 @@ Stream<List<ItemCategory>> findAllSeriesGroups(FindAllSeriesGroupsRef ref) {
   final m3uService = ref.watch(m3uServiceProvider);
   final activeIptvServer = m3uService.getActiveIptvServer()!;
   return m3uService.findAllSeriesGroups(activeIptvServer);
+}
+
+/// Combined series data class
+class SeriesWithInfo {
+  final SeriesItem series;
+  final XTremeCodeSeriesInfo? seriesInfo;
+  final Map<String, List<SeriesEpisode>> episodes;
+
+  SeriesWithInfo(this.series, this.seriesInfo)
+      : episodes = seriesInfo?.episodes?.map(
+              (season, episodes) => MapEntry(
+                season,
+                episodes
+                    .map((e) => SeriesEpisode.fromXtreamCodeSeriesEpisode(
+                          e,
+                          client.seriesUrl(e.id!, e.containerExtension!),
+                        ))
+                    .toList(),
+              ),
+            ) ??
+            {};
+
+  String? get plot => seriesInfo?.info?.plot ?? series.plot;
+  String? get cast => seriesInfo?.info?.cast ?? series.cast;
+  double? get rating => seriesInfo?.info?.rating ?? series.rating;
+  String? get year => seriesInfo?.info?.year ?? series.year;
+  String? get genre => seriesInfo?.info?.genre;
+  String? get director => seriesInfo?.info?.director;
+  int? get runtime => seriesInfo?.info.episodeRunTime;
+  String? get youtubeTrailer => seriesInfo?.info?.youtubeTrailer;
+}
+
+/// Combined series provider
+@riverpod
+Stream<SeriesWithInfo> findSeriesWithInfo(
+  FindSeriesWithInfoRef ref, {
+  required int seriesId,
+}) async* {
+  final series = await ref.watch(findSeriesProvider(seriesId: seriesId).future);
+  final info =
+      await ref.watch(findSeriesInfoProvider(seriesId: seriesId).future);
+
+  yield SeriesWithInfo(series, info);
 }

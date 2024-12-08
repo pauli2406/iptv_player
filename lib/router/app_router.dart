@@ -10,12 +10,12 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
         AutoRoute(page: IptvServerListRoute.page, initial: true),
         AutoRoute(page: HomeViewRoute.page, path: '/main'),
-        AutoRoute(
-          page: SeriesSeasonPageRoute.page,
-          path: '/series',
-        ),
+        // AutoRoute(
+        //   page: SeriesSeasonPageRoute.page,
+        //   path: '/series',
+        // ),
         AutoRoute(page: ChannelOverviewRoute.page, path: '/channel'),
-        AutoRoute(page: SeriesVideoPlayerRoute.page, path: '/player/series'),
+        AutoRoute(page: SeriesOverviewRoute.page, path: '/series'),
         AutoRoute(page: MovieOverviewRoute.page, path: '/movie'),
       ];
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_shift/provider/isar/m3u_provider.dart';
 import 'package:play_shift/provider/isar/series_providers.dart';
 import 'package:play_shift/provider/models/provider_models.dart';
+import 'package:play_shift/service/collections/series_episode.dart';
 import 'package:play_shift/theme.dart';
 import 'package:play_shift/constants/ui_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,6 +12,7 @@ import 'package:play_shift/home/views/series/widgets/series_info_section.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'widgets/episode_list_item.dart';
 import 'widgets/series_video_player.dart';
+import 'dart:math';
 
 @RoutePage()
 class SeriesOverview extends ConsumerStatefulWidget {
@@ -28,6 +30,46 @@ class SeriesOverview extends ConsumerStatefulWidget {
 class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
   int? _selectedSeason;
   int? _selectedEpisodeIndex;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _initializeSelectedSeason();
+  }
+
+  void _initializeSelectedSeason() {
+    if (_selectedSeason != null) return; // Already initialized
+
+    // Try to get last watched episode
+    final lastWatchedId = ref.read(lastWatchedEpisodeProvider(widget.seriesId));
+    if (lastWatchedId != null) {
+      final episode =
+          ref.read(m3uServiceProvider).getLastWatchedEpisode(widget.seriesId);
+      if (episode?.season != null) {
+        setState(() => _selectedSeason = episode!.season);
+        return;
+      }
+    }
+
+    // If no last watched episode, get the first season from series info
+    final seriesInfoValue =
+        ref.read(seriesInfoProvider(seriesId: widget.seriesId)).valueOrNull;
+    if (seriesInfoValue?.seasons?.isNotEmpty == true) {
+      final seasonNumbers = seriesInfoValue!.seasons!
+          .where((s) => s.seasonNumber != null)
+          .map((s) => s.seasonNumber!)
+          .toList();
+
+      if (seasonNumbers.isNotEmpty) {
+        setState(() => _selectedSeason = seasonNumbers.reduce(min));
+      }
+    }
+  }
 
   Future<void> _launchTrailer(String videoId) async {
     final Uri uri = Uri.parse('https://www.youtube.com/watch?v=$videoId');
@@ -166,28 +208,160 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
         data.episodes[_selectedSeason.toString()]!.isNotEmpty;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final seriesData =
-        ref.watch(findSeriesWithInfoProvider(seriesId: widget.seriesId));
-    final currentTheme = ref.watch(appThemeProvider);
+  void _startPlayback(SeriesWithInfo data, {SeriesEpisode? specificEpisode}) {
+    if (specificEpisode != null) {
+      // Find season and episode index for the specific episode
+      final seasonStr = specificEpisode.season.toString();
+      final episodeIndex = data.episodes[seasonStr]?.indexWhere(
+            (e) => e.id == specificEpisode.id,
+          ) ??
+          -1;
 
-    // Set initial season when data is available
-    seriesData.whenData((data) {
-      if (_selectedSeason == null && data.episodes.isNotEmpty) {
-        final seasons = data.episodes.keys.map((s) => int.parse(s)).toList()
-          ..sort();
-        if (seasons.isNotEmpty) {
-          _selectedSeason = seasons.first;
+      if (episodeIndex != -1) {
+        _onEpisodeSelected(episodeIndex, data);
+        setState(() {
+          _selectedSeason = specificEpisode.season;
+          _selectedEpisodeIndex = episodeIndex;
+        });
+        return;
+      }
+    }
+
+    // Default to first episode of first season
+    final seasons = data.episodes.keys.map((s) => int.parse(s)).toList()
+      ..sort();
+    if (seasons.isNotEmpty) {
+      final firstSeason = seasons.first;
+      setState(() {
+        _selectedSeason = firstSeason;
+        _selectedEpisodeIndex = 0;
+      });
+    }
+  }
+
+  SeriesEpisode? _findNextEpisode(SeriesWithInfo data, SeriesEpisode current) {
+    final seasonStr = current.season.toString();
+    final currentIndex =
+        data.episodes[seasonStr]?.indexWhere((e) => e.id == current.id) ?? -1;
+
+    if (currentIndex != -1) {
+      // Try next episode in current season
+      if (currentIndex + 1 < (data.episodes[seasonStr]?.length ?? 0)) {
+        return data.episodes[seasonStr]![currentIndex + 1];
+      }
+
+      // Try first episode of next season
+      final seasons = data.episodes.keys.map((s) => int.parse(s)).toList()
+        ..sort();
+      final currentSeasonIndex = seasons.indexOf(current.season!);
+      if (currentSeasonIndex != -1 && currentSeasonIndex + 1 < seasons.length) {
+        final nextSeason = seasons[currentSeasonIndex + 1].toString();
+        if (data.episodes[nextSeason]?.isNotEmpty == true) {
+          return data.episodes[nextSeason]!.first;
         }
       }
-    });
+    }
+    return null;
+  }
+
+  Widget _buildContinueButton(SeriesWithInfo data) {
+    final lastWatchedId =
+        ref.watch(lastWatchedEpisodeProvider(widget.seriesId));
+
+    if (lastWatchedId == null) {
+      return _createButton(
+        label: 'Start Watching',
+        onPressed: () => _startPlayback(data),
+      );
+    }
+
+    final lastWatchedEpisode = data.episodes.values
+        .expand((e) => e)
+        .firstWhere((e) => e.id == lastWatchedId);
+
+    final progress = ref.watch(episodeProgressProvider(lastWatchedId));
+    final isNearlyComplete = progress != null &&
+        lastWatchedEpisode.durationSecs != null &&
+        progress / lastWatchedEpisode.durationSecs! >= 0.95;
+
+    if (isNearlyComplete) {
+      final nextEpisode = _findNextEpisode(data, lastWatchedEpisode);
+      if (nextEpisode != null) {
+        return _createButton(
+          label: 'Next Episode',
+          onPressed: () => _startPlayback(data, specificEpisode: nextEpisode),
+        );
+      }
+      return const SizedBox.shrink(); // No next episode available
+    }
+
+    return _createButton(
+      label: 'Continue Watching',
+      onPressed: () =>
+          _startPlayback(data, specificEpisode: lastWatchedEpisode),
+    );
+  }
+
+  Widget _createButton({
+    required String label,
+    required void Function() onPressed,
+  }) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: HoverButton(
+        onPressed: () => onPressed(),
+        builder: (context, states) {
+          return Card(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            backgroundColor: states.isHovered
+                ? FluentTheme.of(context).accentColor.lighter
+                : FluentTheme.of(context).accentColor,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  FluentIcons.play,
+                  size: UIConstants.chipIconSize,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: FluentTheme.of(context)
+                      .typography
+                      .body
+                      ?.copyWith(color: Colors.white),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final seriesData = ref.watch(seriesProvider(seriesId: widget.seriesId));
+    final seriesInfoData =
+        ref.watch(seriesInfoProvider(seriesId: widget.seriesId));
+    final currentTheme = ref.watch(appThemeProvider);
 
     return NavigationView(
       content: ScaffoldPage(
         padding: const EdgeInsets.only(top: 5),
         content: seriesData.when(
-          data: (data) => _buildContent(context, data, currentTheme),
+          data: (series) => seriesInfoData.when(
+            data: (info) => _buildContent(
+              context,
+              SeriesWithInfo(series, info),
+              currentTheme,
+            ),
+            loading: () => const Center(child: ProgressRing()),
+            error: (err, stack) => Center(
+              child: Text('Error loading series info: $err'),
+            ),
+          ),
           loading: () => const Center(child: ProgressRing()),
           error: (err, stack) => Center(
             child: Text('Error loading series: $err'),
@@ -288,9 +462,20 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
         : [];
 
     final isVideoPlaying = _isVideoPlaying(data);
+    final lastWatchedId =
+        ref.watch(lastWatchedEpisodeProvider(widget.seriesId));
+
+    // Determine which episode should be highlighted
+    final int? highlightedEpisodeId = () {
+      if (lastWatchedId == null) {
+        // If never watched, highlight first episode
+        return seasonEpisodes.firstOrNull?.id;
+      }
+      return lastWatchedId;
+    }();
 
     return SizedBox(
-      height: isVideoPlaying ? 75 : 220, // Increased from 200 to 220
+      height: isVideoPlaying ? 75 : 220,
       child: ListView.builder(
         key: ValueKey('season_$_selectedSeason'),
         scrollDirection: Axis.horizontal,
@@ -300,6 +485,7 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
               'episode_${_selectedSeason}_${seasonEpisodes[index].id}'),
           episode: seasonEpisodes[index],
           isPlaying: index == _selectedEpisodeIndex,
+          isHighlighted: seasonEpisodes[index].id == highlightedEpisodeId,
           isCompact: isVideoPlaying,
           onPressed: () => _onEpisodeSelected(index, data),
         ),
@@ -321,6 +507,8 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
                 .episodes[_selectedSeason.toString()]![_selectedEpisodeIndex!],
             selectedSeason: _selectedSeason!,
             selectedEpisodeIndex: _selectedEpisodeIndex!,
+            skipResumeDialog:
+                true, // Skip dialog when continuing from last position
           ),
         Expanded(
           child: Padding(
@@ -356,14 +544,22 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SeriesInfoSection(
-                            data: data,
-                            onTrailerPressed: _launchTrailer,
-                            showInfoChips: !_isVideoPlaying(data),
-                            onCloseVideo: _isVideoPlaying(data)
-                                ? () =>
-                                    setState(() => _selectedEpisodeIndex = null)
-                                : null,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: SeriesInfoSection(
+                                  data: data,
+                                  onTrailerPressed: _launchTrailer,
+                                  showInfoChips: !_isVideoPlaying(data),
+                                  onCloseVideo: _isVideoPlaying(data)
+                                      ? () => setState(
+                                          () => _selectedEpisodeIndex = null)
+                                      : null,
+                                ),
+                              ),
+                              if (!_isVideoPlaying(data))
+                                _buildContinueButton(data),
+                            ],
                           ),
                           const SizedBox(height: 16),
                           _buildDescription(context, data),

@@ -11,12 +11,14 @@ class BaseVideoPlayer extends ConsumerStatefulWidget {
   final Widget Function(VideoController controller) builder;
   final Duration? initialPosition;
   final void Function(Duration)? onPositionChanged;
+  final bool skipResumeDialog;
 
   const BaseVideoPlayer({
     required this.streamLink,
     required this.builder,
     this.initialPosition,
     this.onPositionChanged,
+    this.skipResumeDialog = false,
     super.key,
   });
 
@@ -45,7 +47,7 @@ class _BaseVideoPlayerState extends ConsumerState<BaseVideoPlayer> {
     videoController = VideoController(player);
 
     if (widget.initialPosition != null) {
-      if (widget.initialPosition!.inMinutes > 0) {
+      if (widget.initialPosition!.inMinutes > 0 && !widget.skipResumeDialog) {
         _showResumeDialog = true;
       } else {
         _setupPlayer(widget.initialPosition);

@@ -11,12 +11,14 @@ class SeriesVideoPlayer extends ConsumerStatefulWidget {
   final SeriesEpisode episode;
   final int selectedSeason;
   final int selectedEpisodeIndex;
+  final bool skipResumeDialog;
 
   const SeriesVideoPlayer({
     super.key,
     required this.episode,
     required this.selectedSeason,
     required this.selectedEpisodeIndex,
+    this.skipResumeDialog = false,
   });
 
   @override
@@ -45,6 +47,7 @@ class _SeriesVideoPlayerState extends ConsumerState<SeriesVideoPlayer> {
         streamLink: widget.episode.streamUrl,
         initialPosition:
             progress != null ? Duration(seconds: progress.toInt()) : null,
+        skipResumeDialog: widget.skipResumeDialog,
         onPositionChanged: (position) {
           ref
               .read(episodeProgressProvider(widget.episode.id!).notifier)

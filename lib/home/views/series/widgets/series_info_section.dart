@@ -130,23 +130,19 @@ class SeriesInfoSection extends StatelessWidget {
           return Card(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             backgroundColor: states.isHovered
-                ? FluentTheme.of(context).accentColor.lighter
-                : FluentTheme.of(context).accentColor,
+                ? FluentTheme.of(context).accentColor
+                : FluentTheme.of(context).cardColor,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
                   FluentIcons.play,
                   size: UIConstants.chipIconSize,
-                  color: Colors.white,
                 ),
                 const SizedBox(width: 8),
                 Text(
                   'Watch Trailer',
-                  style: FluentTheme.of(context)
-                      .typography
-                      .body
-                      ?.copyWith(color: Colors.white),
+                  style: FluentTheme.of(context).typography.body,
                 ),
               ],
             ),

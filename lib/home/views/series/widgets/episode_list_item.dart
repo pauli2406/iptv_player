@@ -8,14 +8,16 @@ import 'package:play_shift/provider/isar/series_providers.dart';
 class EpisodeListItem extends ConsumerWidget {
   final SeriesEpisode episode;
   final bool isPlaying;
+  final bool isHighlighted;
   final bool isCompact;
   final VoidCallback onPressed;
 
   const EpisodeListItem({
     super.key,
     required this.episode,
-    required this.isPlaying,
-    required this.isCompact,
+    this.isPlaying = false,
+    this.isHighlighted = false,
+    this.isCompact = false,
     required this.onPressed,
   });
 
@@ -26,23 +28,39 @@ class EpisodeListItem extends ConsumerWidget {
         ? (progress / episode.durationSecs!).clamp(0.0, 1.0)
         : 0.0;
 
-    return Card(
-      padding: EdgeInsets.zero,
-      margin: const EdgeInsets.only(right: 8),
-      child: Button(
-        style: ButtonStyle(
-          padding: WidgetStateProperty.all(EdgeInsets.zero),
-          backgroundColor: WidgetStateProperty.all(
-            isPlaying ? FluentTheme.of(context).accentColor : null,
-          ),
-        ),
-        onPressed: onPressed,
-        child: Container(
-          width: isCompact ? 200 : 300,
-          padding: const EdgeInsets.all(8.0),
-          child: isCompact
-              ? _buildCompactView(context, progressPercentage)
-              : _buildDetailedView(context, progressPercentage),
+    final theme = FluentTheme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: HoverButton(
+          onPressed: onPressed,
+          builder: (context, states) {
+            return Container(
+              width: isCompact ? 200 : 300,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: isHighlighted
+                      ? theme.accentColor
+                      : states.isHovered
+                          ? theme.resources.controlStrongStrokeColorDefault
+                          : theme.resources.cardStrokeColorDefault,
+                  width: isHighlighted ? 2 : 1,
+                ),
+                borderRadius: BorderRadius.circular(4),
+                color: states.isHovered
+                    ? theme.resources.cardBackgroundFillColorSecondary
+                    : theme.resources.cardBackgroundFillColorDefault,
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                child: isCompact
+                    ? _buildCompactView(context, progressPercentage)
+                    : _buildDetailedView(context, progressPercentage),
+              ),
+            );
+          },
         ),
       ),
     );

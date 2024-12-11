@@ -1,7 +1,6 @@
 import 'package:play_shift/home/provider/search_value_provider.dart';
 import 'package:play_shift/provider/isar/iptv_server_provider.dart';
 import 'package:play_shift/provider/models/channel_view_model.dart';
-import 'package:play_shift/provider/models/provider_models.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:play_shift/provider/isar/m3u_provider.dart';
 import 'package:play_shift/service/collections/series_item.dart';
@@ -10,15 +9,28 @@ import 'package:xtream_code_client/xtream_code_client.dart';
 
 part 'series_providers.g.dart';
 
+// Remove the combined SeriesWithInfo provider and replace with separate providers:
+
 @riverpod
-Stream<SeriesWithInfo> findSeriesWithInfo(
-  FindSeriesWithInfoRef ref, {
+Future<XTremeCodeSeriesInfo?> seriesInfo(
+  SeriesInfoRef ref, {
   required int seriesId,
-}) async* {
-  final series = await ref.watch(findSeriesProvider(seriesId: seriesId).future);
-  final info =
-      await ref.watch(findSeriesInfoProvider(seriesId: seriesId).future);
-  yield SeriesWithInfo(series, info);
+}) async {
+  final iptvServerService = ref.watch(iptvServerServiceProvider);
+  final activeIptvServer = ref.watch(m3uServiceProvider).getActiveIptvServer()!;
+  final m3uService = ref.watch(m3uServiceProvider);
+  final series = m3uService.findSeriesSync(activeIptvServer, seriesId)!;
+  return await iptvServerService.seriesInfo(series, activeIptvServer);
+}
+
+@riverpod
+Stream<SeriesItem> series(
+  SeriesRef ref, {
+  required int seriesId,
+}) {
+  final m3uService = ref.watch(m3uServiceProvider);
+  final activeIptvServer = m3uService.getActiveIptvServer()!;
+  return m3uService.findSeries(activeIptvServer, seriesId);
 }
 
 @riverpod
@@ -153,9 +165,9 @@ class LastWatchedEpisode extends _$LastWatchedEpisode {
 
   Future<void> update(int episodeId) async {
     await ref.read(m3uServiceProvider).updateLastWatchedEpisode(
-      seriesId,
-      episodeId,
-    );
+          seriesId,
+          episodeId,
+        );
     ref.invalidateSelf();
   }
 }

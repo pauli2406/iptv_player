@@ -251,7 +251,7 @@ class M3uService {
         series.lastWatchedEpisodeId = episodeId;
         await isarService.isar.seriesItems.put(series);
       }
-    }, silent: true);
+    });
   }
 
   SeriesEpisode? getLastWatchedEpisode(int seriesId) {

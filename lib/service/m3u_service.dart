@@ -290,4 +290,18 @@ class M3uService {
   double? getEpisodeProgress(int episodeId) {
     return isarService.isar.seriesEpisodes.getSync(episodeId)?.watchedDuration;
   }
+
+  List<SeriesEpisode> findEpisodesForSeries(int seriesId) {
+    return isarService.isar.seriesEpisodes
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .parentSeriesIdEqualTo(seriesId)
+        .findAllSync();
+  }
+
+  void putEpisodes(List<SeriesEpisode> episodes) {
+    isarService.isar.writeTxnSync(() {
+      isarService.isar.seriesEpisodes.putAllSync(episodes);
+    });
+  }
 }

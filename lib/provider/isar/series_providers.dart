@@ -2,12 +2,10 @@ import 'package:play_shift/home/provider/search_value_provider.dart';
 import 'package:play_shift/provider/isar/iptv_server_provider.dart';
 import 'package:play_shift/provider/models/channel_view_model.dart';
 import 'package:play_shift/provider/models/provider_models.dart';
-import 'package:play_shift/service/m3u_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:play_shift/provider/isar/m3u_provider.dart';
 import 'package:play_shift/service/collections/series_item.dart';
 import 'package:play_shift/service/collections/item_category.dart';
-import 'package:play_shift/service/collections/series_episode.dart';
 import 'package:xtream_code_client/xtream_code_client.dart';
 
 part 'series_providers.g.dart';
@@ -59,38 +57,25 @@ Future<List<ChannelViewModel>> findAllSeriesEpisodes(
   final iptvServerService = ref.watch(iptvServerServiceProvider);
   final activeIptvServer = m3uService.getActiveIptvServer()!;
   final series = m3uService.findSeriesSync(activeIptvServer, seriesId)!;
-  final seriesInfo =
-      await iptvServerService.seriesInfo(series, activeIptvServer);
-
-  final List<SeriesEpisode> episodes;
-  if (season != null) {
-    episodes = seriesInfo?.episodes?[season.id.toString()]!.map((e) {
-          return SeriesEpisode.fromXtreamCodeSeriesEpisode(
-            e,
-            client.seriesUrl(
-              e.id!,
-              e.containerExtension!,
-            ),
-          );
-        }).toList() ??
-        [];
-  } else {
-    episodes = seriesInfo?.episodes?.values.expand((x) => x).map((e) {
-          return SeriesEpisode.fromXtreamCodeSeriesEpisode(
-            e,
-            client.seriesUrl(
-              e.id!,
-              e.containerExtension!,
-            ),
-          );
-        }).toList() ??
-        [];
+  
+  // First try to get persisted episodes
+  var episodes = m3uService.findEpisodesForSeries(seriesId);
+  
+  // If no episodes found, fetch and persist them
+  if (episodes.isEmpty) {
+    await iptvServerService.seriesInfo(series, activeIptvServer);
+    episodes = m3uService.findEpisodesForSeries(seriesId);
   }
 
-  final sortedEpisodes = episodes.toList()
-    ..sort((a, b) => a.episodeNum!.compareTo(b.episodeNum!));
+  // Filter by season if needed
+  if (season != null) {
+    episodes = episodes.where((e) => e.season == season.id).toList();
+  }
 
-  return sortedEpisodes.map((e) {
+  // Sort episodes
+  episodes.sort((a, b) => a.episodeNum!.compareTo(b.episodeNum!));
+
+  return episodes.map((e) {
     return ChannelViewModel(
       e.id,
       e.streamUrl,

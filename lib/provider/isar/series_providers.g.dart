@@ -722,7 +722,7 @@ class _FindSeriesInfoProviderElement
 }
 
 String _$findAllSeriesEpisodesHash() =>
-    r'2d78cb4954c84883f31c9a674395dbfd6d89ab45';
+    r'12e2c1699ba3857ef75530d6e4dc17c1a05d6230';
 
 /// See also [findAllSeriesEpisodes].
 @ProviderFor(findAllSeriesEpisodes)

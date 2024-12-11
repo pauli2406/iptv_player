@@ -10,10 +10,10 @@ class SeriesWithInfo {
   final Map<String, List<SeriesEpisode>> episodes;
 
   SeriesWithInfo(this.series, this.seriesInfo)
-      : episodes = _createEpisodesMap(seriesInfo);
+      : episodes = _createEpisodesMap(series, seriesInfo);
 
   static Map<String, List<SeriesEpisode>> _createEpisodesMap(
-      XTremeCodeSeriesInfo? seriesInfo) {
+      SeriesItem series, XTremeCodeSeriesInfo? seriesInfo,) {
     return seriesInfo?.episodes?.map(
           (season, episodes) => MapEntry(
             season,
@@ -21,6 +21,7 @@ class SeriesWithInfo {
                 .map((e) => SeriesEpisode.fromXtreamCodeSeriesEpisode(
                       e,
                       client.seriesUrl(e.id!, e.containerExtension!),
+                      series.id,
                     ))
                 .toList(),
           ),

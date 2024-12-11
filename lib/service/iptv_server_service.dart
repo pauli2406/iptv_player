@@ -5,6 +5,7 @@ import 'package:play_shift/service/collections/epg_item.dart';
 import 'package:play_shift/service/collections/item_category.dart';
 import 'package:play_shift/service/collections/iptv_server/iptv_server.dart';
 import 'package:play_shift/service/collections/channel_item.dart';
+import 'package:play_shift/service/collections/series_episode.dart';
 import 'package:play_shift/service/collections/series_item.dart';
 import 'package:play_shift/service/collections/vod_item.dart';
 import 'package:play_shift/service/m3u_service.dart';
@@ -185,6 +186,34 @@ class IptvServerService {
       SeriesItem seriesItem, IptvServer activeIptvServer) async {
     final seriesInfo =
         await client.seriesInfo(seriesItem.toXtreamCodeSeriesItem());
+
+    if (seriesInfo.episodes != null) {
+      // Get existing episodes to preserve watch metadata
+      final existingEpisodes = await isarService.isar.seriesEpisodes
+          .filter()
+          .iptvServer((q) => q.idEqualTo(activeIptvServer.id))
+          .parentSeriesIdEqualTo(seriesItem.id)
+          .findAll();
+
+      final existingEpisodesMap = {for (var ep in existingEpisodes) ep.id: ep};
+
+      // Convert and merge episodes
+      final episodes =
+          seriesInfo.episodes!.values.expand((episodes) => episodes).map((e) {
+        final existingEp = existingEpisodesMap[e.id];
+        return SeriesEpisode.fromXtreamCodeSeriesEpisode(
+          e,
+          client.seriesUrl(e.id!, e.containerExtension!),
+          seriesItem.id,
+        )
+          ..iptvServer.value = activeIptvServer
+          ..watchedDuration = existingEp?.watchedDuration
+          ..lastWatched = existingEp?.lastWatched;
+      }).toList();
+
+      m3uService.putEpisodes(episodes);
+    }
+
     return seriesInfo;
   }
 

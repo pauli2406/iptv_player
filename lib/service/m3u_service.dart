@@ -28,7 +28,7 @@ class M3uService {
         password: value.password,
       );
     } catch (e) {
-      Exception('Failed to initialize IPTV server: $e');
+      throw Exception('Failed to initialize IPTV server: $e');
     }
   }
 

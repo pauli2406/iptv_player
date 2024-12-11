@@ -28,6 +28,7 @@ class SeriesItem {
     this.categoryId,
     required this.categoryIds,
     this.firstWatched,
+    this.lastWatchedEpisodeId,
   });
 
   Id id;
@@ -51,6 +52,7 @@ class SeriesItem {
   int? categoryId;
   List<int> categoryIds;
   DateTime? firstWatched;
+  int? lastWatchedEpisodeId;
   final iptvServer = IsarLink<IptvServer>();
 
   SeriesItem.fromXtreamCodeSeriesItem(

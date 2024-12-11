@@ -143,3 +143,19 @@ double? getSeriesProgress(GetSeriesProgressRef ref, {required int seriesId}) {
 
   return watchedEpisodes / episodes.length;
 }
+
+@riverpod
+class LastWatchedEpisode extends _$LastWatchedEpisode {
+  @override
+  int? build(int seriesId) {
+    return ref.watch(m3uServiceProvider).getLastWatchedEpisode(seriesId)?.id;
+  }
+
+  Future<void> update(int episodeId) async {
+    await ref.read(m3uServiceProvider).updateLastWatchedEpisode(
+      seriesId,
+      episodeId,
+    );
+    ref.invalidateSelf();
+  }
+}

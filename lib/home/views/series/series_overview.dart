@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:play_shift/provider/isar/m3u_provider.dart';
 import 'package:play_shift/provider/isar/series_providers.dart';
 import 'package:play_shift/provider/models/provider_models.dart';
 import 'package:play_shift/theme.dart';
@@ -266,6 +267,21 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
     );
   }
 
+  void _onEpisodeSelected(int index, SeriesWithInfo data) {
+    final episode = data.episodes[_selectedSeason.toString()]![index];
+    // Update last watched episode silently
+    ref
+        .read(m3uServiceProvider)
+        .updateLastWatchedEpisode(
+          widget.seriesId,
+          episode.id!,
+        )
+        .then((_) {
+      // Only update the local state
+      setState(() => _selectedEpisodeIndex = index);
+    });
+  }
+
   Widget _buildEpisodesList(BuildContext context, SeriesWithInfo data) {
     final seasonEpisodes = _selectedSeason != null
         ? (data.episodes[_selectedSeason.toString()] ?? [])
@@ -285,7 +301,7 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
           episode: seasonEpisodes[index],
           isPlaying: index == _selectedEpisodeIndex,
           isCompact: isVideoPlaying,
-          onPressed: () => setState(() => _selectedEpisodeIndex = index),
+          onPressed: () => _onEpisodeSelected(index, data),
         ),
       ),
     );

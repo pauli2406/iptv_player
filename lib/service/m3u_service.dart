@@ -17,6 +17,7 @@ class M3uService {
   final IsarService isarService;
   IptvServer? _activeIptvServer;
 
+  // MARK: - Server Management
   void setActiveIptvServer(IptvServer value) {
     try {
       _activeIptvServer = value;
@@ -27,7 +28,7 @@ class M3uService {
         password: value.password,
       );
     } catch (e) {
-      throw Exception('Failed to initialize IPTV server: $e');
+      Exception('Failed to initialize IPTV server: $e');
     }
   }
 
@@ -39,6 +40,118 @@ class M3uService {
     return _activeIptvServer;
   }
 
+  // MARK: - Category Methods
+  Stream<List<ItemCategory>> findAllSeriesGroups(IptvServer activeIptvServer) {
+    return findAllCategoriesOfType(ItemCategoryType.series);
+  }
+
+  Stream<List<ItemCategory>> findAllMovieGroups(IptvServer activeIptvServer) {
+    return findAllCategoriesOfType(ItemCategoryType.vod);
+  }
+
+  Stream<List<ItemCategory>> findAllChannelGroups(IptvServer activeIptvServer) {
+    return findAllCategoriesOfType(ItemCategoryType.channel);
+  }
+
+  Stream<List<ItemCategory>> findAllCategoriesOfType(ItemCategoryType type) {
+    return isarService.isar.itemCategorys
+        .where(distinct: true)
+        .filter()
+        .iptvServer((q) {
+          return q.idEqualTo(_activeIptvServer!.id);
+        })
+        .typeEqualTo(type)
+        .sortByCategoryName()
+        .watch(fireImmediately: true);
+  }
+
+  // MARK: - Channel and EPG Methods
+  Stream<List<ChannelItem>> findAllChannels(
+      String? searchValue, ItemCategory? category) {
+    if (_activeIptvServer == null) {
+      throw StateError('No active IPTV server selected');
+    }
+    var query =
+        isarService.isar.collection<ChannelItem>().filter().iptvServer((q) {
+      return q.idEqualTo(_activeIptvServer!.id);
+    });
+
+    if (searchValue?.isNotEmpty ?? false) {
+      query = query.nameContains(searchValue!, caseSensitive: false);
+    }
+    if (category != null) {
+      query = query.categoryIdEqualTo(category.id);
+    }
+
+    return query.watch(fireImmediately: true);
+  }
+
+  ChannelItem? findChannel(int streamId) {
+    QueryBuilder<ChannelItem, ChannelItem, QFilterCondition> query =
+        isarService.isar.channelItems.filter();
+    query = query.idEqualTo(streamId);
+    return query.iptvServer((q) {
+      return q.idEqualTo(_activeIptvServer!.id);
+    }).findFirstSync();
+  }
+
+  List<EpgItem> epgOfChannel(String epgChannelId) {
+    QueryBuilder<EpgItem, EpgItem, QFilterCondition> query =
+        isarService.isar.epgItems.filter();
+    query = query.channelIdEqualTo(epgChannelId);
+    return query.iptvServer((q) {
+      return q.idEqualTo(_activeIptvServer!.id);
+    }).findAllSync();
+  }
+
+  List<EpgItem> epgOfChannels() {
+    if (_activeIptvServer == null) {
+      throw StateError('No active IPTV server selected');
+    }
+    var query = isarService.isar.collection<EpgItem>().filter().iptvServer((q) {
+      return q.idEqualTo(_activeIptvServer!.id);
+    });
+
+    final now = DateTime.now();
+    return query.startLessThan(now).and().endGreaterThan(now).findAllSync();
+  }
+
+  EpgItem? findCurrentEpgItem(ChannelItem channel) {
+    if (channel.epgChannelId == null) {
+      return null;
+    } else {
+      return isarService.isar.epgItems
+          .filter()
+          .iptvServer((q) {
+            return q.idEqualTo(_activeIptvServer!.id);
+          })
+          .channelIdEqualTo(channel.epgChannelId!)
+          .findFirstSync();
+    }
+  }
+
+  List<ChannelItem> findChannelsByEpgTitle(String epgTitle) {
+    if (_activeIptvServer == null) {
+      return [];
+    }
+
+    var currentEpgItems = isarService.isar.epgItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .titleEqualTo(epgTitle)
+        .findAllSync();
+
+    var channelIds = currentEpgItems.map((e) => e.channelId).toSet();
+
+    return isarService.isar.channelItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .anyOf(channelIds,
+            (q, String channelId) => q.epgChannelIdEqualTo(channelId))
+        .findAllSync();
+  }
+
+  // MARK: - VOD (Movies) Methods
   Stream<List<VodItem>> findAllMovies(IptvServer activeIptvServer,
       String? searchValue, ItemCategory? category) {
     QueryBuilder<VodItem, VodItem, QFilterCondition> query =
@@ -56,6 +169,31 @@ class M3uService {
     }).watch(fireImmediately: true);
   }
 
+  VodItem? findVod(int streamId) {
+    QueryBuilder<VodItem, VodItem, QFilterCondition> query =
+        isarService.isar.vodItems.filter();
+    query = query.idEqualTo(streamId);
+    return query.iptvServer((q) {
+      return q.idEqualTo(_activeIptvServer!.id);
+    }).findFirstSync();
+  }
+
+  List<VodItem> findRelatedMovies(VodItem movie, {int limit = 6}) {
+    if (_activeIptvServer == null || movie.categoryId == null) {
+      return [];
+    }
+
+    return isarService.isar.vodItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .categoryIdEqualTo(movie.categoryId!)
+        .not()
+        .idEqualTo(movie.id)
+        .limit(limit)
+        .findAllSync();
+  }
+
+  // MARK: - Series Methods
   Stream<List<SeriesItem>> findAllSeries(IptvServer activeIptvServer,
       String? searchValue, ItemCategory? category) {
     QueryBuilder<SeriesItem, SeriesItem, QFilterCondition> query =
@@ -92,167 +230,46 @@ class M3uService {
     return query.idEqualTo(seriesId).findFirstSync();
   }
 
-  Stream<List<ItemCategory>> findAllSeriesGroups(IptvServer activeIptvServer) {
-    return findAllCategoriesOfType(ItemCategoryType.series);
-  }
-
-  Stream<List<ItemCategory>> findAllMovieGroups(IptvServer activeIptvServer) {
-    return findAllCategoriesOfType(ItemCategoryType.vod);
-  }
-
-  Stream<List<ItemCategory>> findAllChannelGroups(IptvServer activeIptvServer) {
-    return findAllCategoriesOfType(ItemCategoryType.channel);
-  }
-
-  Stream<List<ItemCategory>> findAllCategoriesOfType(ItemCategoryType type) {
-    return isarService.isar.itemCategorys
-        .where(distinct: true)
+  List<SeriesEpisode> findEpisodesForSeries(int seriesId) {
+    return isarService.isar.seriesEpisodes
         .filter()
-        .iptvServer((q) {
-          return q.idEqualTo(_activeIptvServer!.id);
-        })
-        .typeEqualTo(type)
-        .sortByCategoryName()
-        .watch(fireImmediately: true);
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .parentSeriesIdEqualTo(seriesId)
+        .findAllSync();
   }
 
-  VodItem? findVod(
-    int streamId,
-  ) {
-    QueryBuilder<VodItem, VodItem, QFilterCondition> query =
-        isarService.isar.vodItems.filter();
-    query = query.idEqualTo(streamId);
-    return query.iptvServer((q) {
-      return q.idEqualTo(_activeIptvServer!.id);
-    }).findFirstSync();
-  }
-
-  ChannelItem? findChannel(
-    int streamId,
-  ) {
-    QueryBuilder<ChannelItem, ChannelItem, QFilterCondition> query =
-        isarService.isar.channelItems.filter();
-    query = query.idEqualTo(streamId);
-    return query.iptvServer((q) {
-      return q.idEqualTo(_activeIptvServer!.id);
-    }).findFirstSync();
-  }
-
-  List<EpgItem> epgOfChannel(String epgChannelId) {
-    QueryBuilder<EpgItem, EpgItem, QFilterCondition> query =
-        isarService.isar.epgItems.filter();
-    query = query.channelIdEqualTo(epgChannelId);
-    return query.iptvServer((q) {
-      return q.idEqualTo(_activeIptvServer!.id);
-    }).findAllSync();
-  }
-
-  List<EpgItem> epgOfChannels() {
-    if (_activeIptvServer == null) {
-      throw StateError('No active IPTV server selected');
-    }
-    var query = isarService.isar.collection<EpgItem>().filter().iptvServer((q) {
-      return q.idEqualTo(_activeIptvServer!.id);
+  void putEpisodes(List<SeriesEpisode> episodes) {
+    isarService.isar.writeTxnSync(() {
+      isarService.isar.seriesEpisodes.putAllSync(episodes);
     });
-
-    final now = DateTime.now();
-    return query.startLessThan(now).and().endGreaterThan(now).findAllSync();
   }
 
-  Stream<List<ChannelItem>> findAllChannels(
-      String? searchValue, ItemCategory? category) {
-    if (_activeIptvServer == null) {
-      throw StateError('No active IPTV server selected');
-    }
-    var query =
-        isarService.isar.collection<ChannelItem>().filter().iptvServer((q) {
-      return q.idEqualTo(_activeIptvServer!.id);
-    });
-
-    if (searchValue?.isNotEmpty ?? false) {
-      query = query.nameContains(searchValue!, caseSensitive: false);
-    }
-    if (category != null) {
-      query = query.categoryIdEqualTo(category.id);
-    }
-
-    return query.watch(fireImmediately: true);
+  Future<void> updateLastWatchedEpisode(int seriesId, int episodeId) async {
+    await isarService.isar.writeTxn(() async {
+      var series = await isarService.isar.seriesItems.get(seriesId);
+      if (series != null) {
+        series.lastWatchedEpisodeId = episodeId;
+        await isarService.isar.seriesItems.put(series);
+      }
+    }, silent: true);
   }
 
-  EpgItem? findCurrentEpgItem(ChannelItem channel) {
-    if (channel.epgChannelId == null) {
+  SeriesEpisode? getLastWatchedEpisode(int seriesId) {
+    var series = isarService.isar.seriesItems.getSync(seriesId);
+    if (series?.lastWatchedEpisodeId == null) {
       return null;
-    } else {
-      return isarService.isar.epgItems
-          .filter()
-          .iptvServer((q) {
-            return q.idEqualTo(_activeIptvServer!.id);
-          })
-          .channelIdEqualTo(channel.epgChannelId!)
-          .findFirstSync();
     }
+    return isarService.isar.seriesEpisodes
+        .getSync(series!.lastWatchedEpisodeId!);
   }
 
-  List<VodItem> findRelatedMovies(VodItem movie, {int limit = 6}) {
-    if (_activeIptvServer == null || movie.categoryId == null) {
-      return [];
-    }
-
-    return isarService.isar.vodItems
-        .filter()
-        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
-        .categoryIdEqualTo(movie.categoryId!)
-        .not()
-        .idEqualTo(movie.id)
-        .limit(limit)
-        .findAllSync();
-  }
-
-  List<ChannelItem> findChannelsByEpgTitle(String epgTitle) {
-    if (_activeIptvServer == null) {
-      return [];
-    }
-
-    var currentEpgItems = isarService.isar.epgItems
-        .filter()
-        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
-        .titleEqualTo(epgTitle)
-        .findAllSync();
-
-    var channelIds = currentEpgItems.map((e) => e.channelId).toSet();
-
-    return isarService.isar.channelItems
-        .filter()
-        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
-        .anyOf(channelIds,
-            (q, String channelId) => q.epgChannelIdEqualTo(channelId))
-        .findAllSync();
-  }
-
+  // MARK: - Progress Tracking Methods
   Future<void> updateMovieProgress(int movieId, double duration) async {
     await isarService.isar.writeTxn(() async {
       var movie = await isarService.isar.vodItems.get(movieId);
       if (movie != null) {
-        movie = VodItem(
-          id: movie.id,
-          categoryIds: movie.categoryIds,
-          streamUrl: movie.streamUrl,
-          watchedDuration: duration,
-          lastWatched: DateTime.now(),
-          num: movie.num,
-          name: movie.name,
-          title: movie.title,
-          year: movie.year,
-          streamType: movie.streamType,
-          streamIcon: movie.streamIcon,
-          rating: movie.rating,
-          rating5based: movie.rating5based,
-          added: movie.added,
-          categoryId: movie.categoryId,
-          containerExtension: movie.containerExtension,
-          customSid: movie.customSid,
-          directSource: movie.directSource,
-        );
+        movie.watchedDuration = duration;
+        movie.lastWatched = DateTime.now();
         await isarService.isar.vodItems.put(movie);
       }
     });
@@ -289,19 +306,5 @@ class M3uService {
 
   double? getEpisodeProgress(int episodeId) {
     return isarService.isar.seriesEpisodes.getSync(episodeId)?.watchedDuration;
-  }
-
-  List<SeriesEpisode> findEpisodesForSeries(int seriesId) {
-    return isarService.isar.seriesEpisodes
-        .filter()
-        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
-        .parentSeriesIdEqualTo(seriesId)
-        .findAllSync();
-  }
-
-  void putEpisodes(List<SeriesEpisode> episodes) {
-    isarService.isar.writeTxnSync(() {
-      isarService.isar.seriesEpisodes.putAllSync(episodes);
-    });
   }
 }

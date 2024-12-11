@@ -1477,5 +1477,189 @@ class _EpisodeProgressProviderElement
   @override
   int get episodeId => (origin as EpisodeProgressProvider).episodeId;
 }
+
+String _$lastWatchedEpisodeHash() =>
+    r'cbe8c2e3fcc5c103618089e53da2609688e0b7ed';
+
+abstract class _$LastWatchedEpisode extends BuildlessAutoDisposeNotifier<int?> {
+  late final int seriesId;
+
+  int? build(
+    int seriesId,
+  );
+}
+
+/// See also [LastWatchedEpisode].
+@ProviderFor(LastWatchedEpisode)
+const lastWatchedEpisodeProvider = LastWatchedEpisodeFamily();
+
+/// See also [LastWatchedEpisode].
+class LastWatchedEpisodeFamily extends Family {
+  /// See also [LastWatchedEpisode].
+  const LastWatchedEpisodeFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'lastWatchedEpisodeProvider';
+
+  /// See also [LastWatchedEpisode].
+  LastWatchedEpisodeProvider call(
+    int seriesId,
+  ) {
+    return LastWatchedEpisodeProvider(
+      seriesId,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  LastWatchedEpisodeProvider getProviderOverride(
+    covariant LastWatchedEpisodeProvider provider,
+  ) {
+    return call(
+      provider.seriesId,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(LastWatchedEpisode Function() create) {
+    return _$LastWatchedEpisodeFamilyOverride(this, create);
+  }
+}
+
+class _$LastWatchedEpisodeFamilyOverride implements FamilyOverride {
+  _$LastWatchedEpisodeFamilyOverride(this.overriddenFamily, this.create);
+
+  final LastWatchedEpisode Function() create;
+
+  @override
+  final LastWatchedEpisodeFamily overriddenFamily;
+
+  @override
+  LastWatchedEpisodeProvider getProviderOverride(
+    covariant LastWatchedEpisodeProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [LastWatchedEpisode].
+class LastWatchedEpisodeProvider
+    extends AutoDisposeNotifierProviderImpl<LastWatchedEpisode, int?> {
+  /// See also [LastWatchedEpisode].
+  LastWatchedEpisodeProvider(
+    int seriesId,
+  ) : this._internal(
+          () => LastWatchedEpisode()..seriesId = seriesId,
+          from: lastWatchedEpisodeProvider,
+          name: r'lastWatchedEpisodeProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$lastWatchedEpisodeHash,
+          dependencies: LastWatchedEpisodeFamily._dependencies,
+          allTransitiveDependencies:
+              LastWatchedEpisodeFamily._allTransitiveDependencies,
+          seriesId: seriesId,
+        );
+
+  LastWatchedEpisodeProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.seriesId,
+  }) : super.internal();
+
+  final int seriesId;
+
+  @override
+  int? runNotifierBuild(
+    covariant LastWatchedEpisode notifier,
+  ) {
+    return notifier.build(
+      seriesId,
+    );
+  }
+
+  @override
+  Override overrideWith(LastWatchedEpisode Function() create) {
+    return ProviderOverride(
+      origin: this,
+      override: LastWatchedEpisodeProvider._internal(
+        () => create()..seriesId = seriesId,
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        seriesId: seriesId,
+      ),
+    );
+  }
+
+  @override
+  (int,) get argument {
+    return (seriesId,);
+  }
+
+  @override
+  AutoDisposeNotifierProviderElement<LastWatchedEpisode, int?> createElement() {
+    return _LastWatchedEpisodeProviderElement(this);
+  }
+
+  LastWatchedEpisodeProvider _copyWith(
+    LastWatchedEpisode Function() create,
+  ) {
+    return LastWatchedEpisodeProvider._internal(
+      () => create()..seriesId = seriesId,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      seriesId: seriesId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is LastWatchedEpisodeProvider && other.seriesId == seriesId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, seriesId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin LastWatchedEpisodeRef on AutoDisposeNotifierProviderRef<int?> {
+  /// The parameter `seriesId` of this provider.
+  int get seriesId;
+}
+
+class _LastWatchedEpisodeProviderElement
+    extends AutoDisposeNotifierProviderElement<LastWatchedEpisode, int?>
+    with LastWatchedEpisodeRef {
+  _LastWatchedEpisodeProviderElement(super.provider);
+
+  @override
+  int get seriesId => (origin as LastWatchedEpisodeProvider).seriesId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

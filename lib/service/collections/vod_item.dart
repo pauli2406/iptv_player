@@ -43,8 +43,8 @@ class VodItem {
   final String? customSid;
   final String? directSource;
   final String streamUrl;
-  final double? watchedDuration; // in seconds
-  final DateTime? lastWatched;
+  double? watchedDuration; // in seconds
+  DateTime? lastWatched;
   final iptvServer = IsarLink<IptvServer>();
 
   VodItem.fromXtreamCodeVodItem(

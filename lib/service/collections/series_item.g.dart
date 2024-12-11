@@ -67,53 +67,58 @@ const SeriesItemSchema = CollectionSchema(
       name: r'lastModified',
       type: IsarType.dateTime,
     ),
-    r'name': PropertySchema(
+    r'lastWatchedEpisodeId': PropertySchema(
       id: 10,
+      name: r'lastWatchedEpisodeId',
+      type: IsarType.long,
+    ),
+    r'name': PropertySchema(
+      id: 11,
       name: r'name',
       type: IsarType.string,
     ),
     r'num': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'num',
       type: IsarType.long,
     ),
     r'plot': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'plot',
       type: IsarType.string,
     ),
     r'rating': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'rating',
       type: IsarType.double,
     ),
     r'rating5based': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'rating5based',
       type: IsarType.double,
     ),
     r'releaseDate': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'releaseDate',
       type: IsarType.string,
     ),
     r'streamType': PropertySchema(
-      id: 16,
+      id: 17,
       name: r'streamType',
       type: IsarType.string,
     ),
     r'title': PropertySchema(
-      id: 17,
+      id: 18,
       name: r'title',
       type: IsarType.string,
     ),
     r'year': PropertySchema(
-      id: 18,
+      id: 19,
       name: r'year',
       type: IsarType.string,
     ),
     r'youtubeTrailer': PropertySchema(
-      id: 19,
+      id: 20,
       name: r'youtubeTrailer',
       type: IsarType.string,
     )
@@ -238,16 +243,17 @@ void _seriesItemSerialize(
   writer.writeDateTime(offsets[7], object.firstWatched);
   writer.writeString(offsets[8], object.genre);
   writer.writeDateTime(offsets[9], object.lastModified);
-  writer.writeString(offsets[10], object.name);
-  writer.writeLong(offsets[11], object.num);
-  writer.writeString(offsets[12], object.plot);
-  writer.writeDouble(offsets[13], object.rating);
-  writer.writeDouble(offsets[14], object.rating5based);
-  writer.writeString(offsets[15], object.releaseDate);
-  writer.writeString(offsets[16], object.streamType);
-  writer.writeString(offsets[17], object.title);
-  writer.writeString(offsets[18], object.year);
-  writer.writeString(offsets[19], object.youtubeTrailer);
+  writer.writeLong(offsets[10], object.lastWatchedEpisodeId);
+  writer.writeString(offsets[11], object.name);
+  writer.writeLong(offsets[12], object.num);
+  writer.writeString(offsets[13], object.plot);
+  writer.writeDouble(offsets[14], object.rating);
+  writer.writeDouble(offsets[15], object.rating5based);
+  writer.writeString(offsets[16], object.releaseDate);
+  writer.writeString(offsets[17], object.streamType);
+  writer.writeString(offsets[18], object.title);
+  writer.writeString(offsets[19], object.year);
+  writer.writeString(offsets[20], object.youtubeTrailer);
 }
 
 SeriesItem _seriesItemDeserialize(
@@ -268,16 +274,17 @@ SeriesItem _seriesItemDeserialize(
     genre: reader.readStringOrNull(offsets[8]),
     id: id,
     lastModified: reader.readDateTimeOrNull(offsets[9]),
-    name: reader.readStringOrNull(offsets[10]),
-    num: reader.readLongOrNull(offsets[11]),
-    plot: reader.readStringOrNull(offsets[12]),
-    rating: reader.readDoubleOrNull(offsets[13]),
-    rating5based: reader.readDoubleOrNull(offsets[14]),
-    releaseDate: reader.readStringOrNull(offsets[15]),
-    streamType: reader.readStringOrNull(offsets[16]),
-    title: reader.readStringOrNull(offsets[17]),
-    year: reader.readStringOrNull(offsets[18]),
-    youtubeTrailer: reader.readStringOrNull(offsets[19]),
+    lastWatchedEpisodeId: reader.readLongOrNull(offsets[10]),
+    name: reader.readStringOrNull(offsets[11]),
+    num: reader.readLongOrNull(offsets[12]),
+    plot: reader.readStringOrNull(offsets[13]),
+    rating: reader.readDoubleOrNull(offsets[14]),
+    rating5based: reader.readDoubleOrNull(offsets[15]),
+    releaseDate: reader.readStringOrNull(offsets[16]),
+    streamType: reader.readStringOrNull(offsets[17]),
+    title: reader.readStringOrNull(offsets[18]),
+    year: reader.readStringOrNull(offsets[19]),
+    youtubeTrailer: reader.readStringOrNull(offsets[20]),
   );
   return object;
 }
@@ -310,17 +317,17 @@ P _seriesItemDeserializeProp<P>(
     case 9:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 10:
-      return (reader.readStringOrNull(offset)) as P;
-    case 11:
       return (reader.readLongOrNull(offset)) as P;
-    case 12:
+    case 11:
       return (reader.readStringOrNull(offset)) as P;
+    case 12:
+      return (reader.readLongOrNull(offset)) as P;
     case 13:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 14:
       return (reader.readDoubleOrNull(offset)) as P;
     case 15:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 16:
       return (reader.readStringOrNull(offset)) as P;
     case 17:
@@ -328,6 +335,8 @@ P _seriesItemDeserializeProp<P>(
     case 18:
       return (reader.readStringOrNull(offset)) as P;
     case 19:
+      return (reader.readStringOrNull(offset)) as P;
+    case 20:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1736,6 +1745,80 @@ extension SeriesItemQueryFilter
     });
   }
 
+  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
+      lastWatchedEpisodeIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastWatchedEpisodeId',
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
+      lastWatchedEpisodeIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastWatchedEpisodeId',
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
+      lastWatchedEpisodeIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastWatchedEpisodeId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
+      lastWatchedEpisodeIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastWatchedEpisodeId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
+      lastWatchedEpisodeIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastWatchedEpisodeId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
+      lastWatchedEpisodeIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastWatchedEpisodeId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition> nameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -3134,6 +3217,20 @@ extension SeriesItemQuerySortBy
     });
   }
 
+  QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy>
+      sortByLastWatchedEpisodeId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastWatchedEpisodeId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy>
+      sortByLastWatchedEpisodeIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastWatchedEpisodeId', Sort.desc);
+    });
+  }
+
   QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -3367,6 +3464,20 @@ extension SeriesItemQuerySortThenBy
     });
   }
 
+  QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy>
+      thenByLastWatchedEpisodeId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastWatchedEpisodeId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy>
+      thenByLastWatchedEpisodeIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastWatchedEpisodeId', Sort.desc);
+    });
+  }
+
   QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -3555,6 +3666,13 @@ extension SeriesItemQueryWhereDistinct
     });
   }
 
+  QueryBuilder<SeriesItem, SeriesItem, QDistinct>
+      distinctByLastWatchedEpisodeId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastWatchedEpisodeId');
+    });
+  }
+
   QueryBuilder<SeriesItem, SeriesItem, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -3690,6 +3808,13 @@ extension SeriesItemQueryProperty
   QueryBuilder<SeriesItem, DateTime?, QQueryOperations> lastModifiedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastModified');
+    });
+  }
+
+  QueryBuilder<SeriesItem, int?, QQueryOperations>
+      lastWatchedEpisodeIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastWatchedEpisodeId');
     });
   }
 

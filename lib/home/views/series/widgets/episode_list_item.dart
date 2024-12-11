@@ -56,7 +56,13 @@ class EpisodeListItem extends ConsumerWidget {
       children: [
         Text(
           'Episode ${episode.episodeNum}',
-          style: FluentTheme.of(context).typography.bodyStrong,
+          style: FluentTheme.of(context).typography.bodyStrong!.copyWith(
+                color: isPlaying
+                    ? FluentTheme.of(context)
+                        .resources
+                        .textOnAccentFillColorSelectedText
+                    : FluentTheme.of(context).accentColor,
+              ),
         ),
         if (progressPercentage > 0) ...[
           const SizedBox(height: 8),

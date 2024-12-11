@@ -274,7 +274,7 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
     final isVideoPlaying = _isVideoPlaying(data);
 
     return SizedBox(
-      height: isVideoPlaying ? 75 : 200,
+      height: isVideoPlaying ? 75 : 220, // Increased from 200 to 220
       child: ListView.builder(
         key: ValueKey('season_$_selectedSeason'),
         scrollDirection: Axis.horizontal,

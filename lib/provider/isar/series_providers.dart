@@ -16,7 +16,8 @@ Stream<SeriesWithInfo> findSeriesWithInfo(
   required int seriesId,
 }) async* {
   final series = await ref.watch(findSeriesProvider(seriesId: seriesId).future);
-  final info = await ref.watch(findSeriesInfoProvider(seriesId: seriesId).future);
+  final info =
+      await ref.watch(findSeriesInfoProvider(seriesId: seriesId).future);
   yield SeriesWithInfo(series, info);
 }
 
@@ -57,10 +58,10 @@ Future<List<ChannelViewModel>> findAllSeriesEpisodes(
   final iptvServerService = ref.watch(iptvServerServiceProvider);
   final activeIptvServer = m3uService.getActiveIptvServer()!;
   final series = m3uService.findSeriesSync(activeIptvServer, seriesId)!;
-  
+
   // First try to get persisted episodes
   var episodes = m3uService.findEpisodesForSeries(seriesId);
-  
+
   // If no episodes found, fetch and persist them
   if (episodes.isEmpty) {
     await iptvServerService.seriesInfo(series, activeIptvServer);
@@ -116,7 +117,29 @@ class EpisodeProgress extends _$EpisodeProgress {
   }
 
   Future<void> updateProgress(double duration) async {
-    await ref.read(m3uServiceProvider).updateEpisodeProgress(episodeId, duration);
+    await ref
+        .read(m3uServiceProvider)
+        .updateEpisodeProgress(episodeId, duration);
     ref.invalidateSelf();
   }
+}
+
+@riverpod
+double? getSeriesProgress(GetSeriesProgressRef ref, {required int seriesId}) {
+  final m3uService = ref.watch(m3uServiceProvider);
+  final episodes = m3uService.findEpisodesForSeries(seriesId);
+
+  if (episodes.isEmpty) return null;
+
+  int watchedEpisodes = 0;
+  for (final episode in episodes) {
+    final progress = m3uService.getEpisodeProgress(episode.id ?? 0);
+    if (progress != null &&
+        episode.durationSecs != null &&
+        progress / episode.durationSecs! >= 0.9) {
+      watchedEpisodes++;
+    }
+  }
+
+  return watchedEpisodes / episodes.length;
 }

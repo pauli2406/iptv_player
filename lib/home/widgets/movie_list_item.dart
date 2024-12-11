@@ -6,8 +6,8 @@ import 'package:play_shift/provider/models/channel_view_model.dart';
 import 'package:play_shift/shared/theme_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class M3uListItem extends ConsumerWidget {
-  const M3uListItem({
+class MovieListItem extends ConsumerWidget {
+  const MovieListItem({
     required this.channelViewModel,
     required this.height,
     required this.route,

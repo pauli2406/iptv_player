@@ -1,9 +1,11 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_shift/service/collections/series_episode.dart';
 import 'package:play_shift/utils/duration_formatter.dart';
+import 'package:play_shift/provider/isar/series_providers.dart';
 
-class EpisodeListItem extends StatelessWidget {
+class EpisodeListItem extends ConsumerWidget {
   final SeriesEpisode episode;
   final bool isPlaying;
   final bool isCompact;
@@ -18,7 +20,12 @@ class EpisodeListItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final progress = ref.watch(episodeProgressProvider(episode.id ?? 0));
+    final progressPercentage = progress != null && episode.durationSecs != null
+        ? (progress / episode.durationSecs!).clamp(0.0, 1.0)
+        : 0.0;
+
     return Card(
       padding: EdgeInsets.zero,
       margin: const EdgeInsets.only(right: 8),
@@ -34,23 +41,67 @@ class EpisodeListItem extends StatelessWidget {
           width: isCompact ? 200 : 300,
           padding: const EdgeInsets.all(8.0),
           child: isCompact
-              ? _buildCompactView(context)
-              : _buildDetailedView(context),
+              ? _buildCompactView(context, progressPercentage)
+              : _buildDetailedView(context, progressPercentage),
         ),
       ),
     );
   }
 
-  Widget _buildCompactView(BuildContext context) {
-    return Center(
-      child: Text(
-        'Episode ${episode.episodeNum}',
-        style: FluentTheme.of(context).typography.bodyStrong,
-      ),
+  Widget _buildCompactView(BuildContext context, double progressPercentage) {
+    final isCompleted = progressPercentage >= 0.98;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Episode ${episode.episodeNum}',
+          style: FluentTheme.of(context).typography.bodyStrong,
+        ),
+        if (progressPercentage > 0) ...[
+          const SizedBox(height: 8),
+          if (isCompleted)
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: isPlaying
+                    ? FluentTheme.of(context)
+                        .resources
+                        .textOnAccentFillColorSelectedText
+                    : FluentTheme.of(context).accentColor,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: FluentTheme.of(context).accentColor.withOpacity(0.3),
+                    blurRadius: 8,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              child: Icon(
+                FluentIcons.check_mark,
+                size: 14,
+                color: isPlaying
+                    ? FluentTheme.of(context).accentColor
+                    : FluentTheme.of(context)
+                        .resources
+                        .textOnAccentFillColorPrimary,
+              ),
+            )
+          else
+            SizedBox(
+              width: 100,
+              child: ProgressBar(
+                value: progressPercentage * 100,
+                strokeWidth: 3,
+              ),
+            ),
+        ],
+      ],
     );
   }
 
-  Widget _buildDetailedView(BuildContext context) {
+  Widget _buildDetailedView(BuildContext context, double progressPercentage) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -70,6 +121,10 @@ class EpisodeListItem extends StatelessWidget {
               ),
           ],
         ),
+        if (progressPercentage > 0) ...[
+          const SizedBox(height: 4),
+          ProgressBar(value: progressPercentage * 100),
+        ],
         if (episode.title != null) ...[
           const SizedBox(height: 4),
           Text(

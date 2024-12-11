@@ -53,7 +53,7 @@ class _ChannelsPageState extends ConsumerState<ChannelsPage> {
       searchController: searchController,
       itemBuilder: (context, itemHeight, item) => AspectRatio(
         aspectRatio: 1,
-        child: M3uListItem(
+        child: MovieListItem(
           channelViewModel: item,
           height: itemHeight,
           route: ChannelOverviewRoute(streamId: item.streamId),

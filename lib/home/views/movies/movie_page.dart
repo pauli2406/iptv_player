@@ -49,7 +49,7 @@ class _MoviesPageState extends ConsumerState<MoviesPage> {
         });
       },
       searchController: searchController,
-      itemBuilder: (context, itemHeight, item) => M3uListItem(
+      itemBuilder: (context, itemHeight, item) => MovieListItem(
         channelViewModel: item,
         height: itemHeight,
         route: MovieOverviewRoute(streamId: item.streamId),

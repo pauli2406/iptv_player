@@ -941,6 +941,177 @@ final findAllSeriesGroupsProvider =
 
 typedef FindAllSeriesGroupsRef
     = AutoDisposeStreamProviderRef<List<ItemCategory>>;
+String _$getSeriesProgressHash() => r'53c2485e37c2d78164fcc548dca55cf060f29237';
+
+/// See also [getSeriesProgress].
+@ProviderFor(getSeriesProgress)
+const getSeriesProgressProvider = GetSeriesProgressFamily();
+
+/// See also [getSeriesProgress].
+class GetSeriesProgressFamily extends Family {
+  /// See also [getSeriesProgress].
+  const GetSeriesProgressFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'getSeriesProgressProvider';
+
+  /// See also [getSeriesProgress].
+  GetSeriesProgressProvider call({
+    required int seriesId,
+  }) {
+    return GetSeriesProgressProvider(
+      seriesId: seriesId,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  GetSeriesProgressProvider getProviderOverride(
+    covariant GetSeriesProgressProvider provider,
+  ) {
+    return call(
+      seriesId: provider.seriesId,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(double? Function(GetSeriesProgressRef ref) create) {
+    return _$GetSeriesProgressFamilyOverride(this, create);
+  }
+}
+
+class _$GetSeriesProgressFamilyOverride implements FamilyOverride {
+  _$GetSeriesProgressFamilyOverride(this.overriddenFamily, this.create);
+
+  final double? Function(GetSeriesProgressRef ref) create;
+
+  @override
+  final GetSeriesProgressFamily overriddenFamily;
+
+  @override
+  GetSeriesProgressProvider getProviderOverride(
+    covariant GetSeriesProgressProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [getSeriesProgress].
+class GetSeriesProgressProvider extends AutoDisposeProvider<double?> {
+  /// See also [getSeriesProgress].
+  GetSeriesProgressProvider({
+    required int seriesId,
+  }) : this._internal(
+          (ref) => getSeriesProgress(
+            ref as GetSeriesProgressRef,
+            seriesId: seriesId,
+          ),
+          from: getSeriesProgressProvider,
+          name: r'getSeriesProgressProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$getSeriesProgressHash,
+          dependencies: GetSeriesProgressFamily._dependencies,
+          allTransitiveDependencies:
+              GetSeriesProgressFamily._allTransitiveDependencies,
+          seriesId: seriesId,
+        );
+
+  GetSeriesProgressProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.seriesId,
+  }) : super.internal();
+
+  final int seriesId;
+
+  @override
+  Override overrideWith(
+    double? Function(GetSeriesProgressRef ref) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: GetSeriesProgressProvider._internal(
+        (ref) => create(ref as GetSeriesProgressRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        seriesId: seriesId,
+      ),
+    );
+  }
+
+  @override
+  ({
+    int seriesId,
+  }) get argument {
+    return (seriesId: seriesId,);
+  }
+
+  @override
+  AutoDisposeProviderElement<double?> createElement() {
+    return _GetSeriesProgressProviderElement(this);
+  }
+
+  GetSeriesProgressProvider _copyWith(
+    double? Function(GetSeriesProgressRef ref) create,
+  ) {
+    return GetSeriesProgressProvider._internal(
+      (ref) => create(ref as GetSeriesProgressRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      seriesId: seriesId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GetSeriesProgressProvider && other.seriesId == seriesId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, seriesId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin GetSeriesProgressRef on AutoDisposeProviderRef<double?> {
+  /// The parameter `seriesId` of this provider.
+  int get seriesId;
+}
+
+class _GetSeriesProgressProviderElement
+    extends AutoDisposeProviderElement<double?> with GetSeriesProgressRef {
+  _GetSeriesProgressProviderElement(super.provider);
+
+  @override
+  int get seriesId => (origin as GetSeriesProgressProvider).seriesId;
+}
+
 String _$seriesProgressHash() => r'74f8f4dd6c3219336fe10a71460607c175cf62ab';
 
 abstract class _$SeriesProgress extends BuildlessAutoDisposeNotifier<bool> {

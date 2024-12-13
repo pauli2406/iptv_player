@@ -1648,7 +1648,7 @@ class _EpisodeProgressProviderElement
 }
 
 String _$lastWatchedEpisodeHash() =>
-    r'cbe8c2e3fcc5c103618089e53da2609688e0b7ed';
+    r'4dc4dc1e9c9c37b99ade7756d85e2a4633505b23';
 
 abstract class _$LastWatchedEpisode extends BuildlessAutoDisposeNotifier<int?> {
   late final int seriesId;

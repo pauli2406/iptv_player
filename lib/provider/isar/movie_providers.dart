@@ -2,7 +2,6 @@ import 'package:play_shift/provider/isar/iptv_server_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:play_shift/home/provider/search_value_provider.dart';
 import 'package:play_shift/provider/isar/m3u_provider.dart';
-import 'package:play_shift/provider/models/channel_view_model.dart';
 import 'package:play_shift/provider/models/movie_view_model.dart';
 import 'package:play_shift/service/collections/item_category.dart';
 import 'package:xtream_code_client/xtream_code_client.dart';
@@ -10,7 +9,7 @@ import 'package:xtream_code_client/xtream_code_client.dart';
 part 'movie_providers.g.dart';
 
 @riverpod
-Stream<List<ChannelViewModel>> findAllMovies(
+Stream<List<MovieViewModel>> findAllMovies(
   FindAllMoviesRef ref, {
   ItemCategory? category,
 }) {
@@ -21,7 +20,21 @@ Stream<List<ChannelViewModel>> findAllMovies(
   return m3uService
       .findAllMovies(activeServer, searchValue, category)
       .map((movies) {
-    return movies.map(_movieToChannelViewModel).toList();
+    return movies
+        .map((movie) => MovieViewModel(
+              streamId: movie.id,
+              streamUrl: movie.streamUrl,
+              title: movie.name ?? "",
+              streamIcon: movie.streamIcon ?? "",
+              year: movie.year,
+              rating: movie.rating,
+              rating5based: movie.rating5based,
+              added: movie.added,
+              containerExtension: movie.containerExtension,
+              directSource: movie.directSource,
+              durationSecs: movie.durationSecs,
+            ))
+        .toList();
   });
 }
 
@@ -40,6 +53,7 @@ MovieViewModel findMovie(FindMovieRef ref, {required int streamId}) {
     added: vod.added,
     containerExtension: vod.containerExtension,
     directSource: vod.directSource,
+    durationSecs: vod.durationSecs, // Add this line
   );
 }
 
@@ -97,17 +111,4 @@ class MovieProgress extends _$MovieProgress {
     await ref.read(m3uServiceProvider).updateMovieProgress(movieId, duration);
     ref.invalidateSelf();
   }
-}
-
-// Helper functions
-ChannelViewModel _movieToChannelViewModel(dynamic movie) {
-  return ChannelViewModel(
-    movie.id,
-    movie.streamUrl,
-    movie.name ?? "",
-    movie.streamIcon ?? "",
-    false,
-    null,
-    [],
-  );
 }

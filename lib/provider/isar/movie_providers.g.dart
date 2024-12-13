@@ -6,7 +6,7 @@ part of 'movie_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$findAllMoviesHash() => r'54d8383f5fa96528eae914e1a6c61402fa2cc844';
+String _$findAllMoviesHash() => r'ad02a451462204954e8966a61da52ec1e88fc23f';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -73,7 +73,7 @@ class FindAllMoviesFamily extends Family {
 
   /// Enables overriding the behavior of this provider, no matter the parameters.
   Override overrideWith(
-      Stream<List<ChannelViewModel>> Function(FindAllMoviesRef ref) create) {
+      Stream<List<MovieViewModel>> Function(FindAllMoviesRef ref) create) {
     return _$FindAllMoviesFamilyOverride(this, create);
   }
 }
@@ -81,7 +81,7 @@ class FindAllMoviesFamily extends Family {
 class _$FindAllMoviesFamilyOverride implements FamilyOverride {
   _$FindAllMoviesFamilyOverride(this.overriddenFamily, this.create);
 
-  final Stream<List<ChannelViewModel>> Function(FindAllMoviesRef ref) create;
+  final Stream<List<MovieViewModel>> Function(FindAllMoviesRef ref) create;
 
   @override
   final FindAllMoviesFamily overriddenFamily;
@@ -96,7 +96,7 @@ class _$FindAllMoviesFamilyOverride implements FamilyOverride {
 
 /// See also [findAllMovies].
 class FindAllMoviesProvider
-    extends AutoDisposeStreamProvider<List<ChannelViewModel>> {
+    extends AutoDisposeStreamProvider<List<MovieViewModel>> {
   /// See also [findAllMovies].
   FindAllMoviesProvider({
     ItemCategory? category,
@@ -131,7 +131,7 @@ class FindAllMoviesProvider
 
   @override
   Override overrideWith(
-    Stream<List<ChannelViewModel>> Function(FindAllMoviesRef ref) create,
+    Stream<List<MovieViewModel>> Function(FindAllMoviesRef ref) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -155,12 +155,12 @@ class FindAllMoviesProvider
   }
 
   @override
-  AutoDisposeStreamProviderElement<List<ChannelViewModel>> createElement() {
+  AutoDisposeStreamProviderElement<List<MovieViewModel>> createElement() {
     return _FindAllMoviesProviderElement(this);
   }
 
   FindAllMoviesProvider _copyWith(
-    Stream<List<ChannelViewModel>> Function(FindAllMoviesRef ref) create,
+    Stream<List<MovieViewModel>> Function(FindAllMoviesRef ref) create,
   ) {
     return FindAllMoviesProvider._internal(
       (ref) => create(ref as FindAllMoviesRef),
@@ -187,13 +187,13 @@ class FindAllMoviesProvider
   }
 }
 
-mixin FindAllMoviesRef on AutoDisposeStreamProviderRef<List<ChannelViewModel>> {
+mixin FindAllMoviesRef on AutoDisposeStreamProviderRef<List<MovieViewModel>> {
   /// The parameter `category` of this provider.
   ItemCategory? get category;
 }
 
 class _FindAllMoviesProviderElement
-    extends AutoDisposeStreamProviderElement<List<ChannelViewModel>>
+    extends AutoDisposeStreamProviderElement<List<MovieViewModel>>
     with FindAllMoviesRef {
   _FindAllMoviesProviderElement(super.provider);
 
@@ -201,7 +201,7 @@ class _FindAllMoviesProviderElement
   ItemCategory? get category => (origin as FindAllMoviesProvider).category;
 }
 
-String _$findMovieHash() => r'105b99d19f099c5730bd692c913dc6c9aff53b93';
+String _$findMovieHash() => r'b92b65387c2c31586594828235c197b48cfb4d65';
 
 /// See also [findMovie].
 @ProviderFor(findMovie)

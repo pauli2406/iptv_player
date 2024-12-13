@@ -50,7 +50,7 @@ class _MoviesPageState extends ConsumerState<MoviesPage> {
       },
       searchController: searchController,
       itemBuilder: (context, itemHeight, item) => MovieListItem(
-        channelViewModel: item,
+        movie: item,
         height: itemHeight,
         route: MovieOverviewRoute(streamId: item.streamId),
       ),

@@ -47,58 +47,68 @@ const VodItemSchema = CollectionSchema(
       name: r'directSource',
       type: IsarType.string,
     ),
-    r'lastWatched': PropertySchema(
+    r'duration': PropertySchema(
       id: 6,
+      name: r'duration',
+      type: IsarType.string,
+    ),
+    r'durationSecs': PropertySchema(
+      id: 7,
+      name: r'durationSecs',
+      type: IsarType.long,
+    ),
+    r'lastWatched': PropertySchema(
+      id: 8,
       name: r'lastWatched',
       type: IsarType.dateTime,
     ),
     r'name': PropertySchema(
-      id: 7,
+      id: 9,
       name: r'name',
       type: IsarType.string,
     ),
     r'num': PropertySchema(
-      id: 8,
+      id: 10,
       name: r'num',
       type: IsarType.long,
     ),
     r'rating': PropertySchema(
-      id: 9,
+      id: 11,
       name: r'rating',
       type: IsarType.double,
     ),
     r'rating5based': PropertySchema(
-      id: 10,
+      id: 12,
       name: r'rating5based',
       type: IsarType.double,
     ),
     r'streamIcon': PropertySchema(
-      id: 11,
+      id: 13,
       name: r'streamIcon',
       type: IsarType.string,
     ),
     r'streamType': PropertySchema(
-      id: 12,
+      id: 14,
       name: r'streamType',
       type: IsarType.string,
     ),
     r'streamUrl': PropertySchema(
-      id: 13,
+      id: 15,
       name: r'streamUrl',
       type: IsarType.string,
     ),
     r'title': PropertySchema(
-      id: 14,
+      id: 16,
       name: r'title',
       type: IsarType.string,
     ),
     r'watchedDuration': PropertySchema(
-      id: 15,
+      id: 17,
       name: r'watchedDuration',
       type: IsarType.double,
     ),
     r'year': PropertySchema(
-      id: 16,
+      id: 18,
       name: r'year',
       type: IsarType.string,
     )
@@ -150,6 +160,12 @@ int _vodItemEstimateSize(
     }
   }
   {
+    final value = object.duration;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.name;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -195,17 +211,19 @@ void _vodItemSerialize(
   writer.writeString(offsets[3], object.containerExtension);
   writer.writeString(offsets[4], object.customSid);
   writer.writeString(offsets[5], object.directSource);
-  writer.writeDateTime(offsets[6], object.lastWatched);
-  writer.writeString(offsets[7], object.name);
-  writer.writeLong(offsets[8], object.num);
-  writer.writeDouble(offsets[9], object.rating);
-  writer.writeDouble(offsets[10], object.rating5based);
-  writer.writeString(offsets[11], object.streamIcon);
-  writer.writeString(offsets[12], object.streamType);
-  writer.writeString(offsets[13], object.streamUrl);
-  writer.writeString(offsets[14], object.title);
-  writer.writeDouble(offsets[15], object.watchedDuration);
-  writer.writeString(offsets[16], object.year);
+  writer.writeString(offsets[6], object.duration);
+  writer.writeLong(offsets[7], object.durationSecs);
+  writer.writeDateTime(offsets[8], object.lastWatched);
+  writer.writeString(offsets[9], object.name);
+  writer.writeLong(offsets[10], object.num);
+  writer.writeDouble(offsets[11], object.rating);
+  writer.writeDouble(offsets[12], object.rating5based);
+  writer.writeString(offsets[13], object.streamIcon);
+  writer.writeString(offsets[14], object.streamType);
+  writer.writeString(offsets[15], object.streamUrl);
+  writer.writeString(offsets[16], object.title);
+  writer.writeDouble(offsets[17], object.watchedDuration);
+  writer.writeString(offsets[18], object.year);
 }
 
 VodItem _vodItemDeserialize(
@@ -221,18 +239,20 @@ VodItem _vodItemDeserialize(
     containerExtension: reader.readStringOrNull(offsets[3]),
     customSid: reader.readStringOrNull(offsets[4]),
     directSource: reader.readStringOrNull(offsets[5]),
+    duration: reader.readStringOrNull(offsets[6]),
+    durationSecs: reader.readLongOrNull(offsets[7]),
     id: id,
-    lastWatched: reader.readDateTimeOrNull(offsets[6]),
-    name: reader.readStringOrNull(offsets[7]),
-    num: reader.readLongOrNull(offsets[8]),
-    rating: reader.readDoubleOrNull(offsets[9]),
-    rating5based: reader.readDoubleOrNull(offsets[10]),
-    streamIcon: reader.readStringOrNull(offsets[11]),
-    streamType: reader.readStringOrNull(offsets[12]),
-    streamUrl: reader.readString(offsets[13]),
-    title: reader.readStringOrNull(offsets[14]),
-    watchedDuration: reader.readDoubleOrNull(offsets[15]),
-    year: reader.readStringOrNull(offsets[16]),
+    lastWatched: reader.readDateTimeOrNull(offsets[8]),
+    name: reader.readStringOrNull(offsets[9]),
+    num: reader.readLongOrNull(offsets[10]),
+    rating: reader.readDoubleOrNull(offsets[11]),
+    rating5based: reader.readDoubleOrNull(offsets[12]),
+    streamIcon: reader.readStringOrNull(offsets[13]),
+    streamType: reader.readStringOrNull(offsets[14]),
+    streamUrl: reader.readString(offsets[15]),
+    title: reader.readStringOrNull(offsets[16]),
+    watchedDuration: reader.readDoubleOrNull(offsets[17]),
+    year: reader.readStringOrNull(offsets[18]),
   );
   return object;
 }
@@ -257,26 +277,30 @@ P _vodItemDeserializeProp<P>(
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readStringOrNull(offset)) as P;
-    case 8:
       return (reader.readLongOrNull(offset)) as P;
+    case 8:
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 9:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 10:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 11:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 12:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 13:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 14:
       return (reader.readStringOrNull(offset)) as P;
     case 15:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 16:
+      return (reader.readStringOrNull(offset)) as P;
+    case 17:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 18:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1099,6 +1123,222 @@ extension VodItemQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'directSource',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'duration',
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'duration',
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'duration',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'duration',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'duration',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'duration',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'duration',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'duration',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'duration',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'duration',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'duration',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'duration',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationSecsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'durationSecs',
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition>
+      durationSecsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'durationSecs',
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationSecsEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'durationSecs',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationSecsGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'durationSecs',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationSecsLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'durationSecs',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterFilterCondition> durationSecsBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'durationSecs',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -2471,6 +2711,30 @@ extension VodItemQuerySortBy on QueryBuilder<VodItem, VodItem, QSortBy> {
     });
   }
 
+  QueryBuilder<VodItem, VodItem, QAfterSortBy> sortByDuration() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'duration', Sort.asc);
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterSortBy> sortByDurationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'duration', Sort.desc);
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterSortBy> sortByDurationSecs() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'durationSecs', Sort.asc);
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterSortBy> sortByDurationSecsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'durationSecs', Sort.desc);
+    });
+  }
+
   QueryBuilder<VodItem, VodItem, QAfterSortBy> sortByLastWatched() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastWatched', Sort.asc);
@@ -2666,6 +2930,30 @@ extension VodItemQuerySortThenBy
     });
   }
 
+  QueryBuilder<VodItem, VodItem, QAfterSortBy> thenByDuration() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'duration', Sort.asc);
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterSortBy> thenByDurationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'duration', Sort.desc);
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterSortBy> thenByDurationSecs() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'durationSecs', Sort.asc);
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QAfterSortBy> thenByDurationSecsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'durationSecs', Sort.desc);
+    });
+  }
+
   QueryBuilder<VodItem, VodItem, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -2853,6 +3141,19 @@ extension VodItemQueryWhereDistinct
     });
   }
 
+  QueryBuilder<VodItem, VodItem, QDistinct> distinctByDuration(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'duration', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<VodItem, VodItem, QDistinct> distinctByDurationSecs() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'durationSecs');
+    });
+  }
+
   QueryBuilder<VodItem, VodItem, QDistinct> distinctByLastWatched() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'lastWatched');
@@ -2968,6 +3269,18 @@ extension VodItemQueryProperty
   QueryBuilder<VodItem, String?, QQueryOperations> directSourceProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'directSource');
+    });
+  }
+
+  QueryBuilder<VodItem, String?, QQueryOperations> durationProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'duration');
+    });
+  }
+
+  QueryBuilder<VodItem, int?, QQueryOperations> durationSecsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'durationSecs');
     });
   }
 

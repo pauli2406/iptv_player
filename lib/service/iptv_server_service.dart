@@ -220,6 +220,13 @@ class IptvServerService {
   Future<XTremeCodeVodInfo?> vodInfo(
       VodItem vodItem, IptvServer activeIptvServer) async {
     final vodInfo = await client.vodInfo(vodItem.toXtreamCodeVodItem());
+
+    await isarService.isar.writeTxn(() async {
+      vodItem.durationSecs = vodInfo.info.durationSecs;
+      vodItem.duration = vodInfo.info.duration;
+      await isarService.isar.vodItems.put(vodItem);
+    });
+
     return vodInfo;
   }
 

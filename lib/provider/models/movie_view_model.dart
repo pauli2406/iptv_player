@@ -11,6 +11,7 @@ class MovieViewModel {
   final DateTime? added;
   final String? containerExtension;
   final String? directSource;
+  final int? durationSecs; // Add this property
 
   MovieViewModel({
     required this.streamId,
@@ -23,6 +24,7 @@ class MovieViewModel {
     this.added,
     this.containerExtension,
     this.directSource,
+    this.durationSecs,
   });
 
   factory MovieViewModel.fromVodItem(VodItem item) {

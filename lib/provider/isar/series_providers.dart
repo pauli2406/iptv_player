@@ -163,11 +163,13 @@ class LastWatchedEpisode extends _$LastWatchedEpisode {
     return ref.watch(m3uServiceProvider).getLastWatchedEpisode(seriesId)?.id;
   }
 
-  Future<void> update(int episodeId) async {
-    await ref.read(m3uServiceProvider).updateLastWatchedEpisode(
+  void update(int episodeId) {
+    // Update state immediately
+    state = episodeId;
+    // Then persist
+    ref.read(m3uServiceProvider).updateLastWatchedEpisode(
           seriesId,
           episodeId,
         );
-    ref.invalidateSelf();
   }
 }

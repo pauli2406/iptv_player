@@ -2,7 +2,7 @@
 
 A highly optimized and efficient IPTV player application, written in Flutter/Dart supporting multiple platforms.
 
-<img src="https://raw.githubusercontent.com/pauli2406/iptv_player/main/assets/logo/iptv_logo_2.png" width="300">
+<img src="https://raw.githubusercontent.com/pauli2406/iptv_player/main/assets/logo/play-shift-01.png" width="300">
 
 ## Features :sparkles:
 

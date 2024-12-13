@@ -5,6 +5,7 @@ import 'package:play_shift/service/collections/epg_item.dart';
 import 'package:play_shift/service/collections/item_category.dart';
 import 'package:play_shift/service/collections/iptv_server/iptv_server.dart';
 import 'package:play_shift/service/collections/channel_item.dart';
+import 'package:play_shift/service/collections/series_episode.dart';
 import 'package:play_shift/service/collections/series_item.dart';
 import 'package:play_shift/service/collections/vod_item.dart';
 import 'package:play_shift/service/m3u_service.dart';
@@ -95,6 +96,14 @@ class IptvServerService {
       final epg = await client.epg(useLocalFile: false);
 
       _progressController.add('Persisting data to database...');
+
+      // Get existing VOD items to preserve watch metadata
+      final existingVodItems = await isarService.isar.vodItems
+          .filter()
+          .iptvServer((q) => q.idEqualTo(activeIptvServer.id))
+          .findAll();
+      final existingVodMap = {for (var item in existingVodItems) item.id: item};
+
       await isarService.isar.writeTxnSync(() async {
         // Update server info
         activeIptvServer.allowedOutputFormats =
@@ -111,14 +120,17 @@ class IptvServerService {
               (c) => ItemCategory.fromCategory(c, ItemCategoryType.series)),
         ].map((cat) => cat..iptvServer.value = activeIptvServer).toList());
 
-        // Persist VODs
+        // Persist VODs with merged metadata
         isarService.isar.vodItems.putAllSync(
-          vodItems
-              .map((vod) => VodItem.fromXtreamCodeVodItem(
-                    vod,
-                    client.movieUrl(vod.streamId!, vod.containerExtension!),
-                  )..iptvServer.value = activeIptvServer)
-              .toList(),
+          vodItems.map((vod) {
+            final existingVod = existingVodMap[vod.streamId];
+            return VodItem.fromXtreamCodeVodItem(
+              vod,
+              client.movieUrl(vod.streamId!, vod.containerExtension!),
+              watchedDuration: existingVod?.watchedDuration,
+              lastWatched: existingVod?.lastWatched,
+            )..iptvServer.value = activeIptvServer;
+          }).toList(),
         );
 
         // Persist channels
@@ -174,7 +186,48 @@ class IptvServerService {
       SeriesItem seriesItem, IptvServer activeIptvServer) async {
     final seriesInfo =
         await client.seriesInfo(seriesItem.toXtreamCodeSeriesItem());
+
+    if (seriesInfo.episodes != null) {
+      // Get existing episodes to preserve watch metadata
+      final existingEpisodes = await isarService.isar.seriesEpisodes
+          .filter()
+          .iptvServer((q) => q.idEqualTo(activeIptvServer.id))
+          .parentSeriesIdEqualTo(seriesItem.id)
+          .findAll();
+
+      final existingEpisodesMap = {for (var ep in existingEpisodes) ep.id: ep};
+
+      // Convert and merge episodes
+      final episodes =
+          seriesInfo.episodes!.values.expand((episodes) => episodes).map((e) {
+        final existingEp = existingEpisodesMap[e.id];
+        return SeriesEpisode.fromXtreamCodeSeriesEpisode(
+          e,
+          client.seriesUrl(e.id!, e.containerExtension!),
+          seriesItem.id,
+        )
+          ..iptvServer.value = activeIptvServer
+          ..watchedDuration = existingEp?.watchedDuration
+          ..lastWatched = existingEp?.lastWatched;
+      }).toList();
+
+      m3uService.putEpisodes(episodes);
+    }
+
     return seriesInfo;
+  }
+
+  Future<XTremeCodeVodInfo?> vodInfo(
+      VodItem vodItem, IptvServer activeIptvServer) async {
+    final vodInfo = await client.vodInfo(vodItem.toXtreamCodeVodItem());
+
+    await isarService.isar.writeTxn(() async {
+      vodItem.durationSecs = vodInfo.info.durationSecs;
+      vodItem.duration = vodInfo.info.duration;
+      await isarService.isar.vodItems.put(vodItem);
+    });
+
+    return vodInfo;
   }
 
   Future<XTremeCodeGeneralInformation> loadServerInformation() async {

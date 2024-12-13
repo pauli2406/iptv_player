@@ -29,7 +29,7 @@ class LoadingIndicator extends ConsumerWidget {
             stream: ref.read(iptvServerServiceProvider).progressStream,
             builder: (context, snapshot) {
               return Text(
-                snapshot.data ?? 'Initializing...',
+                snapshot.data ?? 'Loading...',
                 style: FluentTheme.of(context).typography.caption,
               );
             },

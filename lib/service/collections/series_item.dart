@@ -27,6 +27,8 @@ class SeriesItem {
     this.episodeRunTime,
     this.categoryId,
     required this.categoryIds,
+    this.firstWatched,
+    this.lastWatchedEpisodeId,
   });
 
   Id id;
@@ -49,6 +51,8 @@ class SeriesItem {
   int? episodeRunTime;
   int? categoryId;
   List<int> categoryIds;
+  DateTime? firstWatched;
+  int? lastWatchedEpisodeId;
   final iptvServer = IsarLink<IptvServer>();
 
   SeriesItem.fromXtreamCodeSeriesItem(
@@ -72,7 +76,8 @@ class SeriesItem {
         youtubeTrailer = seriesItem.youtubeTrailer,
         episodeRunTime = seriesItem.episodeRunTime,
         categoryId = seriesItem.categoryId,
-        categoryIds = seriesItem.categoryIds ?? [];
+        categoryIds = seriesItem.categoryIds ?? [],
+        firstWatched = null;
 
   XTremeCodeSeriesItem toXtreamCodeSeriesItem() {
     return XTremeCodeSeriesItem(

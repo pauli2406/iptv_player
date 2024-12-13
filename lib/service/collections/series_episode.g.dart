@@ -62,55 +62,70 @@ const SeriesEpisodeSchema = CollectionSchema(
       name: r'episodeNum',
       type: IsarType.long,
     ),
-    r'movieImage': PropertySchema(
+    r'lastWatched': PropertySchema(
       id: 9,
+      name: r'lastWatched',
+      type: IsarType.dateTime,
+    ),
+    r'movieImage': PropertySchema(
+      id: 10,
       name: r'movieImage',
       type: IsarType.string,
     ),
+    r'parentSeriesId': PropertySchema(
+      id: 11,
+      name: r'parentSeriesId',
+      type: IsarType.long,
+    ),
     r'plot': PropertySchema(
-      id: 10,
+      id: 12,
       name: r'plot',
       type: IsarType.string,
     ),
     r'rating': PropertySchema(
-      id: 11,
+      id: 13,
       name: r'rating',
       type: IsarType.double,
     ),
     r'releaseDate': PropertySchema(
-      id: 12,
+      id: 14,
       name: r'releaseDate',
       type: IsarType.dateTime,
     ),
     r'season': PropertySchema(
-      id: 13,
+      id: 15,
       name: r'season',
       type: IsarType.long,
     ),
     r'streamId': PropertySchema(
-      id: 14,
+      id: 16,
       name: r'streamId',
       type: IsarType.long,
     ),
     r'streamUrl': PropertySchema(
-      id: 15,
+      id: 17,
       name: r'streamUrl',
       type: IsarType.string,
     ),
     r'subtitles': PropertySchema(
-      id: 16,
+      id: 18,
       name: r'subtitles',
       type: IsarType.stringList,
     ),
     r'title': PropertySchema(
-      id: 17,
+      id: 19,
       name: r'title',
       type: IsarType.string,
     ),
     r'tmdbId': PropertySchema(
-      id: 18,
+      id: 20,
       name: r'tmdbId',
       type: IsarType.long,
+    ),
+    r'watchedDuration': PropertySchema(
+      id: 21,
+      name: r'watchedDuration',
+      type: IsarType.double,
     )
   },
   estimateSize: _seriesEpisodeEstimateSize,
@@ -118,8 +133,29 @@ const SeriesEpisodeSchema = CollectionSchema(
   deserialize: _seriesEpisodeDeserialize,
   deserializeProp: _seriesEpisodeDeserializeProp,
   idName: r'id',
-  indexes: {},
-  links: {},
+  indexes: {
+    r'parentSeriesId': IndexSchema(
+      id: 3501259820670741293,
+      name: r'parentSeriesId',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'parentSeriesId',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
+  links: {
+    r'iptvServer': LinkSchema(
+      id: 4899075302136454197,
+      name: r'iptvServer',
+      target: r'IptvServer',
+      single: true,
+    )
+  },
   embeddedSchemas: {},
   getId: _seriesEpisodeGetId,
   getLinks: _seriesEpisodeGetLinks,
@@ -207,16 +243,19 @@ void _seriesEpisodeSerialize(
   writer.writeString(offsets[6], object.duration);
   writer.writeLong(offsets[7], object.durationSecs);
   writer.writeLong(offsets[8], object.episodeNum);
-  writer.writeString(offsets[9], object.movieImage);
-  writer.writeString(offsets[10], object.plot);
-  writer.writeDouble(offsets[11], object.rating);
-  writer.writeDateTime(offsets[12], object.releaseDate);
-  writer.writeLong(offsets[13], object.season);
-  writer.writeLong(offsets[14], object.streamId);
-  writer.writeString(offsets[15], object.streamUrl);
-  writer.writeStringList(offsets[16], object.subtitles);
-  writer.writeString(offsets[17], object.title);
-  writer.writeLong(offsets[18], object.tmdbId);
+  writer.writeDateTime(offsets[9], object.lastWatched);
+  writer.writeString(offsets[10], object.movieImage);
+  writer.writeLong(offsets[11], object.parentSeriesId);
+  writer.writeString(offsets[12], object.plot);
+  writer.writeDouble(offsets[13], object.rating);
+  writer.writeDateTime(offsets[14], object.releaseDate);
+  writer.writeLong(offsets[15], object.season);
+  writer.writeLong(offsets[16], object.streamId);
+  writer.writeString(offsets[17], object.streamUrl);
+  writer.writeStringList(offsets[18], object.subtitles);
+  writer.writeString(offsets[19], object.title);
+  writer.writeLong(offsets[20], object.tmdbId);
+  writer.writeDouble(offsets[21], object.watchedDuration);
 }
 
 SeriesEpisode _seriesEpisodeDeserialize(
@@ -236,16 +275,19 @@ SeriesEpisode _seriesEpisodeDeserialize(
     durationSecs: reader.readLongOrNull(offsets[7]),
     episodeNum: reader.readLongOrNull(offsets[8]),
     id: id,
-    movieImage: reader.readStringOrNull(offsets[9]),
-    plot: reader.readStringOrNull(offsets[10]),
-    rating: reader.readDoubleOrNull(offsets[11]),
-    releaseDate: reader.readDateTimeOrNull(offsets[12]),
-    season: reader.readLongOrNull(offsets[13]),
-    streamId: reader.readLongOrNull(offsets[14]),
-    streamUrl: reader.readString(offsets[15]),
-    subtitles: reader.readStringList(offsets[16]) ?? const [],
-    title: reader.readStringOrNull(offsets[17]),
-    tmdbId: reader.readLongOrNull(offsets[18]),
+    lastWatched: reader.readDateTimeOrNull(offsets[9]),
+    movieImage: reader.readStringOrNull(offsets[10]),
+    parentSeriesId: reader.readLongOrNull(offsets[11]),
+    plot: reader.readStringOrNull(offsets[12]),
+    rating: reader.readDoubleOrNull(offsets[13]),
+    releaseDate: reader.readDateTimeOrNull(offsets[14]),
+    season: reader.readLongOrNull(offsets[15]),
+    streamId: reader.readLongOrNull(offsets[16]),
+    streamUrl: reader.readString(offsets[17]),
+    subtitles: reader.readStringList(offsets[18]) ?? const [],
+    title: reader.readStringOrNull(offsets[19]),
+    tmdbId: reader.readLongOrNull(offsets[20]),
+    watchedDuration: reader.readDoubleOrNull(offsets[21]),
   );
   return object;
 }
@@ -276,25 +318,31 @@ P _seriesEpisodeDeserializeProp<P>(
     case 8:
       return (reader.readLongOrNull(offset)) as P;
     case 9:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 10:
       return (reader.readStringOrNull(offset)) as P;
     case 11:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 12:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 13:
-      return (reader.readLongOrNull(offset)) as P;
-    case 14:
-      return (reader.readLongOrNull(offset)) as P;
-    case 15:
-      return (reader.readString(offset)) as P;
-    case 16:
-      return (reader.readStringList(offset) ?? const []) as P;
-    case 17:
       return (reader.readStringOrNull(offset)) as P;
-    case 18:
+    case 13:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 14:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 15:
       return (reader.readLongOrNull(offset)) as P;
+    case 16:
+      return (reader.readLongOrNull(offset)) as P;
+    case 17:
+      return (reader.readString(offset)) as P;
+    case 18:
+      return (reader.readStringList(offset) ?? const []) as P;
+    case 19:
+      return (reader.readStringOrNull(offset)) as P;
+    case 20:
+      return (reader.readLongOrNull(offset)) as P;
+    case 21:
+      return (reader.readDoubleOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -305,12 +353,14 @@ Id _seriesEpisodeGetId(SeriesEpisode object) {
 }
 
 List<IsarLinkBase<dynamic>> _seriesEpisodeGetLinks(SeriesEpisode object) {
-  return [];
+  return [object.iptvServer];
 }
 
 void _seriesEpisodeAttach(
     IsarCollection<dynamic> col, Id id, SeriesEpisode object) {
   object.id = id;
+  object.iptvServer
+      .attach(col, col.isar.collection<IptvServer>(), r'iptvServer', id);
 }
 
 extension SeriesEpisodeQueryWhereSort
@@ -318,6 +368,14 @@ extension SeriesEpisodeQueryWhereSort
   QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterWhere> anyParentSeriesId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'parentSeriesId'),
+      );
     });
   }
 }
@@ -388,6 +446,121 @@ extension SeriesEpisodeQueryWhere
         lower: lowerId,
         includeLower: includeLower,
         upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterWhereClause>
+      parentSeriesIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'parentSeriesId',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterWhereClause>
+      parentSeriesIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'parentSeriesId',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterWhereClause>
+      parentSeriesIdEqualTo(int? parentSeriesId) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'parentSeriesId',
+        value: [parentSeriesId],
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterWhereClause>
+      parentSeriesIdNotEqualTo(int? parentSeriesId) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'parentSeriesId',
+              lower: [],
+              upper: [parentSeriesId],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'parentSeriesId',
+              lower: [parentSeriesId],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'parentSeriesId',
+              lower: [parentSeriesId],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'parentSeriesId',
+              lower: [],
+              upper: [parentSeriesId],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterWhereClause>
+      parentSeriesIdGreaterThan(
+    int? parentSeriesId, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'parentSeriesId',
+        lower: [parentSeriesId],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterWhereClause>
+      parentSeriesIdLessThan(
+    int? parentSeriesId, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'parentSeriesId',
+        lower: [],
+        upper: [parentSeriesId],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterWhereClause>
+      parentSeriesIdBetween(
+    int? lowerParentSeriesId,
+    int? upperParentSeriesId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'parentSeriesId',
+        lower: [lowerParentSeriesId],
+        includeLower: includeLower,
+        upper: [upperParentSeriesId],
         includeUpper: includeUpper,
       ));
     });
@@ -1534,6 +1707,80 @@ extension SeriesEpisodeQueryFilter
   }
 
   QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      lastWatchedIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastWatched',
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      lastWatchedIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastWatched',
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      lastWatchedEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastWatched',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      lastWatchedGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastWatched',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      lastWatchedLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastWatched',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      lastWatchedBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastWatched',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
       movieImageIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1683,6 +1930,80 @@ extension SeriesEpisodeQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'movieImage',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      parentSeriesIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'parentSeriesId',
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      parentSeriesIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'parentSeriesId',
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      parentSeriesIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'parentSeriesId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      parentSeriesIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'parentSeriesId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      parentSeriesIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'parentSeriesId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      parentSeriesIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'parentSeriesId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -2734,13 +3055,111 @@ extension SeriesEpisodeQueryFilter
       ));
     });
   }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      watchedDurationIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'watchedDuration',
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      watchedDurationIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'watchedDuration',
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      watchedDurationEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'watchedDuration',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      watchedDurationGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'watchedDuration',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      watchedDurationLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'watchedDuration',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      watchedDurationBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'watchedDuration',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
 }
 
 extension SeriesEpisodeQueryObject
     on QueryBuilder<SeriesEpisode, SeriesEpisode, QFilterCondition> {}
 
 extension SeriesEpisodeQueryLinks
-    on QueryBuilder<SeriesEpisode, SeriesEpisode, QFilterCondition> {}
+    on QueryBuilder<SeriesEpisode, SeriesEpisode, QFilterCondition> {
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition> iptvServer(
+      FilterQuery<IptvServer> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'iptvServer');
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterFilterCondition>
+      iptvServerIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'iptvServer', 0, true, 0, true);
+    });
+  }
+}
 
 extension SeriesEpisodeQuerySortBy
     on QueryBuilder<SeriesEpisode, SeriesEpisode, QSortBy> {
@@ -2862,6 +3281,19 @@ extension SeriesEpisodeQuerySortBy
     });
   }
 
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy> sortByLastWatched() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastWatched', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy>
+      sortByLastWatchedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastWatched', Sort.desc);
+    });
+  }
+
   QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy> sortByMovieImage() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'movieImage', Sort.asc);
@@ -2872,6 +3304,20 @@ extension SeriesEpisodeQuerySortBy
       sortByMovieImageDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'movieImage', Sort.desc);
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy>
+      sortByParentSeriesId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'parentSeriesId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy>
+      sortByParentSeriesIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'parentSeriesId', Sort.desc);
     });
   }
 
@@ -2971,6 +3417,20 @@ extension SeriesEpisodeQuerySortBy
   QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy> sortByTmdbIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'tmdbId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy>
+      sortByWatchedDuration() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'watchedDuration', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy>
+      sortByWatchedDurationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'watchedDuration', Sort.desc);
     });
   }
 }
@@ -3107,6 +3567,19 @@ extension SeriesEpisodeQuerySortThenBy
     });
   }
 
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy> thenByLastWatched() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastWatched', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy>
+      thenByLastWatchedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastWatched', Sort.desc);
+    });
+  }
+
   QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy> thenByMovieImage() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'movieImage', Sort.asc);
@@ -3117,6 +3590,20 @@ extension SeriesEpisodeQuerySortThenBy
       thenByMovieImageDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'movieImage', Sort.desc);
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy>
+      thenByParentSeriesId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'parentSeriesId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy>
+      thenByParentSeriesIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'parentSeriesId', Sort.desc);
     });
   }
 
@@ -3218,6 +3705,20 @@ extension SeriesEpisodeQuerySortThenBy
       return query.addSortBy(r'tmdbId', Sort.desc);
     });
   }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy>
+      thenByWatchedDuration() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'watchedDuration', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QAfterSortBy>
+      thenByWatchedDurationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'watchedDuration', Sort.desc);
+    });
+  }
 }
 
 extension SeriesEpisodeQueryWhereDistinct
@@ -3283,10 +3784,24 @@ extension SeriesEpisodeQueryWhereDistinct
     });
   }
 
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QDistinct>
+      distinctByLastWatched() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastWatched');
+    });
+  }
+
   QueryBuilder<SeriesEpisode, SeriesEpisode, QDistinct> distinctByMovieImage(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'movieImage', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QDistinct>
+      distinctByParentSeriesId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'parentSeriesId');
     });
   }
 
@@ -3345,6 +3860,13 @@ extension SeriesEpisodeQueryWhereDistinct
   QueryBuilder<SeriesEpisode, SeriesEpisode, QDistinct> distinctByTmdbId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'tmdbId');
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, SeriesEpisode, QDistinct>
+      distinctByWatchedDuration() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'watchedDuration');
     });
   }
 }
@@ -3413,9 +3935,22 @@ extension SeriesEpisodeQueryProperty
     });
   }
 
+  QueryBuilder<SeriesEpisode, DateTime?, QQueryOperations>
+      lastWatchedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastWatched');
+    });
+  }
+
   QueryBuilder<SeriesEpisode, String?, QQueryOperations> movieImageProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'movieImage');
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, int?, QQueryOperations> parentSeriesIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'parentSeriesId');
     });
   }
 
@@ -3472,6 +4007,13 @@ extension SeriesEpisodeQueryProperty
   QueryBuilder<SeriesEpisode, int?, QQueryOperations> tmdbIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'tmdbId');
+    });
+  }
+
+  QueryBuilder<SeriesEpisode, double?, QQueryOperations>
+      watchedDurationProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'watchedDuration');
     });
   }
 }

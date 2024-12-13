@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+import 'package:play_shift/service/collections/iptv_server/iptv_server.dart';
 import 'package:xtream_code_client/xtream_code_client.dart';
 
 part 'series_episode.g.dart';
@@ -26,6 +27,9 @@ class SeriesEpisode {
     this.rating,
     this.coverBig,
     required this.streamUrl,
+    this.watchedDuration,
+    this.lastWatched,
+    this.parentSeriesId,
   });
 
   Id? id;
@@ -48,10 +52,19 @@ class SeriesEpisode {
   double? rating;
   String? coverBig;
   String streamUrl;
+  double? watchedDuration; // in seconds
+  DateTime? lastWatched;
+  
+  @Index()
+  final int? parentSeriesId;
+  
+  final iptvServer = IsarLink<IptvServer>();
+
 
   SeriesEpisode.fromXtreamCodeSeriesEpisode(
     XTremeCodeEpisode seriesEpisode,
     this.streamUrl,
+    this.parentSeriesId,
   )   : id = seriesEpisode.id,
         streamId = seriesEpisode.id,
         episodeNum = seriesEpisode.episodeNum,
@@ -70,5 +83,7 @@ class SeriesEpisode {
         movieImage = seriesEpisode.info.movieImage,
         bitrate = seriesEpisode.info.bitrate,
         rating = seriesEpisode.info.rating,
-        coverBig = seriesEpisode.info.coverBig;
+        coverBig = seriesEpisode.info.coverBig,
+        watchedDuration = null,
+        lastWatched = null;
 }

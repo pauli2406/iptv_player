@@ -14,6 +14,8 @@ class MediaListItem extends StatefulWidget {
     this.backgroundColor,
     this.hoverBackgroundColor,
     this.titleMaxLines = 1,
+    this.progressPercentage,
+    this.showProgressIcon = false,
     super.key,
   });
 
@@ -25,6 +27,8 @@ class MediaListItem extends StatefulWidget {
   final Color? backgroundColor;
   final Color? hoverBackgroundColor;
   final int titleMaxLines;
+  final double? progressPercentage;
+  final bool showProgressIcon;
 
   @override
   State<MediaListItem> createState() => _MediaListItemState();
@@ -199,8 +203,52 @@ class _MediaListItemState extends State<MediaListItem> {
             children: [
               Expanded(
                 flex: 8,
-                child: _buildImage(),
+                child: Stack(
+                  children: [
+                    _buildImage(),
+                    if (widget.showProgressIcon &&
+                        widget.progressPercentage != null)
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: widget.progressPercentage! >= 0.98
+                                ? FluentTheme.of(context).accentColor
+                                : Colors.black.withOpacity(0.5),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.25),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            widget.progressPercentage! >= 0.98
+                                ? FluentIcons.check_mark
+                                : FluentIcons.play,
+                            color: Colors.white,
+                            size: 12,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
+              if (widget.progressPercentage != null)
+                Padding(
+                  padding: EdgeInsets.zero,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ProgressBar(
+                      value: widget.progressPercentage! * 100,
+                      strokeWidth: 3,
+                    ),
+                  ),
+                ),
               Expanded(
                 flex: 2,
                 child: _buildInfo(),

@@ -29,55 +29,18 @@ class MovieListItem extends ConsumerWidget {
 
     return HoverButton(
       onPressed: () => context.pushRoute(route),
-      builder: (context, states) => Stack(
-        children: [
-          MediaListItem(
-            imageUrl: movie.streamIcon!,
-            title: movie.title,
-            subtitle: null,
-            height: height,
-            onTap: () => context.pushRoute(route),
-            backgroundColor: ThemeService().defaultBackground(context),
-            hoverBackgroundColor: ThemeService().hoverBackgroundColor(context),
-            titleMaxLines: titleMaxLines,
-          ),
-          if (progress != null && progress > 0) ...[
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: ProgressBar(
-                value: progressPercentage * 100,
-                strokeWidth: 3,
-              ),
-            ),
-            Positioned(
-              top: 8,
-              right: 8,
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: progressPercentage >= 0.98
-                      ? FluentTheme.of(context).accentColor
-                      : Colors.black.withOpacity(0.5),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.25),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  progressPercentage >= 0.98 ? FluentIcons.check_mark : FluentIcons.play,
-                  color: Colors.white,
-                  size: 12,
-                ),
-              ),
-            ),
-          ],
-        ],
+      builder: (context, states) => MediaListItem(
+        imageUrl: movie.streamIcon!,
+        title: movie.title,
+        subtitle: null,
+        height: height,
+        onTap: () => context.pushRoute(route),
+        backgroundColor: ThemeService().defaultBackground(context),
+        hoverBackgroundColor: ThemeService().hoverBackgroundColor(context),
+        titleMaxLines: titleMaxLines,
+        progressPercentage:
+            progress != null && progress > 0 ? progressPercentage : null,
+        showProgressIcon: true,
       ),
     );
   }

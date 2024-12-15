@@ -35,7 +35,7 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
   int? _selectedEpisodeIndex;
   final ScrollController _episodeScrollController = ScrollController();
   Timer? _scrollTimer;
-  static const _scrollInterval = Duration(milliseconds: 50);
+  static const _scrollInterval = Duration(milliseconds: 20);
   static const _scrollAmount = 50.0;
   bool _hasScrolledToLastWatched = false;
 
@@ -588,7 +588,6 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
 
   void _onEpisodeSelected(int index, SeriesWithInfo data) {
     final episode = data.episodes[_selectedSeason.toString()]![index];
-    // Update last watched episode
     ref
         .read(lastWatchedEpisodeProvider(widget.seriesId).notifier)
         .update(episode.id!);

@@ -29,6 +29,7 @@ class SeriesItem {
     required this.categoryIds,
     this.firstWatched,
     this.lastWatchedEpisodeId,
+    this.isFavorite = false,
   });
 
   Id id;
@@ -53,6 +54,7 @@ class SeriesItem {
   List<int> categoryIds;
   DateTime? firstWatched;
   int? lastWatchedEpisodeId;
+  bool isFavorite;
   final iptvServer = IsarLink<IptvServer>();
 
   SeriesItem.fromXtreamCodeSeriesItem(
@@ -77,7 +79,8 @@ class SeriesItem {
         episodeRunTime = seriesItem.episodeRunTime,
         categoryId = seriesItem.categoryId,
         categoryIds = seriesItem.categoryIds ?? [],
-        firstWatched = null;
+        firstWatched = null,
+        isFavorite = false;
 
   XTremeCodeSeriesItem toXtreamCodeSeriesItem() {
     return XTremeCodeSeriesItem(

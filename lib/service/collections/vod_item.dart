@@ -27,6 +27,7 @@ class VodItem {
     this.lastWatched,
     this.durationSecs,
     this.duration,
+    this.isFavorite = false,  // Add this line
   });
 
   final Id id;
@@ -49,6 +50,7 @@ class VodItem {
   DateTime? lastWatched;
   int? durationSecs;
   String? duration;
+  bool isFavorite;  // Add this line
   final iptvServer = IsarLink<IptvServer>();
 
   VodItem.fromXtreamCodeVodItem(
@@ -72,7 +74,8 @@ class VodItem {
         categoryIds = vodItem.categoryIds ?? [],
         containerExtension = vodItem.containerExtension,
         customSid = vodItem.customSid,
-        directSource = vodItem.directSource;
+        directSource = vodItem.directSource,
+        isFavorite = false;  // Add this line
 
   XTremeCodeVodItem toXtreamCodeVodItem() {
     return XTremeCodeVodItem(

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:play_shift/home/widgets/generic_media_list_item.dart';
+import 'package:play_shift/provider/isar/favorite_providers.dart';
 import 'package:play_shift/provider/isar/movie_providers.dart';
 import 'package:play_shift/provider/models/movie_view_model.dart';
 import 'package:play_shift/shared/theme_service.dart';
@@ -23,24 +24,37 @@ class MovieListItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final progress = ref.watch(movieProgressProvider(movie.streamId));
+    final isFavorite =
+        ref.watch(isMovieFavoriteProvider(movie.streamId)).value ?? false;
     final progressPercentage = progress != null && movie.durationSecs != null
         ? (progress / movie.durationSecs!).clamp(0.0, 1.0)
         : 0.0;
 
-    return HoverButton(
-      onPressed: () => context.pushRoute(route),
-      builder: (context, states) => MediaListItem(
-        imageUrl: movie.streamIcon!,
-        title: movie.title,
-        subtitle: null,
-        height: height,
-        onTap: () => context.pushRoute(route),
-        backgroundColor: ThemeService().defaultBackground(context),
-        hoverBackgroundColor: ThemeService().hoverBackgroundColor(context),
-        titleMaxLines: titleMaxLines,
-        progressPercentage:
-            progress != null && progress > 0 ? progressPercentage : null,
-        showProgressIcon: true,
+    return GestureDetector(
+      onTap: () => AutoRouter.of(context).push(route),
+      child: Card(
+        child: HoverButton(
+          onPressed: () => context.pushRoute(route),
+          builder: (context, states) => MediaListItem(
+            imageUrl: movie.streamIcon!,
+            title: movie.title,
+            subtitle: null,
+            height: height,
+            onTap: () => context.pushRoute(route),
+            backgroundColor: ThemeService().defaultBackground(context),
+            hoverBackgroundColor: ThemeService().hoverBackgroundColor(context),
+            titleMaxLines: titleMaxLines,
+            progressPercentage:
+                progress != null && progress > 0 ? progressPercentage : null,
+            showProgressIcon: true,
+            isFavorite: isFavorite,
+            onFavoritePressed: () {
+              ref
+                  .read(favoritesProvider.notifier)
+                  .toggleMovieFavorite(movie.streamId);
+            },
+          ),
+        ),
       ),
     );
   }

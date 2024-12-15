@@ -47,43 +47,48 @@ const ChannelItemSchema = CollectionSchema(
       name: r'epgChannelId',
       type: IsarType.string,
     ),
-    r'name': PropertySchema(
+    r'isFavorite': PropertySchema(
       id: 6,
+      name: r'isFavorite',
+      type: IsarType.bool,
+    ),
+    r'name': PropertySchema(
+      id: 7,
       name: r'name',
       type: IsarType.string,
     ),
     r'num': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'num',
       type: IsarType.long,
     ),
     r'streamIcon': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'streamIcon',
       type: IsarType.string,
     ),
     r'streamType': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'streamType',
       type: IsarType.string,
     ),
     r'streamUrl': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'streamUrl',
       type: IsarType.string,
     ),
     r'thumbnail': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'thumbnail',
       type: IsarType.string,
     ),
     r'tvArchive': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'tvArchive',
       type: IsarType.long,
     ),
     r'tvArchiveDuration': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'tvArchiveDuration',
       type: IsarType.long,
     )
@@ -168,14 +173,15 @@ void _channelItemSerialize(
   writer.writeLong(offsets[3], object.customSid);
   writer.writeString(offsets[4], object.directSource);
   writer.writeString(offsets[5], object.epgChannelId);
-  writer.writeString(offsets[6], object.name);
-  writer.writeLong(offsets[7], object.num);
-  writer.writeString(offsets[8], object.streamIcon);
-  writer.writeString(offsets[9], object.streamType);
-  writer.writeString(offsets[10], object.streamUrl);
-  writer.writeString(offsets[11], object.thumbnail);
-  writer.writeLong(offsets[12], object.tvArchive);
-  writer.writeLong(offsets[13], object.tvArchiveDuration);
+  writer.writeBool(offsets[6], object.isFavorite);
+  writer.writeString(offsets[7], object.name);
+  writer.writeLong(offsets[8], object.num);
+  writer.writeString(offsets[9], object.streamIcon);
+  writer.writeString(offsets[10], object.streamType);
+  writer.writeString(offsets[11], object.streamUrl);
+  writer.writeString(offsets[12], object.thumbnail);
+  writer.writeLong(offsets[13], object.tvArchive);
+  writer.writeLong(offsets[14], object.tvArchiveDuration);
 }
 
 ChannelItem _channelItemDeserialize(
@@ -192,14 +198,15 @@ ChannelItem _channelItemDeserialize(
     directSource: reader.readStringOrNull(offsets[4]),
     epgChannelId: reader.readStringOrNull(offsets[5]),
     id: id,
-    name: reader.readStringOrNull(offsets[6]),
-    num: reader.readLongOrNull(offsets[7]),
-    streamIcon: reader.readStringOrNull(offsets[8]),
-    streamType: reader.readStringOrNull(offsets[9]),
-    streamUrl: reader.readString(offsets[10]),
-    thumbnail: reader.readStringOrNull(offsets[11]),
-    tvArchive: reader.readLongOrNull(offsets[12]),
-    tvArchiveDuration: reader.readLongOrNull(offsets[13]),
+    isFavorite: reader.readBoolOrNull(offsets[6]) ?? false,
+    name: reader.readStringOrNull(offsets[7]),
+    num: reader.readLongOrNull(offsets[8]),
+    streamIcon: reader.readStringOrNull(offsets[9]),
+    streamType: reader.readStringOrNull(offsets[10]),
+    streamUrl: reader.readString(offsets[11]),
+    thumbnail: reader.readStringOrNull(offsets[12]),
+    tvArchive: reader.readLongOrNull(offsets[13]),
+    tvArchiveDuration: reader.readLongOrNull(offsets[14]),
   );
   return object;
 }
@@ -224,20 +231,22 @@ P _channelItemDeserializeProp<P>(
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 7:
-      return (reader.readLongOrNull(offset)) as P;
-    case 8:
       return (reader.readStringOrNull(offset)) as P;
+    case 8:
+      return (reader.readLongOrNull(offset)) as P;
     case 9:
       return (reader.readStringOrNull(offset)) as P;
     case 10:
-      return (reader.readString(offset)) as P;
-    case 11:
       return (reader.readStringOrNull(offset)) as P;
+    case 11:
+      return (reader.readString(offset)) as P;
     case 12:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 13:
+      return (reader.readLongOrNull(offset)) as P;
+    case 14:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1076,6 +1085,16 @@ extension ChannelItemQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ChannelItem, ChannelItem, QAfterFilterCondition>
+      isFavoriteEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isFavorite',
+        value: value,
       ));
     });
   }
@@ -2128,6 +2147,18 @@ extension ChannelItemQuerySortBy
     });
   }
 
+  QueryBuilder<ChannelItem, ChannelItem, QAfterSortBy> sortByIsFavorite() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFavorite', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ChannelItem, ChannelItem, QAfterSortBy> sortByIsFavoriteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFavorite', Sort.desc);
+    });
+  }
+
   QueryBuilder<ChannelItem, ChannelItem, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -2303,6 +2334,18 @@ extension ChannelItemQuerySortThenBy
     });
   }
 
+  QueryBuilder<ChannelItem, ChannelItem, QAfterSortBy> thenByIsFavorite() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFavorite', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ChannelItem, ChannelItem, QAfterSortBy> thenByIsFavoriteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isFavorite', Sort.desc);
+    });
+  }
+
   QueryBuilder<ChannelItem, ChannelItem, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -2442,6 +2485,12 @@ extension ChannelItemQueryWhereDistinct
     });
   }
 
+  QueryBuilder<ChannelItem, ChannelItem, QDistinct> distinctByIsFavorite() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isFavorite');
+    });
+  }
+
   QueryBuilder<ChannelItem, ChannelItem, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2538,6 +2587,12 @@ extension ChannelItemQueryProperty
   QueryBuilder<ChannelItem, String?, QQueryOperations> epgChannelIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'epgChannelId');
+    });
+  }
+
+  QueryBuilder<ChannelItem, bool, QQueryOperations> isFavoriteProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isFavorite');
     });
   }
 

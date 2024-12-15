@@ -147,6 +147,24 @@ class _GridLayoutWidgetState extends ConsumerState<GridLayoutWidget> {
             });
           },
         ),
+        PaneItem(
+          icon: Container(),
+          title: const Text('Favorites'),
+          body: _NavigationBodyItem(
+            content: content(),
+          ),
+          onTap: () {
+            setState(() {
+              // Create ItemCategory with required parameters
+              widget.onCategoryChanged(ItemCategory(
+                -1, // Special ID for favorites
+                "Favorites",
+                -1,
+                ItemCategoryType.vod,
+              ));
+            });
+          },
+        ),
         for (var category in data)
           PaneItem(
             icon: Container(),

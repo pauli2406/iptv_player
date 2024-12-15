@@ -53,6 +53,7 @@ class _MoviesPageState extends ConsumerState<MoviesPage> {
         movie: item,
         height: itemHeight,
         route: MovieOverviewRoute(streamId: item.streamId),
+        titleMaxLines: 2,
       ),
     );
   }

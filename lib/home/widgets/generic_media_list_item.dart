@@ -16,6 +16,8 @@ class MediaListItem extends StatefulWidget {
     this.titleMaxLines = 1,
     this.progressPercentage,
     this.showProgressIcon = false,
+    this.isFavorite = false,
+    this.onFavoritePressed,
     super.key,
   });
 
@@ -29,6 +31,8 @@ class MediaListItem extends StatefulWidget {
   final int titleMaxLines;
   final double? progressPercentage;
   final bool showProgressIcon;
+  final bool isFavorite;
+  final VoidCallback? onFavoritePressed;
 
   @override
   State<MediaListItem> createState() => _MediaListItemState();
@@ -109,6 +113,66 @@ class _MediaListItemState extends State<MediaListItem> {
           if (FluentTheme.of(context).brightness == Brightness.dark)
             Container(
               color: Colors.black.withOpacity(0.2),
+            ),
+          if (widget.showProgressIcon && widget.progressPercentage != null)
+            Positioned(
+              top: 8,
+              left: 8,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: widget.progressPercentage! >= 0.98
+                      ? FluentTheme.of(context).accentColor
+                      : Colors.black.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.25),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                  icon: Icon(
+                    widget.progressPercentage! >= 0.98
+                        ? FluentIcons.check_mark
+                        : FluentIcons.play,
+                    size: 12,
+                    color: Colors.white,
+                  ),
+                  onPressed: null, // Disable button interaction
+                ),
+              ),
+            ),
+          if (widget.onFavoritePressed != null)
+            Positioned(
+              top: 8,
+              right: 8,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.25),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                  icon: Icon(
+                    widget.isFavorite
+                        ? FluentIcons.favorite_star_fill
+                        : FluentIcons.favorite_star,
+                    size: 12,
+                    color: widget.isFavorite ? Colors.yellow : Colors.white,
+                  ),
+                  onPressed: widget.onFavoritePressed,
+                ),
+              ),
             ),
         ],
       ),
@@ -206,35 +270,6 @@ class _MediaListItemState extends State<MediaListItem> {
                 child: Stack(
                   children: [
                     _buildImage(),
-                    if (widget.showProgressIcon &&
-                        widget.progressPercentage != null)
-                      Positioned(
-                        top: 8,
-                        right: 8,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: widget.progressPercentage! >= 0.98
-                                ? FluentTheme.of(context).accentColor
-                                : Colors.black.withOpacity(0.5),
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.25),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            widget.progressPercentage! >= 0.98
-                                ? FluentIcons.check_mark
-                                : FluentIcons.play,
-                            color: Colors.white,
-                            size: 12,
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ),

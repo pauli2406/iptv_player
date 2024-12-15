@@ -19,8 +19,7 @@ Stream<List<MovieViewModel>> findAllMovies(
 
   return m3uService
       .findAllMovies(activeServer, searchValue, category)
-      .map((movies) {
-    return movies
+      .map((movies) => movies
         .map((movie) => MovieViewModel(
               streamId: movie.id,
               streamUrl: movie.streamUrl,
@@ -34,8 +33,7 @@ Stream<List<MovieViewModel>> findAllMovies(
               directSource: movie.directSource,
               durationSecs: movie.durationSecs,
             ))
-        .toList();
-  });
+        .toList());
 }
 
 @riverpod

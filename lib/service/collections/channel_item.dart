@@ -21,7 +21,8 @@ class ChannelItem {
       this.categoryId,
       required this.categoryIds,
       this.thumbnail,
-      required this.streamUrl});
+      required this.streamUrl,
+      this.isFavorite = false});
 
   Id? id;
   final int? num;
@@ -38,6 +39,7 @@ class ChannelItem {
   final List<int> categoryIds;
   final String? thumbnail;
   final String streamUrl;
+  bool isFavorite;
   final iptvServer = IsarLink<IptvServer>();
 
   ChannelItem.fromLiveStreamItem(
@@ -56,5 +58,6 @@ class ChannelItem {
         tvArchiveDuration = liveStreamItem.tvArchiveDuration,
         categoryId = liveStreamItem.categoryId,
         categoryIds = liveStreamItem.categoryIds ?? [],
-        thumbnail = liveStreamItem.thumbnail;
+        thumbnail = liveStreamItem.thumbnail,
+        isFavorite = false;
 }

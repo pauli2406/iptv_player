@@ -16,8 +16,16 @@ Stream<List<ChannelViewModel>> findAllChannels(
   final searchValue = ref.watch(channelSearchValueProvider);
   final m3uService = ref.watch(m3uServiceProvider);
 
-  await for (final channels
-      in m3uService.findAllChannels(searchValue, category)) {
+  Stream<List<dynamic>> channelsStream;
+  if (category?.categoryName == "Favorites") {
+    channelsStream = m3uService.getFavoriteChannels();
+  } else if (category?.categoryName == "Recents") {
+    channelsStream = m3uService.getRecentChannels();
+  } else {
+    channelsStream = m3uService.findAllChannels(searchValue, category);
+  }
+
+  await for (final channels in channelsStream) {
     final epgMap = _createCurrentEpgMap(m3uService);
     yield channels
         .map((channel) => _createChannelViewModel(channel, epgMap))
@@ -84,6 +92,12 @@ Stream<List<ItemCategory>> findAllChannelGroups(FindAllChannelGroupsRef ref) {
   final m3uService = ref.watch(m3uServiceProvider);
   final activeIptvServer = m3uService.getActiveIptvServer()!;
   return m3uService.findAllChannelGroups(activeIptvServer);
+}
+
+@riverpod
+Future<void> updateChannelProgress(
+    UpdateChannelProgressRef ref, int movieId) async {
+  await ref.read(m3uServiceProvider).updateChannelProgress(movieId);
 }
 
 // Helper functions

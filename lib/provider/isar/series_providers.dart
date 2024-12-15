@@ -40,6 +40,12 @@ Stream<List<SeriesItem>> findAllSeries(FindAllSeriesRef ref,
   final m3uService = ref.watch(m3uServiceProvider);
   final activeIptvServer = m3uService.getActiveIptvServer()!;
 
+  if (category?.categoryName == "Favorites") {
+    return m3uService.getFavoriteSeries();
+  } else if (category?.categoryName == "Recents") {
+    return m3uService.getRecentSeries();
+  }
+
   return m3uService.findAllSeries(activeIptvServer, searchValue, category);
 }
 

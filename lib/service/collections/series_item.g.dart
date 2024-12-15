@@ -52,24 +52,24 @@ const SeriesItemSchema = CollectionSchema(
       name: r'episodeRunTime',
       type: IsarType.long,
     ),
-    r'firstWatched': PropertySchema(
-      id: 7,
-      name: r'firstWatched',
-      type: IsarType.dateTime,
-    ),
     r'genre': PropertySchema(
-      id: 8,
+      id: 7,
       name: r'genre',
       type: IsarType.string,
     ),
     r'isFavorite': PropertySchema(
-      id: 9,
+      id: 8,
       name: r'isFavorite',
       type: IsarType.bool,
     ),
     r'lastModified': PropertySchema(
-      id: 10,
+      id: 9,
       name: r'lastModified',
+      type: IsarType.dateTime,
+    ),
+    r'lastWatched': PropertySchema(
+      id: 10,
+      name: r'lastWatched',
       type: IsarType.dateTime,
     ),
     r'lastWatchedEpisodeId': PropertySchema(
@@ -245,10 +245,10 @@ void _seriesItemSerialize(
   writer.writeString(offsets[4], object.cover);
   writer.writeString(offsets[5], object.director);
   writer.writeLong(offsets[6], object.episodeRunTime);
-  writer.writeDateTime(offsets[7], object.firstWatched);
-  writer.writeString(offsets[8], object.genre);
-  writer.writeBool(offsets[9], object.isFavorite);
-  writer.writeDateTime(offsets[10], object.lastModified);
+  writer.writeString(offsets[7], object.genre);
+  writer.writeBool(offsets[8], object.isFavorite);
+  writer.writeDateTime(offsets[9], object.lastModified);
+  writer.writeDateTime(offsets[10], object.lastWatched);
   writer.writeLong(offsets[11], object.lastWatchedEpisodeId);
   writer.writeString(offsets[12], object.name);
   writer.writeLong(offsets[13], object.num);
@@ -276,11 +276,11 @@ SeriesItem _seriesItemDeserialize(
     cover: reader.readStringOrNull(offsets[4]),
     director: reader.readStringOrNull(offsets[5]),
     episodeRunTime: reader.readLongOrNull(offsets[6]),
-    firstWatched: reader.readDateTimeOrNull(offsets[7]),
-    genre: reader.readStringOrNull(offsets[8]),
+    genre: reader.readStringOrNull(offsets[7]),
     id: id,
-    isFavorite: reader.readBoolOrNull(offsets[9]) ?? false,
-    lastModified: reader.readDateTimeOrNull(offsets[10]),
+    isFavorite: reader.readBoolOrNull(offsets[8]) ?? false,
+    lastModified: reader.readDateTimeOrNull(offsets[9]),
+    lastWatched: reader.readDateTimeOrNull(offsets[10]),
     lastWatchedEpisodeId: reader.readLongOrNull(offsets[11]),
     name: reader.readStringOrNull(offsets[12]),
     num: reader.readLongOrNull(offsets[13]),
@@ -318,11 +318,11 @@ P _seriesItemDeserializeProp<P>(
     case 6:
       return (reader.readLongOrNull(offset)) as P;
     case 7:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 8:
       return (reader.readStringOrNull(offset)) as P;
-    case 9:
+    case 8:
       return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 9:
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 10:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 11:
@@ -1406,80 +1406,6 @@ extension SeriesItemQueryFilter
     });
   }
 
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      firstWatchedIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'firstWatched',
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      firstWatchedIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'firstWatched',
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      firstWatchedEqualTo(DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'firstWatched',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      firstWatchedGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'firstWatched',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      firstWatchedLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'firstWatched',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
-      firstWatchedBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'firstWatched',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition> genreIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1756,6 +1682,80 @@ extension SeriesItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'lastModified',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
+      lastWatchedIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastWatched',
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
+      lastWatchedIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastWatched',
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
+      lastWatchedEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastWatched',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
+      lastWatchedGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastWatched',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
+      lastWatchedLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastWatched',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterFilterCondition>
+      lastWatchedBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastWatched',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -3200,18 +3200,6 @@ extension SeriesItemQuerySortBy
     });
   }
 
-  QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> sortByFirstWatched() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'firstWatched', Sort.asc);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> sortByFirstWatchedDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'firstWatched', Sort.desc);
-    });
-  }
-
   QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> sortByGenre() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'genre', Sort.asc);
@@ -3245,6 +3233,18 @@ extension SeriesItemQuerySortBy
   QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> sortByLastModifiedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastModified', Sort.desc);
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> sortByLastWatched() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastWatched', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> sortByLastWatchedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastWatched', Sort.desc);
     });
   }
 
@@ -3447,18 +3447,6 @@ extension SeriesItemQuerySortThenBy
     });
   }
 
-  QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> thenByFirstWatched() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'firstWatched', Sort.asc);
-    });
-  }
-
-  QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> thenByFirstWatchedDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'firstWatched', Sort.desc);
-    });
-  }
-
   QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> thenByGenre() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'genre', Sort.asc);
@@ -3504,6 +3492,18 @@ extension SeriesItemQuerySortThenBy
   QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> thenByLastModifiedDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastModified', Sort.desc);
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> thenByLastWatched() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastWatched', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QAfterSortBy> thenByLastWatchedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastWatched', Sort.desc);
     });
   }
 
@@ -3690,12 +3690,6 @@ extension SeriesItemQueryWhereDistinct
     });
   }
 
-  QueryBuilder<SeriesItem, SeriesItem, QDistinct> distinctByFirstWatched() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'firstWatched');
-    });
-  }
-
   QueryBuilder<SeriesItem, SeriesItem, QDistinct> distinctByGenre(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -3712,6 +3706,12 @@ extension SeriesItemQueryWhereDistinct
   QueryBuilder<SeriesItem, SeriesItem, QDistinct> distinctByLastModified() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'lastModified');
+    });
+  }
+
+  QueryBuilder<SeriesItem, SeriesItem, QDistinct> distinctByLastWatched() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastWatched');
     });
   }
 
@@ -3842,12 +3842,6 @@ extension SeriesItemQueryProperty
     });
   }
 
-  QueryBuilder<SeriesItem, DateTime?, QQueryOperations> firstWatchedProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'firstWatched');
-    });
-  }
-
   QueryBuilder<SeriesItem, String?, QQueryOperations> genreProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'genre');
@@ -3863,6 +3857,12 @@ extension SeriesItemQueryProperty
   QueryBuilder<SeriesItem, DateTime?, QQueryOperations> lastModifiedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastModified');
+    });
+  }
+
+  QueryBuilder<SeriesItem, DateTime?, QQueryOperations> lastWatchedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastWatched');
     });
   }
 

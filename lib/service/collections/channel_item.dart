@@ -6,23 +6,24 @@ part 'channel_item.g.dart';
 
 @Collection()
 class ChannelItem {
-  ChannelItem(
-      {required this.id,
-      this.num,
-      this.name,
-      this.streamType,
-      this.streamIcon,
-      this.epgChannelId,
-      this.added,
-      this.customSid,
-      this.tvArchive,
-      this.directSource,
-      this.tvArchiveDuration,
-      this.categoryId,
-      required this.categoryIds,
-      this.thumbnail,
-      required this.streamUrl,
-      this.isFavorite = false});
+  ChannelItem({
+    required this.id,
+    this.num,
+    this.name,
+    this.streamType,
+    this.streamIcon,
+    this.epgChannelId,
+    this.added,
+    this.customSid,
+    this.tvArchive,
+    this.directSource,
+    this.tvArchiveDuration,
+    this.categoryId,
+    required this.categoryIds,
+    this.thumbnail,
+    required this.streamUrl,
+    this.isFavorite = false,
+  });
 
   Id? id;
   final int? num;
@@ -40,6 +41,7 @@ class ChannelItem {
   final String? thumbnail;
   final String streamUrl;
   bool isFavorite;
+  DateTime? lastWatched;
   final iptvServer = IsarLink<IptvServer>();
 
   ChannelItem.fromLiveStreamItem(
@@ -59,5 +61,6 @@ class ChannelItem {
         categoryId = liveStreamItem.categoryId,
         categoryIds = liveStreamItem.categoryIds ?? [],
         thumbnail = liveStreamItem.thumbnail,
+        lastWatched = null,
         isFavorite = false;
 }

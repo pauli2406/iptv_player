@@ -155,11 +155,27 @@ class _GridLayoutWidgetState extends ConsumerState<GridLayoutWidget> {
           ),
           onTap: () {
             setState(() {
-              // Create ItemCategory with required parameters
               widget.onCategoryChanged(ItemCategory(
-                -1, // Special ID for favorites
+                -1,
                 "Favorites",
                 -1,
+                ItemCategoryType.vod,
+              ));
+            });
+          },
+        ),
+        PaneItem(
+          icon: Container(),
+          title: const Text('Recents'),
+          body: _NavigationBodyItem(
+            content: content(),
+          ),
+          onTap: () {
+            setState(() {
+              widget.onCategoryChanged(ItemCategory(
+                -2, // Special ID for recents
+                "Recents",
+                -2,
                 ItemCategoryType.vod,
               ));
             });

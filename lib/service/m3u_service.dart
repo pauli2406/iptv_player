@@ -275,6 +275,16 @@ class M3uService {
   }
 
   // MARK: - Progress Tracking Methods
+  Future<void> updateChannelProgress(int channelId) async {
+    await isarService.isar.writeTxn(() async {
+      var channel = await isarService.isar.channelItems.get(channelId);
+      if (channel != null) {
+        channel.lastWatched = DateTime.now();
+        await isarService.isar.channelItems.put(channel);
+      }
+    });
+  }
+
   Future<void> updateMovieProgress(int movieId, double duration) async {
     await isarService.isar.writeTxn(() async {
       var movie = await isarService.isar.vodItems.get(movieId);
@@ -289,8 +299,8 @@ class M3uService {
   Future<void> updateSeriesProgress(int seriesId) async {
     await isarService.isar.writeTxn(() async {
       var series = await isarService.isar.seriesItems.get(seriesId);
-      if (series != null && series.firstWatched == null) {
-        series.firstWatched = DateTime.now();
+      if (series != null && series.lastWatched == null) {
+        series.lastWatched = DateTime.now();
         await isarService.isar.seriesItems.put(series);
       }
     });
@@ -312,7 +322,7 @@ class M3uService {
   }
 
   bool isSeriesStarted(int seriesId) {
-    return isarService.isar.seriesItems.getSync(seriesId)?.firstWatched != null;
+    return isarService.isar.seriesItems.getSync(seriesId)?.lastWatched != null;
   }
 
   double? getEpisodeProgress(int episodeId) {
@@ -396,5 +406,35 @@ class M3uService {
         .idEqualTo(seriesId)
         .watch(fireImmediately: true)
         .map((series) => series.firstOrNull?.isFavorite ?? false);
+  }
+
+  Stream<List<ChannelItem>> getRecentChannels() {
+    return isarService.isar.channelItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .not()
+        .lastWatchedIsNull()
+        .sortByLastWatchedDesc()
+        .watch(fireImmediately: true);
+  }
+
+  Stream<List<VodItem>> getRecentMovies() {
+    return isarService.isar.vodItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .not()
+        .lastWatchedIsNull()
+        .sortByLastWatchedDesc()
+        .watch(fireImmediately: true);
+  }
+
+  Stream<List<SeriesItem>> getRecentSeries() {
+    return isarService.isar.seriesItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .not()
+        .lastWatchedIsNull()
+        .sortByLastWatchedDesc()
+        .watch(fireImmediately: true);
   }
 }

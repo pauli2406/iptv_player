@@ -161,6 +161,8 @@ class IptvServerService {
                     channel.streamId!, activeIptvServer.allowedOutputFormats),
               )
                 ..iptvServer.value = activeIptvServer
+                ..lastWatched =
+                    existingChannelMap[channel.streamId]?.lastWatched
                 ..isFavorite =
                     existingChannelMap[channel.streamId]?.isFavorite ?? false,
             )
@@ -174,8 +176,7 @@ class IptvServerService {
                 ..iptvServer.value = activeIptvServer
                 ..isFavorite =
                     existingSeriesMap[series.seriesId]?.isFavorite ?? false
-                ..firstWatched =
-                    existingSeriesMap[series.seriesId]?.firstWatched
+                ..lastWatched = existingSeriesMap[series.seriesId]?.lastWatched
                 ..lastWatchedEpisodeId =
                     existingSeriesMap[series.seriesId]?.lastWatchedEpisodeId)
               .toList(),

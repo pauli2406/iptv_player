@@ -1,11 +1,13 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:play_shift/constants/ui_constants.dart';
+import 'package:play_shift/provider/isar/favorite_providers.dart';
 import 'package:play_shift/provider/models/movie_view_model.dart';
 import 'package:xtream_code_client/xtream_code_client.dart' hide Icon;
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:play_shift/home/views/movies/widgets/movie_info_section.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MovieDetailsSection extends StatelessWidget {
+class MovieDetailsSection extends ConsumerWidget {
   final MovieViewModel movie;
   final XTremeCodeVodInfo? info;
   final Function(String) onTrailerPressed;
@@ -20,7 +22,9 @@ class MovieDetailsSection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final favoriteState = ref.watch(isMovieFavoriteProvider(movie.streamId));
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -44,6 +48,13 @@ class MovieDetailsSection extends StatelessWidget {
             info: info,
             onTrailerPressed: onTrailerPressed,
             dateFormatter: dateFormatter,
+            isFavorite: favoriteState.whenOrNull(
+                  data: (isFavorite) => isFavorite,
+                ) ??
+                false,
+            onFavoriteToggle: () => ref
+                .read(favoritesProvider.notifier)
+                .toggleMovieFavorite(movie.streamId),
           ),
         ),
       ],

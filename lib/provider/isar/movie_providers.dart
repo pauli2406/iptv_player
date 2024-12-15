@@ -20,20 +20,20 @@ Stream<List<MovieViewModel>> findAllMovies(
   return m3uService
       .findAllMovies(activeServer, searchValue, category)
       .map((movies) => movies
-        .map((movie) => MovieViewModel(
-              streamId: movie.id,
-              streamUrl: movie.streamUrl,
-              title: movie.name ?? "",
-              streamIcon: movie.streamIcon ?? "",
-              year: movie.year,
-              rating: movie.rating,
-              rating5based: movie.rating5based,
-              added: movie.added,
-              containerExtension: movie.containerExtension,
-              directSource: movie.directSource,
-              durationSecs: movie.durationSecs,
-            ))
-        .toList());
+          .map((movie) => MovieViewModel(
+                streamId: movie.id,
+                streamUrl: movie.streamUrl,
+                title: movie.name ?? "",
+                streamIcon: movie.streamIcon ?? "",
+                year: movie.year,
+                rating: movie.rating,
+                rating5based: movie.rating5based,
+                added: movie.added,
+                containerExtension: movie.containerExtension,
+                directSource: movie.directSource,
+                durationSecs: movie.durationSecs,
+              ))
+          .toList());
 }
 
 @riverpod

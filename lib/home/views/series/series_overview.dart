@@ -3,6 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_shift/home/views/series/widgets/series_crew_info_section.dart';
 import 'package:play_shift/home/views/series/widgets/series_header_section.dart';
+import 'package:play_shift/provider/isar/favorite_providers.dart';
 import 'package:play_shift/provider/isar/m3u_provider.dart';
 import 'package:play_shift/provider/isar/series_providers.dart';
 import 'package:play_shift/provider/models/provider_models.dart';
@@ -235,6 +236,8 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
     SeriesWithInfo data,
     ThemeMode currentTheme,
   ) {
+    final isFavorite = ref.watch(isSeriesFavoriteProvider(data.series.id));
+
     return Column(
       children: [
         SeriesHeaderSection(
@@ -295,6 +298,12 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
                                       ? () => setState(
                                           () => _selectedEpisodeIndex = null)
                                       : null,
+                                  isFavorite: isFavorite.whenOrNull(
+                                    data: (isFavorite) => isFavorite,
+                                  ) ?? false,
+                                  onFavoriteToggle: () {
+                                    ref.read(m3uServiceProvider).toggleSeriesFavorite(data.series.id);
+                                  },
                                 ),
                               ),
                               if (!_isVideoPlaying(data))

@@ -371,7 +371,7 @@ class _SeriesProviderElement
   int get seriesId => (origin as SeriesProvider).seriesId;
 }
 
-String _$findAllSeriesHash() => r'e629a1c4e2b7feae08816cfeb44263a0cf89aa5d';
+String _$findAllSeriesHash() => r'e0ff29ea7e54e0cbe2e5eeb755e434b7e8dfb952';
 
 /// See also [findAllSeries].
 @ProviderFor(findAllSeries)

@@ -138,10 +138,14 @@ class M3uService {
       return [];
     }
 
+    final now = DateTime.now();
     var currentEpgItems = isarService.isar.epgItems
         .filter()
         .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
         .titleEqualTo(epgTitle)
+        .startLessThan(now)
+        .and()
+        .endGreaterThan(now)
         .findAllSync();
 
     var channelIds = currentEpgItems.map((e) => e.channelId).toSet();

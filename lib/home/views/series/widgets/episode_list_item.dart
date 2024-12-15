@@ -68,19 +68,20 @@ class EpisodeListItem extends ConsumerWidget {
 
   Widget _buildCompactView(BuildContext context, double progressPercentage) {
     final isCompleted = progressPercentage >= 0.98;
+    final theme = FluentTheme.of(context);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           'Episode ${episode.episodeNum}',
-          style: FluentTheme.of(context).typography.bodyStrong!.copyWith(
-                color: isPlaying
-                    ? FluentTheme.of(context)
-                        .resources
-                        .textOnAccentFillColorSelectedText
-                    : FluentTheme.of(context).accentColor,
-              ),
+          style: theme.typography.bodyStrong!.copyWith(
+            color: isPlaying
+                ? theme.brightness == Brightness.light
+                    ? theme.accentColor
+                    : theme.resources.textOnAccentFillColorSelectedText
+                : theme.accentColor,
+          ),
         ),
         if (progressPercentage > 0) ...[
           const SizedBox(height: 8),

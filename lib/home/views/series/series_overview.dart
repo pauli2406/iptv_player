@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:fluent_ui/fluent_ui.dart' hide Scrollbar;
+import 'package:flutter/material.dart' show Scrollbar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:play_shift/home/views/series/widgets/series_crew_info_section.dart';
 import 'package:play_shift/home/views/series/widgets/series_header_section.dart';
@@ -252,6 +253,26 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
             selectedSeason: _selectedSeason!,
             selectedEpisodeIndex: _selectedEpisodeIndex!,
             skipResumeDialog: true,
+            onNextEpisode: (nextEpisode) {
+              final seasonStr = nextEpisode.season.toString();
+              final episodeIndex = data.episodes[seasonStr]?.indexWhere(
+                    (e) => e.id == nextEpisode.id,
+                  ) ??
+                  -1;
+
+              if (episodeIndex != -1) {
+                _onEpisodeSelected(episodeIndex, data);
+                // setState(() {
+                //   _selectedSeason = nextEpisode.season;
+                //   _selectedEpisodeIndex = episodeIndex;
+                // });
+              }
+            },
+            nextEpisode: _findNextEpisode(
+              data,
+              data.episodes[_selectedSeason.toString()]![
+                  _selectedEpisodeIndex!],
+            ),
           ),
         Expanded(
           child: Padding(
@@ -299,10 +320,13 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
                                           () => _selectedEpisodeIndex = null)
                                       : null,
                                   isFavorite: isFavorite.whenOrNull(
-                                    data: (isFavorite) => isFavorite,
-                                  ) ?? false,
+                                        data: (isFavorite) => isFavorite,
+                                      ) ??
+                                      false,
                                   onFavoriteToggle: () {
-                                    ref.read(m3uServiceProvider).toggleSeriesFavorite(data.series.id);
+                                    ref
+                                        .read(m3uServiceProvider)
+                                        .toggleSeriesFavorite(data.series.id);
                                   },
                                 ),
                               ),
@@ -505,19 +529,25 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
         children: [
           Scrollbar(
             controller: _episodeScrollController,
+            trackVisibility: true,
+            thumbVisibility: true,
             child: ListView.builder(
               controller: _episodeScrollController,
               key: ValueKey('season_$_selectedSeason'),
               scrollDirection: Axis.horizontal,
               itemCount: seasonEpisodes.length,
-              itemBuilder: (context, index) => EpisodeListItem(
-                key: ValueKey(
-                    'episode_${_selectedSeason}_${seasonEpisodes[index].id}'),
-                episode: seasonEpisodes[index],
-                isPlaying: index == _selectedEpisodeIndex,
-                isHighlighted: seasonEpisodes[index].id == highlightedEpisodeId,
-                isCompact: isVideoPlaying,
-                onPressed: () => _onEpisodeSelected(index, data),
+              itemBuilder: (context, index) => Container(
+                margin: const EdgeInsets.only(bottom: 15.0),
+                child: EpisodeListItem(
+                  key: ValueKey(
+                      'episode_${_selectedSeason}_${seasonEpisodes[index].id}'),
+                  episode: seasonEpisodes[index],
+                  isPlaying: index == _selectedEpisodeIndex,
+                  isHighlighted:
+                      seasonEpisodes[index].id == highlightedEpisodeId,
+                  isCompact: isVideoPlaying,
+                  onPressed: () => _onEpisodeSelected(index, data),
+                ),
               ),
             ),
           ),

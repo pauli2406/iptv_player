@@ -60,6 +60,7 @@ class VodItem {
     this.lastWatched,
     this.durationSecs,
     this.duration,
+    this.isFavorite = false,
   })   : id = vodItem.streamId!,
         num = vodItem.num,
         name = vodItem.name,
@@ -74,8 +75,7 @@ class VodItem {
         categoryIds = vodItem.categoryIds ?? [],
         containerExtension = vodItem.containerExtension,
         customSid = vodItem.customSid,
-        directSource = vodItem.directSource,
-        isFavorite = false;  // Add this line
+        directSource = vodItem.directSource;
 
   XTremeCodeVodItem toXtreamCodeVodItem() {
     return XTremeCodeVodItem(

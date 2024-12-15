@@ -97,12 +97,28 @@ class IptvServerService {
 
       _progressController.add('Persisting data to database...');
 
-      // Get existing VOD items to preserve watch metadata
+      // Get existing items to preserve metadata
       final existingVodItems = await isarService.isar.vodItems
           .filter()
           .iptvServer((q) => q.idEqualTo(activeIptvServer.id))
           .findAll();
       final existingVodMap = {for (var item in existingVodItems) item.id: item};
+
+      final existingChannelItems = await isarService.isar.channelItems
+          .filter()
+          .iptvServer((q) => q.idEqualTo(activeIptvServer.id))
+          .findAll();
+      final existingChannelMap = {
+        for (var item in existingChannelItems) item.id: item
+      };
+
+      final existingSeriesItems = await isarService.isar.seriesItems
+          .filter()
+          .iptvServer((q) => q.idEqualTo(activeIptvServer.id))
+          .findAll();
+      final existingSeriesMap = {
+        for (var item in existingSeriesItems) item.id: item
+      };
 
       await isarService.isar.writeTxnSync(() async {
         // Update server info
@@ -129,27 +145,39 @@ class IptvServerService {
               client.movieUrl(vod.streamId!, vod.containerExtension!),
               watchedDuration: existingVod?.watchedDuration,
               lastWatched: existingVod?.lastWatched,
+              durationSecs: existingVod?.durationSecs,
+              duration: existingVod?.duration,
+              isFavorite: existingVod?.isFavorite ?? false,
             )..iptvServer.value = activeIptvServer;
           }).toList(),
         );
 
-        // Persist channels
+        // Persist channels with merged metadata
         final channelEntities = liveStreamItems
             .map(
               (channel) => ChannelItem.fromLiveStreamItem(
                 channel,
                 client.streamUrl(
                     channel.streamId!, activeIptvServer.allowedOutputFormats),
-              )..iptvServer.value = activeIptvServer,
+              )
+                ..iptvServer.value = activeIptvServer
+                ..isFavorite =
+                    existingChannelMap[channel.streamId]?.isFavorite ?? false,
             )
             .toList();
         isarService.isar.channelItems.putAllSync(channelEntities);
 
-        // Persist series
+        // Persist series with merged metadata
         isarService.isar.seriesItems.putAllSync(
           seriesItems
               .map((series) => SeriesItem.fromXtreamCodeSeriesItem(series)
-                ..iptvServer.value = activeIptvServer)
+                ..iptvServer.value = activeIptvServer
+                ..isFavorite =
+                    existingSeriesMap[series.seriesId]?.isFavorite ?? false
+                ..firstWatched =
+                    existingSeriesMap[series.seriesId]?.firstWatched
+                ..lastWatchedEpisodeId =
+                    existingSeriesMap[series.seriesId]?.lastWatchedEpisodeId)
               .toList(),
         );
 

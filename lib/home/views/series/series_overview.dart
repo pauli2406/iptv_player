@@ -15,6 +15,7 @@ import 'package:play_shift/home/views/series/widgets/series_info_section.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'widgets/episode_list_item.dart';
 import 'widgets/series_video_player.dart';
+import 'dart:async';
 
 @RoutePage()
 class SeriesOverview extends ConsumerStatefulWidget {
@@ -32,6 +33,18 @@ class SeriesOverview extends ConsumerStatefulWidget {
 class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
   int? _selectedSeason;
   int? _selectedEpisodeIndex;
+  final ScrollController _episodeScrollController = ScrollController();
+  Timer? _scrollTimer;
+  static const _scrollInterval = Duration(milliseconds: 50);
+  static const _scrollAmount = 50.0;
+  bool _hasScrolledToLastWatched = false;
+
+  @override
+  void dispose() {
+    _scrollTimer?.cancel();
+    _episodeScrollController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -147,6 +160,43 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
       }
     }
     return null;
+  }
+
+  void _scrollEpisodes(bool forward) {
+    final currentPosition = _episodeScrollController.offset;
+    final scrollAmount =
+        forward ? 300.0 : -300.0; // Adjust this value as needed
+    _episodeScrollController.animateTo(
+      (currentPosition + scrollAmount).clamp(
+        0.0,
+        _episodeScrollController.position.maxScrollExtent,
+      ),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _startScrolling(bool forward) {
+    _scrollTimer?.cancel();
+    _scrollTimer = Timer.periodic(_scrollInterval, (timer) {
+      if (_episodeScrollController.hasClients) {
+        final newOffset = _episodeScrollController.offset +
+            (forward ? _scrollAmount : -_scrollAmount);
+        _episodeScrollController.animateTo(
+          newOffset.clamp(
+            0.0,
+            _episodeScrollController.position.maxScrollExtent,
+          ),
+          duration: _scrollInterval,
+          curve: Curves.linear,
+        );
+      }
+    });
+  }
+
+  void _stopScrolling() {
+    _scrollTimer?.cancel();
+    _scrollTimer = null;
   }
 
   @override
@@ -416,26 +466,121 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
     // Determine which episode should be highlighted
     final int? highlightedEpisodeId = () {
       if (lastWatchedId == null) {
-        // If never watched, highlight first episode
         return seasonEpisodes.firstOrNull?.id;
       }
       return lastWatchedId;
     }();
 
+    // Add scroll to last watched episode logic
+    if (!_hasScrolledToLastWatched &&
+        lastWatchedId != null &&
+        seasonEpisodes.isNotEmpty) {
+      final episodeIndex =
+          seasonEpisodes.indexWhere((e) => e.id == lastWatchedId);
+      if (episodeIndex != -1) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final scrollPosition = episodeIndex * 308.0;
+          _episodeScrollController.animateTo(
+            scrollPosition,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+          _hasScrolledToLastWatched = true;
+        });
+      }
+    }
+
     return SizedBox(
-      height: isVideoPlaying ? 75 : 220,
-      child: ListView.builder(
-        key: ValueKey('season_$_selectedSeason'),
-        scrollDirection: Axis.horizontal,
-        itemCount: seasonEpisodes.length,
-        itemBuilder: (context, index) => EpisodeListItem(
-          key: ValueKey(
-              'episode_${_selectedSeason}_${seasonEpisodes[index].id}'),
-          episode: seasonEpisodes[index],
-          isPlaying: index == _selectedEpisodeIndex,
-          isHighlighted: seasonEpisodes[index].id == highlightedEpisodeId,
-          isCompact: isVideoPlaying,
-          onPressed: () => _onEpisodeSelected(index, data),
+      height: isVideoPlaying ? 95 : 240,
+      child: Stack(
+        children: [
+          Scrollbar(
+            controller: _episodeScrollController,
+            child: ListView.builder(
+              controller: _episodeScrollController,
+              key: ValueKey('season_$_selectedSeason'),
+              scrollDirection: Axis.horizontal,
+              itemCount: seasonEpisodes.length,
+              itemBuilder: (context, index) => EpisodeListItem(
+                key: ValueKey(
+                    'episode_${_selectedSeason}_${seasonEpisodes[index].id}'),
+                episode: seasonEpisodes[index],
+                isPlaying: index == _selectedEpisodeIndex,
+                isHighlighted: seasonEpisodes[index].id == highlightedEpisodeId,
+                isCompact: isVideoPlaying,
+                onPressed: () => _onEpisodeSelected(index, data),
+              ),
+            ),
+          ),
+          // Navigation Arrows
+          if (seasonEpisodes.length > 3) ...[
+            Positioned.fill(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildNavigationButton(
+                    context: context,
+                    icon: FluentIcons.chevron_left,
+                    onPressed: () => _scrollEpisodes(false),
+                    forward: false,
+                  ),
+                  _buildNavigationButton(
+                    context: context,
+                    icon: FluentIcons.chevron_right,
+                    onPressed: () => _scrollEpisodes(true),
+                    forward: true,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavigationButton({
+    required BuildContext context,
+    required IconData icon,
+    required VoidCallback onPressed,
+    required bool forward,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Center(
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: onPressed,
+            onLongPressStart: (_) => _startScrolling(forward),
+            onLongPressEnd: (_) => _stopScrolling(),
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black.withOpacity(0.6),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.2),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.25),
+                    blurRadius: 4,
+                    spreadRadius: 0,
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Icon(
+                  icon,
+                  size: 20,
+                  color: Colors.white.withOpacity(0.9),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );

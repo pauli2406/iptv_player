@@ -31,7 +31,7 @@ class SeriesInfoSection extends StatelessWidget {
             ),
             if (onCloseVideo != null)
               IconButton(
-                icon: const Icon(FluentIcons.chrome_close),
+                icon: const Icon(FluentIcons.up),
                 onPressed: onCloseVideo,
               ),
           ],

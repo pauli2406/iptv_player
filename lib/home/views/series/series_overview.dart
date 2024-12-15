@@ -57,26 +57,6 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
         return;
       }
     }
-
-    // Fallback to first season from series info
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final seriesInfoValue =
-          await ref.read(seriesInfoProvider(seriesId: widget.seriesId).future);
-      if (mounted &&
-          seriesInfoValue != null &&
-          seriesInfoValue.seasons != null &&
-          seriesInfoValue.seasons?.isNotEmpty == true) {
-        final seasonNumbers = seriesInfoValue.seasons!
-            .where((s) => s.seasonNumber != null)
-            .map((s) => s.seasonNumber!)
-            .toList()
-          ..sort();
-
-        if (seasonNumbers.isNotEmpty) {
-          setState(() => _selectedSeason = seasonNumbers.first);
-        }
-      }
-    });
   }
 
   Future<void> _launchTrailer(String videoId) async {
@@ -396,7 +376,7 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
   Widget _buildSeasonSelector(BuildContext context, SeriesWithInfo data) {
     final seasons = _getValidSeasons(data)
       ..sort((a, b) => a.key.compareTo(b.key));
-
+    _selectedSeason ??= seasons.firstOrNull?.key;
     return Row(
       children: [
         Text(
@@ -463,20 +443,10 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
 
   void _onEpisodeSelected(int index, SeriesWithInfo data) {
     final episode = data.episodes[_selectedSeason.toString()]![index];
-    // Update last watched episode silently
+    // Update last watched episode
     ref
         .read(lastWatchedEpisodeProvider(widget.seriesId).notifier)
         .update(episode.id!);
     _selectedEpisodeIndex = index;
-    // ref
-    //     .read(m3uServiceProvider)
-    //     .updateLastWatchedEpisode(
-    //       widget.seriesId,
-    //       episode.id!,
-    //     )
-    //     .then((_) {
-    //   // Only update the local state
-    //   setState(() => _selectedEpisodeIndex = index);
-    // });
   }
 }

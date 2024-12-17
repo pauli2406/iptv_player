@@ -590,5 +590,176 @@ final findAllChannelGroupsProvider =
 
 typedef FindAllChannelGroupsRef
     = AutoDisposeStreamProviderRef<List<ItemCategory>>;
+String _$updateChannelProgressHash() =>
+    r'6d50dee26ed079a8e80c1d567c834c4a5ab93b52';
+
+/// See also [updateChannelProgress].
+@ProviderFor(updateChannelProgress)
+const updateChannelProgressProvider = UpdateChannelProgressFamily();
+
+/// See also [updateChannelProgress].
+class UpdateChannelProgressFamily extends Family {
+  /// See also [updateChannelProgress].
+  const UpdateChannelProgressFamily();
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'updateChannelProgressProvider';
+
+  /// See also [updateChannelProgress].
+  UpdateChannelProgressProvider call(
+    int movieId,
+  ) {
+    return UpdateChannelProgressProvider(
+      movieId,
+    );
+  }
+
+  @visibleForOverriding
+  @override
+  UpdateChannelProgressProvider getProviderOverride(
+    covariant UpdateChannelProgressProvider provider,
+  ) {
+    return call(
+      provider.movieId,
+    );
+  }
+
+  /// Enables overriding the behavior of this provider, no matter the parameters.
+  Override overrideWith(
+      FutureOr<void> Function(UpdateChannelProgressRef ref) create) {
+    return _$UpdateChannelProgressFamilyOverride(this, create);
+  }
+}
+
+class _$UpdateChannelProgressFamilyOverride implements FamilyOverride {
+  _$UpdateChannelProgressFamilyOverride(this.overriddenFamily, this.create);
+
+  final FutureOr<void> Function(UpdateChannelProgressRef ref) create;
+
+  @override
+  final UpdateChannelProgressFamily overriddenFamily;
+
+  @override
+  UpdateChannelProgressProvider getProviderOverride(
+    covariant UpdateChannelProgressProvider provider,
+  ) {
+    return provider._copyWith(create);
+  }
+}
+
+/// See also [updateChannelProgress].
+class UpdateChannelProgressProvider extends AutoDisposeFutureProvider<void> {
+  /// See also [updateChannelProgress].
+  UpdateChannelProgressProvider(
+    int movieId,
+  ) : this._internal(
+          (ref) => updateChannelProgress(
+            ref as UpdateChannelProgressRef,
+            movieId,
+          ),
+          from: updateChannelProgressProvider,
+          name: r'updateChannelProgressProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$updateChannelProgressHash,
+          dependencies: UpdateChannelProgressFamily._dependencies,
+          allTransitiveDependencies:
+              UpdateChannelProgressFamily._allTransitiveDependencies,
+          movieId: movieId,
+        );
+
+  UpdateChannelProgressProvider._internal(
+    super.create, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.movieId,
+  }) : super.internal();
+
+  final int movieId;
+
+  @override
+  Override overrideWith(
+    FutureOr<void> Function(UpdateChannelProgressRef ref) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: UpdateChannelProgressProvider._internal(
+        (ref) => create(ref as UpdateChannelProgressRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        movieId: movieId,
+      ),
+    );
+  }
+
+  @override
+  (int,) get argument {
+    return (movieId,);
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<void> createElement() {
+    return _UpdateChannelProgressProviderElement(this);
+  }
+
+  UpdateChannelProgressProvider _copyWith(
+    FutureOr<void> Function(UpdateChannelProgressRef ref) create,
+  ) {
+    return UpdateChannelProgressProvider._internal(
+      (ref) => create(ref as UpdateChannelProgressRef),
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      debugGetCreateSourceHash: debugGetCreateSourceHash,
+      from: from,
+      movieId: movieId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is UpdateChannelProgressProvider && other.movieId == movieId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, movieId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+mixin UpdateChannelProgressRef on AutoDisposeFutureProviderRef<void> {
+  /// The parameter `movieId` of this provider.
+  int get movieId;
+}
+
+class _UpdateChannelProgressProviderElement
+    extends AutoDisposeFutureProviderElement<void>
+    with UpdateChannelProgressRef {
+  _UpdateChannelProgressProviderElement(super.provider);
+
+  @override
+  int get movieId => (origin as UpdateChannelProgressProvider).movieId;
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, inference_failure_on_uninitialized_variable, inference_failure_on_function_return_type, inference_failure_on_untyped_parameter, deprecated_member_use_from_same_package

@@ -32,6 +32,7 @@ class _ChannelOverviewState extends ConsumerState<ChannelOverview> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    ref.read(updateChannelProgressProvider(widget.streamId));
   }
 
   @override
@@ -132,8 +133,7 @@ class _ChannelOverviewState extends ConsumerState<ChannelOverview> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.5,
                     child: BaseVideoPlayer(
-                      key: ValueKey(
-                          'video_player_${channel.streamId}'), // Add this line
+                      key: ValueKey('video_player_${channel.streamId}'),
                       streamLink: channel.link,
                       builder: (controller) => (Platform.instance.isMacOS ||
                               Platform.instance.isWindows)

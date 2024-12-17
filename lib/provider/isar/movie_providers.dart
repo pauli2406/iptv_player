@@ -17,10 +17,8 @@ Stream<List<MovieViewModel>> findAllMovies(
   final m3uService = ref.watch(m3uServiceProvider);
   final activeServer = m3uService.getActiveIptvServer()!;
 
-  return m3uService
-      .findAllMovies(activeServer, searchValue, category)
-      .map((movies) {
-    return movies
+  if (category?.categoryName == "Favorites") {
+    return m3uService.getFavoriteMovies().map((movies) => movies
         .map((movie) => MovieViewModel(
               streamId: movie.id,
               streamUrl: movie.streamUrl,
@@ -34,8 +32,42 @@ Stream<List<MovieViewModel>> findAllMovies(
               directSource: movie.directSource,
               durationSecs: movie.durationSecs,
             ))
-        .toList();
-  });
+        .toList());
+  } else if (category?.categoryName == "Recents") {
+    return m3uService.getRecentMovies().map((movies) => movies
+        .map((movie) => MovieViewModel(
+              streamId: movie.id,
+              streamUrl: movie.streamUrl,
+              title: movie.name ?? "",
+              streamIcon: movie.streamIcon ?? "",
+              year: movie.year,
+              rating: movie.rating,
+              rating5based: movie.rating5based,
+              added: movie.added,
+              containerExtension: movie.containerExtension,
+              directSource: movie.directSource,
+              durationSecs: movie.durationSecs,
+            ))
+        .toList());
+  }
+
+  return m3uService
+      .findAllMovies(activeServer, searchValue, category)
+      .map((movies) => movies
+          .map((movie) => MovieViewModel(
+                streamId: movie.id,
+                streamUrl: movie.streamUrl,
+                title: movie.name ?? "",
+                streamIcon: movie.streamIcon ?? "",
+                year: movie.year,
+                rating: movie.rating,
+                rating5based: movie.rating5based,
+                added: movie.added,
+                containerExtension: movie.containerExtension,
+                directSource: movie.directSource,
+                durationSecs: movie.durationSecs,
+              ))
+          .toList());
 }
 
 @riverpod

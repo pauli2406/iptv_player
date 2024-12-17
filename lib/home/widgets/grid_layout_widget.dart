@@ -44,15 +44,32 @@ class _GridLayoutWidgetState extends ConsumerState<GridLayoutWidget> {
 
   int calculateCrossAxisCount(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    if (width > 1300) {
-      return 5;
-    } else if (width > 900) {
-      return 4;
-    } else if (width > 700) {
-      return 3;
-    } else {
-      return 2;
+    // 4K (3840px) and above
+    if (width >= 3840) {
+      return 8;
     }
+    // 1440p-4K (2560-3839px)
+    else if (width >= 2560) {
+      return 7;
+    }
+    // 1080p-1440p (1920-2559px)
+    else if (width >= 1920) {
+      return 6;
+    }
+    // 1366-1919px
+    else if (width >= 1366) {
+      return 5;
+    }
+    // 1024-1365px
+    else if (width >= 1024) {
+      return 4;
+    }
+    // 768-1023px
+    else if (width >= 768) {
+      return 3;
+    }
+    // Below 768px
+    return 2;
   }
 
   @override
@@ -144,6 +161,40 @@ class _GridLayoutWidgetState extends ConsumerState<GridLayoutWidget> {
           onTap: () {
             setState(() {
               widget.onCategoryChanged(null);
+            });
+          },
+        ),
+        PaneItem(
+          icon: Container(),
+          title: const Text('Favorites'),
+          body: _NavigationBodyItem(
+            content: content(),
+          ),
+          onTap: () {
+            setState(() {
+              widget.onCategoryChanged(ItemCategory(
+                -1,
+                "Favorites",
+                -1,
+                ItemCategoryType.vod,
+              ));
+            });
+          },
+        ),
+        PaneItem(
+          icon: Container(),
+          title: const Text('Recents'),
+          body: _NavigationBodyItem(
+            content: content(),
+          ),
+          onTap: () {
+            setState(() {
+              widget.onCategoryChanged(ItemCategory(
+                -2, // Special ID for recents
+                "Recents",
+                -2,
+                ItemCategoryType.vod,
+              ));
             });
           },
         ),

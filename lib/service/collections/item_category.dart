@@ -7,7 +7,7 @@ part 'item_category.g.dart';
 @Collection()
 class ItemCategory {
   final Id id;
-  final String? categoryName;
+  String? categoryName;
   final int? parentId;
   @enumerated
   ItemCategoryType type;

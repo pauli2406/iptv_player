@@ -71,19 +71,22 @@ class M3uService {
     if (_activeIptvServer == null) {
       throw StateError('No active IPTV server selected');
     }
-    var query =
-        isarService.isar.collection<ChannelItem>().filter().iptvServer((q) {
-      return q.idEqualTo(_activeIptvServer!.id);
-    });
+    var query = isarService.isar.collection<ChannelItem>().filter();
 
     if (searchValue?.isNotEmpty ?? false) {
       query = query.nameContains(searchValue!, caseSensitive: false);
     }
     if (category != null) {
-      query = query.categoryIdEqualTo(category.id);
+      if (category.categoryName == "Favorites") {
+        query = query.isFavoriteEqualTo(true);
+      } else {
+        query = query.categoryIdEqualTo(category.id);
+      }
     }
 
-    return query.watch(fireImmediately: true);
+    return query.iptvServer((q) {
+      return q.idEqualTo(_activeIptvServer!.id);
+    }).watch(fireImmediately: true);
   }
 
   ChannelItem? findChannel(int streamId) {
@@ -135,10 +138,14 @@ class M3uService {
       return [];
     }
 
+    final now = DateTime.now();
     var currentEpgItems = isarService.isar.epgItems
         .filter()
         .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
         .titleEqualTo(epgTitle)
+        .startLessThan(now)
+        .and()
+        .endGreaterThan(now)
         .findAllSync();
 
     var channelIds = currentEpgItems.map((e) => e.channelId).toSet();
@@ -155,14 +162,16 @@ class M3uService {
   Stream<List<VodItem>> findAllMovies(IptvServer activeIptvServer,
       String? searchValue, ItemCategory? category) {
     QueryBuilder<VodItem, VodItem, QFilterCondition> query =
-        isarService.isar.vodItems.filter().iptvServer((q) {
-      return q.idEqualTo(_activeIptvServer!.id);
-    });
+        isarService.isar.vodItems.filter();
     if (searchValue != null && searchValue.isNotEmpty) {
       query = query.titleContains(searchValue, caseSensitive: false);
     }
     if (category != null) {
-      query = query.categoryIdEqualTo(category.id);
+      if (category.categoryName == "Favorites") {
+        query = query.isFavoriteEqualTo(true);
+      } else {
+        query = query.categoryIdEqualTo(category.id);
+      }
     }
     return query.iptvServer((q) {
       return q.idEqualTo(_activeIptvServer!.id);
@@ -197,14 +206,16 @@ class M3uService {
   Stream<List<SeriesItem>> findAllSeries(IptvServer activeIptvServer,
       String? searchValue, ItemCategory? category) {
     QueryBuilder<SeriesItem, SeriesItem, QFilterCondition> query =
-        isarService.isar.seriesItems.filter().iptvServer((q) {
-      return q.idEqualTo(_activeIptvServer!.id);
-    });
+        isarService.isar.seriesItems.filter();
     if (searchValue != null && searchValue.isNotEmpty) {
       query = query.titleContains(searchValue, caseSensitive: false);
     }
     if (category != null) {
-      query = query.categoryIdEqualTo(category.id);
+      if (category.categoryName == "Favorites") {
+        query = query.isFavoriteEqualTo(true);
+      } else {
+        query = query.categoryIdEqualTo(category.id);
+      }
     }
     return query.iptvServer((q) {
       return q.idEqualTo(_activeIptvServer!.id);
@@ -264,6 +275,16 @@ class M3uService {
   }
 
   // MARK: - Progress Tracking Methods
+  Future<void> updateChannelProgress(int channelId) async {
+    await isarService.isar.writeTxn(() async {
+      var channel = await isarService.isar.channelItems.get(channelId);
+      if (channel != null) {
+        channel.lastWatched = DateTime.now();
+        await isarService.isar.channelItems.put(channel);
+      }
+    });
+  }
+
   Future<void> updateMovieProgress(int movieId, double duration) async {
     await isarService.isar.writeTxn(() async {
       var movie = await isarService.isar.vodItems.get(movieId);
@@ -278,8 +299,8 @@ class M3uService {
   Future<void> updateSeriesProgress(int seriesId) async {
     await isarService.isar.writeTxn(() async {
       var series = await isarService.isar.seriesItems.get(seriesId);
-      if (series != null && series.firstWatched == null) {
-        series.firstWatched = DateTime.now();
+      if (series != null && series.lastWatched == null) {
+        series.lastWatched = DateTime.now();
         await isarService.isar.seriesItems.put(series);
       }
     });
@@ -301,10 +322,119 @@ class M3uService {
   }
 
   bool isSeriesStarted(int seriesId) {
-    return isarService.isar.seriesItems.getSync(seriesId)?.firstWatched != null;
+    return isarService.isar.seriesItems.getSync(seriesId)?.lastWatched != null;
   }
 
   double? getEpisodeProgress(int episodeId) {
     return isarService.isar.seriesEpisodes.getSync(episodeId)?.watchedDuration;
+  }
+
+  // Favorite methods
+  Future<void> toggleChannelFavorite(int channelId) async {
+    await isarService.isar.writeTxn(() async {
+      var channel = await isarService.isar.channelItems.get(channelId);
+      if (channel != null) {
+        channel.isFavorite = !channel.isFavorite;
+        await isarService.isar.channelItems.put(channel);
+      }
+    });
+  }
+
+  Future<void> toggleMovieFavorite(int movieId) async {
+    await isarService.isar.writeTxn(() async {
+      var movie = await isarService.isar.vodItems.get(movieId);
+      if (movie != null) {
+        movie.isFavorite = !movie.isFavorite;
+        await isarService.isar.vodItems.put(movie);
+      }
+    });
+  }
+
+  Future<void> toggleSeriesFavorite(int seriesId) async {
+    await isarService.isar.writeTxn(() async {
+      var series = await isarService.isar.seriesItems.get(seriesId);
+      if (series != null) {
+        series.isFavorite = !series.isFavorite;
+        await isarService.isar.seriesItems.put(series);
+      }
+    });
+  }
+
+  Stream<List<ChannelItem>> getFavoriteChannels() {
+    return isarService.isar.channelItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .isFavoriteEqualTo(true)
+        .watch(fireImmediately: true);
+  }
+
+  Stream<List<VodItem>> getFavoriteMovies() {
+    return isarService.isar.vodItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .isFavoriteEqualTo(true)
+        .watch(fireImmediately: true);
+  }
+
+  Stream<List<SeriesItem>> getFavoriteSeries() {
+    return isarService.isar.seriesItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .isFavoriteEqualTo(true)
+        .watch(fireImmediately: true);
+  }
+
+  Stream<bool> isChannelFavorite(int channelId) {
+    return isarService.isar.channelItems
+        .filter()
+        .idEqualTo(channelId)
+        .watch(fireImmediately: true)
+        .map((channels) => channels.firstOrNull?.isFavorite ?? false);
+  }
+
+  Stream<bool> isMovieFavorite(int movieId) {
+    return isarService.isar.vodItems
+        .filter()
+        .idEqualTo(movieId)
+        .watch(fireImmediately: true)
+        .map((movies) => movies.firstOrNull?.isFavorite ?? false);
+  }
+
+  Stream<bool> isSeriesFavorite(int seriesId) {
+    return isarService.isar.seriesItems
+        .filter()
+        .idEqualTo(seriesId)
+        .watch(fireImmediately: true)
+        .map((series) => series.firstOrNull?.isFavorite ?? false);
+  }
+
+  Stream<List<ChannelItem>> getRecentChannels() {
+    return isarService.isar.channelItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .not()
+        .lastWatchedIsNull()
+        .sortByLastWatchedDesc()
+        .watch(fireImmediately: true);
+  }
+
+  Stream<List<VodItem>> getRecentMovies() {
+    return isarService.isar.vodItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .not()
+        .lastWatchedIsNull()
+        .sortByLastWatchedDesc()
+        .watch(fireImmediately: true);
+  }
+
+  Stream<List<SeriesItem>> getRecentSeries() {
+    return isarService.isar.seriesItems
+        .filter()
+        .iptvServer((q) => q.idEqualTo(_activeIptvServer!.id))
+        .not()
+        .lastWatchedIsNull()
+        .sortByLastWatchedDesc()
+        .watch(fireImmediately: true);
   }
 }

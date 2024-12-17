@@ -8,6 +8,8 @@ class MovieInfoSection extends StatelessWidget {
   final XTremeCodeVodInfo? info;
   final Function(String) onTrailerPressed;
   final String Function(DateTime?) dateFormatter;
+  final bool isFavorite;
+  final Function() onFavoriteToggle;
 
   const MovieInfoSection({
     super.key,
@@ -15,6 +17,8 @@ class MovieInfoSection extends StatelessWidget {
     required this.info,
     required this.onTrailerPressed,
     required this.dateFormatter,
+    required this.isFavorite,
+    required this.onFavoriteToggle,
   });
 
   @override
@@ -26,6 +30,7 @@ class MovieInfoSection extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           children: [
+            _buildFavoriteButton(context),
             if (info?.info.rating != null)
               _buildInfoChip(
                 context,
@@ -139,30 +144,85 @@ class MovieInfoSection extends StatelessWidget {
     );
   }
 
+  Widget _buildFavoriteButton(BuildContext context) {
+    final yellowColor = Colors.yellow;
+    final darkYellow = Colors.yellow.darker;
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: HoverButton(
+        onPressed: onFavoriteToggle,
+        builder: (context, states) {
+          return Card(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            backgroundColor: states.isHovered
+                ? isFavorite
+                    ? darkYellow
+                    : FluentTheme.of(context)
+                        .resources
+                        .controlAltFillColorSecondary
+                : isFavorite
+                    ? yellowColor
+                    : null,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  isFavorite
+                      ? FluentIcons.favorite_star_fill
+                      : FluentIcons.favorite_star,
+                  size: UIConstants.chipIconSize,
+                  color: isFavorite ? Colors.black : yellowColor,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  isFavorite ? 'Remove Favorite' : 'Add Favorite',
+                  style: FluentTheme.of(context).typography.body?.copyWith(
+                        color: isFavorite ? Colors.black : yellowColor,
+                      ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Widget _buildInfoChip(
     BuildContext context,
     String? label,
     String value, {
     IconData? icon,
+    VoidCallback? onTap,
   }) {
+    final content = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (icon != null) ...[
+          Icon(
+            icon,
+            size: UIConstants.chipIconSize,
+          ),
+          const SizedBox(width: 8),
+        ],
+        Text(
+          value,
+          style: FluentTheme.of(context).typography.body,
+        ),
+      ],
+    );
+
     final card = Card(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            Icon(
-              icon,
-              size: UIConstants.chipIconSize,
-            ),
-            const SizedBox(width: 8),
-          ],
-          Text(
-            value,
-            style: FluentTheme.of(context).typography.body,
-          ),
-        ],
-      ),
+      child: onTap != null
+          ? HoverButton(
+              onPressed: onTap,
+              builder: (context, states) {
+                return content;
+              },
+            )
+          : content,
     );
 
     return label?.isNotEmpty == true

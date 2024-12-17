@@ -1,4 +1,3 @@
-
 import 'package:play_shift/home/provider/search_value_provider.dart';
 import 'package:play_shift/provider/isar/m3u_provider.dart';
 import 'package:play_shift/provider/models/channel_view_model.dart';
@@ -16,10 +15,21 @@ Stream<List<ChannelViewModel>> findAllChannels(
 }) async* {
   final searchValue = ref.watch(channelSearchValueProvider);
   final m3uService = ref.watch(m3uServiceProvider);
-  
-  await for (final channels in m3uService.findAllChannels(searchValue, category)) {
+
+  Stream<List<dynamic>> channelsStream;
+  if (category?.categoryName == "Favorites") {
+    channelsStream = m3uService.getFavoriteChannels();
+  } else if (category?.categoryName == "Recents") {
+    channelsStream = m3uService.getRecentChannels();
+  } else {
+    channelsStream = m3uService.findAllChannels(searchValue, category);
+  }
+
+  await for (final channels in channelsStream) {
     final epgMap = _createCurrentEpgMap(m3uService);
-    yield channels.map((channel) => _createChannelViewModel(channel, epgMap)).toList();
+    yield channels
+        .map((channel) => _createChannelViewModel(channel, epgMap))
+        .toList();
   }
 }
 
@@ -84,21 +94,26 @@ Stream<List<ItemCategory>> findAllChannelGroups(FindAllChannelGroupsRef ref) {
   return m3uService.findAllChannelGroups(activeIptvServer);
 }
 
+@riverpod
+Future<void> updateChannelProgress(
+    UpdateChannelProgressRef ref, int movieId) async {
+  await ref.read(m3uServiceProvider).updateChannelProgress(movieId);
+}
+
 // Helper functions
 Map<String?, EpgItem> _createCurrentEpgMap(M3uService m3uService) {
   final now = DateTime.now();
-  return Map.fromEntries(
-    m3uService.epgOfChannels()
-        .where((item) => _isEpgItemCurrent(item, now))
-        .map((item) => MapEntry(item.channelId, item))
-  );
+  return Map.fromEntries(m3uService
+      .epgOfChannels()
+      .where((item) => _isEpgItemCurrent(item, now))
+      .map((item) => MapEntry(item.channelId, item)));
 }
 
 bool _isEpgItemCurrent(EpgItem item, DateTime now) {
   return item.start != null &&
-         item.end != null &&
-         item.start!.isBefore(now) &&
-         item.end!.isAfter(now);
+      item.end != null &&
+      item.start!.isBefore(now) &&
+      item.end!.isAfter(now);
 }
 
 ChannelViewModel _createChannelViewModel(

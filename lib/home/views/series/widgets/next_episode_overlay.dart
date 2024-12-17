@@ -15,39 +15,33 @@ class NextEpisodeOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+
     return Positioned(
       right: 40,
       bottom: 80,
-      child: Container(
+      child: Card(
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(8),
-        ),
+        backgroundColor: theme.micaBackgroundColor.withOpacity(0.8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Next Episode',
-              style: FluentTheme.of(context).typography.subtitle,
+              style: theme.typography.subtitle,
             ),
             const SizedBox(height: 8),
             Text(
               nextEpisode.title ?? 'Episode ${nextEpisode.episodeNum}',
-              style: FluentTheme.of(context).typography.body,
+              style: theme.typography.body,
             ),
             const SizedBox(height: 16),
             Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 FilledButton(
                   onPressed: onPlayNext,
                   child: const Text('Play Next'),
-                ),
-                const SizedBox(width: 8),
-                Button(
-                  onPressed: onCancel,
-                  child: const Text('Cancel'),
                 ),
               ],
             ),

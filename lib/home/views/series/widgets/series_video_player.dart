@@ -31,88 +31,58 @@ class SeriesVideoPlayer extends ConsumerStatefulWidget {
 }
 
 class _SeriesVideoPlayerState extends ConsumerState<SeriesVideoPlayer> {
-  bool _showNextEpisodeOverlay = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // Mark series as started when episode starts playing
-    ref
-        .read(seriesProgressProvider(widget.episode.parentSeriesId!).notifier)
-        .markAsStarted();
-  }
-
   @override
   Widget build(BuildContext context) {
     final progress = ref.watch(episodeProgressProvider(widget.episode.id!));
 
-    return Stack(
-      children: [
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.5,
-          child: BaseVideoPlayer(
-            key: ValueKey(
-                '${widget.episode.id}_$widget.selectedSeason$widget.selectedEpisodeIndex'),
-            streamLink: widget.episode.streamUrl,
-            initialPosition:
-                progress != null ? Duration(seconds: progress.toInt()) : null,
-            skipResumeDialog: widget.skipResumeDialog,
-            onPositionChanged: (position) {
-              ref
-                  .read(episodeProgressProvider(widget.episode.id!).notifier)
-                  .updateProgress(position.inSeconds.toDouble());
-
-              // Show overlay when 60 seconds are left
-              if (widget.episode.durationSecs != null &&
-                  widget.onNextEpisode != null &&
-                  widget.nextEpisode != null &&
-                  !_showNextEpisodeOverlay &&
-                  position.inSeconds >= widget.episode.durationSecs! - 60) {
-                setState(() {
-                  _showNextEpisodeOverlay = true;
-                });
-              } else {
-                setState(() {
-                  _showNextEpisodeOverlay = false;
-                });
-              }
-            },
-            builder: (controller) =>
-                (Platform.instance.isMacOS || Platform.instance.isWindows)
-                    ? MaterialDesktopVideoControlsTheme(
-                        normal: BaseVideoPlayerConfig.desktopThemeData(),
-                        fullscreen: BaseVideoPlayerConfig.desktopThemeData(),
-                        child: Video(
-                          controller: controller,
-                          controls: MaterialDesktopVideoControls,
-                        ),
-                      )
-                    : MaterialVideoControlsTheme(
-                        normal: BaseVideoPlayerConfig.mobileThemeData(),
-                        fullscreen: BaseVideoPlayerConfig.mobileThemeData(),
-                        child: Video(
-                          controller: controller,
-                          controls: MaterialVideoControls,
-                        ),
-                      ),
-          ),
-        ),
-        if (_showNextEpisodeOverlay && widget.nextEpisode != null)
-          NextEpisodeOverlay(
-            nextEpisode: widget.nextEpisode!,
-            onPlayNext: () {
-              if (widget.onNextEpisode != null) {
-                widget.onNextEpisode!(widget.nextEpisode!);
-                _showNextEpisodeOverlay = false;
-              }
-            },
-            onCancel: () {
-              setState(() {
-                _showNextEpisodeOverlay = false;
-              });
-            },
-          ),
-      ],
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.5,
+      child: BaseVideoPlayer(
+        key: ValueKey(
+            '${widget.episode.id}_$widget.selectedSeason$widget.selectedEpisodeIndex'),
+        streamLink: widget.episode.streamUrl,
+        initialPosition:
+            progress != null ? Duration(seconds: progress.toInt()) : null,
+        skipResumeDialog: widget.skipResumeDialog,
+        videoDuration: widget.episode.durationSecs != null
+            ? Duration(seconds: widget.episode.durationSecs!)
+            : null,
+        nextUpOverlay: widget.nextEpisode != null
+            ? NextEpisodeOverlay(
+                nextEpisode: widget.nextEpisode!,
+                onPlayNext: () {
+                  widget.onNextEpisode?.call(widget.nextEpisode!);
+                },
+                onCancel: () {},
+              )
+            : null,
+        onNextUp: widget.nextEpisode != null
+            ? () => widget.onNextEpisode?.call(widget.nextEpisode!)
+            : null,
+        onPositionChanged: (position) {
+          ref
+              .read(episodeProgressProvider(widget.episode.id!).notifier)
+              .updateProgress(position.inSeconds.toDouble());
+        },
+        builder: (controller) =>
+            (Platform.instance.isMacOS || Platform.instance.isWindows)
+                ? MaterialDesktopVideoControlsTheme(
+                    normal: BaseVideoPlayerConfig.desktopThemeData(),
+                    fullscreen: BaseVideoPlayerConfig.desktopThemeData(),
+                    child: Video(
+                      controller: controller,
+                      controls: MaterialDesktopVideoControls,
+                    ),
+                  )
+                : MaterialVideoControlsTheme(
+                    normal: BaseVideoPlayerConfig.mobileThemeData(),
+                    fullscreen: BaseVideoPlayerConfig.mobileThemeData(),
+                    child: Video(
+                      controller: controller,
+                      controls: MaterialVideoControls,
+                    ),
+                  ),
+      ),
     );
   }
 }

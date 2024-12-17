@@ -60,7 +60,7 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
   }
 
   void _initializeSelectedSeason() {
-    if (_selectedSeason != null) return; // Already initialized
+    if (_selectedSeason != null) return;
 
     // Try to get last watched episode
     final lastWatchedId = ref.read(lastWatchedEpisodeProvider(widget.seriesId));
@@ -262,10 +262,6 @@ class _SeriesOverviewState extends ConsumerState<SeriesOverview> {
 
               if (episodeIndex != -1) {
                 _onEpisodeSelected(episodeIndex, data);
-                // setState(() {
-                //   _selectedSeason = nextEpisode.season;
-                //   _selectedEpisodeIndex = episodeIndex;
-                // });
               }
             },
             nextEpisode: _findNextEpisode(

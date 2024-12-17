@@ -12,6 +12,9 @@ class BaseVideoPlayer extends ConsumerStatefulWidget {
   final Duration? initialPosition;
   final void Function(Duration)? onPositionChanged;
   final bool skipResumeDialog;
+  final Duration? videoDuration;
+  final Widget? nextUpOverlay;
+  final VoidCallback? onNextUp;
 
   const BaseVideoPlayer({
     required this.streamLink,
@@ -19,6 +22,9 @@ class BaseVideoPlayer extends ConsumerStatefulWidget {
     this.initialPosition,
     this.onPositionChanged,
     this.skipResumeDialog = false,
+    this.videoDuration,
+    this.nextUpOverlay,
+    this.onNextUp,
     super.key,
   });
 
@@ -30,8 +36,10 @@ class _BaseVideoPlayerState extends ConsumerState<BaseVideoPlayer> {
   late final Player player;
   late final VideoController videoController;
   StreamSubscription<double>? subscription;
+  StreamSubscription<Duration>? _positionSubscription;
   bool _showResumeDialog = false;
   bool _isLoading = false;
+  bool _showNextUpOverlay = false;
 
   @override
   void initState() {
@@ -88,6 +96,22 @@ class _BaseVideoPlayerState extends ConsumerState<BaseVideoPlayer> {
 
     if (widget.onPositionChanged != null) {
       player.stream.position.listen(widget.onPositionChanged);
+
+      _positionSubscription = player.stream.position.listen((position) {
+        widget.onPositionChanged?.call(position);
+
+        // Show overlay when 60 seconds are left
+        if (widget.videoDuration != null &&
+            widget.onNextUp != null &&
+            widget.nextUpOverlay != null &&
+            !_showNextUpOverlay &&
+            position.inSeconds >= widget.videoDuration!.inSeconds - 60) {
+          setState(() => _showNextUpOverlay = true);
+          _positionSubscription?.cancel();
+        } else if (_showNextUpOverlay) {
+          setState(() => _showNextUpOverlay = false);
+        }
+      });
     }
 
     setState(() => _isLoading = false);
@@ -96,6 +120,7 @@ class _BaseVideoPlayerState extends ConsumerState<BaseVideoPlayer> {
   @override
   void dispose() {
     subscription?.cancel();
+    _positionSubscription?.cancel();
     player.dispose();
     super.dispose();
   }
@@ -144,6 +169,8 @@ class _BaseVideoPlayerState extends ConsumerState<BaseVideoPlayer> {
               ),
             ),
           ),
+        if (_showNextUpOverlay && widget.nextUpOverlay != null)
+          widget.nextUpOverlay!,
       ],
     );
   }
